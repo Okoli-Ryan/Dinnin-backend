@@ -90,7 +90,7 @@ builder.Services.AddScoped<NetworkService>();
 
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(opt => {
-        opt.WithOrigins("https://localhost:5173", "https://order-up-frontend.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+        opt.WithOrigins("https://localhost:5173", "https://order-up-frontend.vercel.app/").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     });
 });
 
