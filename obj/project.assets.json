@@ -8304,9 +8304,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp API.csproj",
-      "projectName": "OrderUp API",
-      "projectPath": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp API.csproj",
+      "projectUniqueName": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp_API.csproj",
+      "projectName": "OrderUp_API",
+      "projectPath": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp_API.csproj",
       "packagesPath": "C:\\Users\\okoli\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\obj\\",
       "projectStyle": "PackageReference",
