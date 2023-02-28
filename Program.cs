@@ -81,8 +81,8 @@ builder.Services.AddScoped<IUserEntityService<User>>();
 builder.Services.AddScoped<IUserEntityService<Admin>>();
 builder.Services.AddScoped<VerificationCodeService>();
 
-builder.Services.AddScoped<IMailRepository,SendGridRepository>();
-builder.Services.AddScoped<IMailService,MailService>();
+builder.Services.AddScoped<IMailRepository, SendGridRepository>();
+builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
 builder.Services.AddSingleton<OnlineRestaurantDb>();
@@ -90,7 +90,10 @@ builder.Services.AddScoped<NetworkService>();
 
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(opt => {
-        opt.WithOrigins("https://localhost:5173", "https://order-up-frontend.vercel.app/").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+        opt.AllowAnyHeader()
+           .AllowAnyMethod()
+           .AllowCredentials()
+           .WithOrigins("https://order-up-frontend.vercel.app", "https://localhost:5173");
     });
 });
 
@@ -121,7 +124,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints => {
- 
+
     endpoints.MapControllers();
 
     endpoints.MapHub<ServerHub>("/chat");
