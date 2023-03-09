@@ -32,7 +32,7 @@ namespace OrderUp_API.Controllers {
 
 
         [HttpPost()]
-        [Authorize(Roles = RoleTypes.SuperAdmin)]
+        //[Authorize(Roles = RoleTypes.SuperAdmin)]
         public async Task<IActionResult> AddAdmin([FromBody] AdminDto adminDto) {
 
             var mappedAdmin = mapper.Map<Admin>(adminDto);
