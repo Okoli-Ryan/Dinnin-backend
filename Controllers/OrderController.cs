@@ -26,6 +26,19 @@
         }
 
 
+        [HttpGet("restaurant/{page}")]
+        public async Task<IActionResult> GetOrdersByRestaurantID(int Page) {
+
+            var orders = await orderService.GetOrdersByRestaurantID<List<OrderDto>>(Page);
+
+            if (orders.ResponseCode.Equals(ResponseCodes.UNAUTHORIZED)) return Unauthorized(orders);
+            if (orders.ResponseCode.Equals(ResponseCodes.FAILURE)) return BadRequest(orders);
+
+
+            return Ok(orders);
+        }
+
+
 
 
         [HttpPost()]

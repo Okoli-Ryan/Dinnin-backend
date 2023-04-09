@@ -6,5 +6,9 @@
         public async Task<Restaurant> GetRestuarantDetailsBySlug(string Slug) {
             return await context.Restaurants.Where(x => x.Slug.Equals(Slug)).Include(x => x.MenuCategories).ThenInclude(x => x.MenuItems).AsNoTracking().FirstOrDefaultAsync();
         }
+
+        public async Task<bool> DoesSlugExist(string Slug) {
+            return await context.Restaurants.AnyAsync(x => x.Slug.Equals(Slug);
+        }
     }
 }

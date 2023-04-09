@@ -9,6 +9,14 @@
             this.tableRepository = tableRepository;
         }
 
+        public async Task<TableDto> GetTableData(Guid TableID) {
+
+            var TableData = await tableRepository.GetTableData(TableID);
+
+            return mapper.Map<TableDto>(TableData);
+            
+        }
+
         public async Task<TableDto> Save(Table table) {
 
             var addedTable = await tableRepository.Save(table);

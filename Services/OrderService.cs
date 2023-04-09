@@ -5,12 +5,14 @@
         private readonly OrderItemRepository orderItemRepository;
         private readonly MenuItemRepository menuItemRepository;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository) {
+        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor) {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
             this.menuItemRepository = menuItemRepository;
             this.orderItemRepository = orderItemRepository;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<MakeOrder> SaveOrder(MakeOrder OrderRequest) {
@@ -65,6 +67,34 @@
 
             return mapper.Map<List<OrderDto>>(addedOrder);
         }
+
+        public async Task<DefaultResponse<T>> GetOrdersByRestaurantID<T>(int Page) where T : List<OrderDto> {
+
+            var context = httpContextAccessor.HttpContext;
+
+            string RestaurantIDString = GetJwtValue.GetJwtValueFromHeader(context, RestaurantIdentifier.RestaurantClaimType);
+
+            if (Guid.TryParse(RestaurantIDString, out Guid restaurantId)) {
+                var OrderList = await orderRepository.GetOrdersByRestaurantID(restaurantId, Page);
+
+                var ListOfOrders = mapper.Map<T>(OrderList);
+
+                return new DefaultSuccessResponse<T>(ListOfOrders);
+
+            }
+            else {
+                // handle the case where the string is not a valid GUID...
+                return new DefaultResponse<T>() {
+                    ResponseCode = ResponseCodes.UNAUTHORIZED,
+                    ResponseData = null,
+                    ResponseMessage = "Unauthorized Access"
+                };
+            }
+
+        }
+
+
+
 
         public async Task<OrderDto> GetByID(Guid ID) {
 

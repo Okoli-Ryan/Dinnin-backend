@@ -10,6 +10,6 @@
         [MaxLength(100)]
         public string Email { get; set; }
 
-        public bool IsEmailConfirmed { get; set; }
+        public bool IsEmailConfirmed { get; set; } = false;
     }
 }

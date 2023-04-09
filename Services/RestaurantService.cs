@@ -18,6 +18,12 @@
             return mappedRestaurantResponse;
         }
 
+        public async Task<bool> DoesSlugExist(string Slug) {
+            var DoesRestaurantSlugExist = await restaurantRepository.DoesSlugExist(Slug);
+
+            return DoesRestaurantSlugExist;
+        }
+
         public async Task<RestaurantDto> Save(Restaurant restaurant) {
 
             var addedRestaurant = await restaurantRepository.Save(restaurant);

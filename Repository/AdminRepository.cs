@@ -3,5 +3,10 @@
 
         public AdminRepository(OrderUpDbContext context) : base(context) { }
 
+        public async Task<Admin> GetAdminByEmail(string Email) {
+
+            return await context.Admins.Where(x => x.Email == Email).Include(x => x.Restaurant).AsNoTracking().FirstOrDefaultAsync();
+        }
+
     }
 }

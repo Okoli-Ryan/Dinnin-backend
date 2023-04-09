@@ -47,6 +47,7 @@ builder.Services.AddAuthentication(options => {
     });
 
 builder.Services.AddSignalR();
+builder.Services.AddHttpContextAccessor();
 
 
 builder.Services.AddScoped<MenuCategoryRepository>();
@@ -83,6 +84,7 @@ builder.Services.AddScoped<VerificationCodeService>();
 
 builder.Services.AddScoped<IMailRepository, SendGridRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<RealTimeMessageService>();
 
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
 builder.Services.AddSingleton<OnlineRestaurantDb>();
@@ -127,7 +129,7 @@ app.UseEndpoints(endpoints => {
 
     endpoints.MapControllers();
 
-    endpoints.MapHub<ServerHub>("/chat");
+ //   endpoints.MapHub<ServerHub>("/chat");
 });
 
 

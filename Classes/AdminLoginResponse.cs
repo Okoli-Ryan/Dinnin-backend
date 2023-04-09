@@ -7,6 +7,6 @@
 
         public string Token { get; set; }
 
-        public Double ExpiresAt { get; set; }
+        public double ExpiresAt { get; set; }
     }
 }

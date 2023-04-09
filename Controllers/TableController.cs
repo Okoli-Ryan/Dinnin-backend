@@ -15,14 +15,27 @@
 
 
         [HttpGet("{ID}")]
+        public async Task<IActionResult> GetTableData(Guid ID) {
+
+            var Table = await tableService.GetTableData(ID);
+
+            if (Table is null) return BadRequest(Table);
+
+
+            return Ok(Table);
+        }
+
+
+
+        [HttpGet("s/{ID}")]
         public async Task<IActionResult> GetTableByID(Guid ID) {
 
-            var addedTable = await tableService.GetByID(ID);
+            var Table = await tableService.GetByID(ID);
 
-            if (addedTable is null) return Ok(new DefaultErrorResponse<Table>());
+            if (Table is null) return Ok(new DefaultErrorResponse<Table>());
 
 
-            return Ok(new DefaultSuccessResponse<TableDto>(addedTable));
+            return Ok(new DefaultSuccessResponse<TableDto>(Table));
         }
 
 

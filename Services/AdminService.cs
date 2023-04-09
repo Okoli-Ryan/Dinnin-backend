@@ -4,7 +4,6 @@
         private readonly AdminRepository adminRepository;
         private readonly IUserEntityService<Admin> userEntityService;
         private readonly IMapper mapper;
-        private readonly IMailService mailService;
         private readonly OrderUpDbContext context;
         private readonly VerificationCodeService verificationCodeService;
 
@@ -12,7 +11,6 @@
             this.adminRepository = adminRepository;
             this.mapper = mapper;
             this.context = context;
-            this.mailService = mailService;
             this.verificationCodeService = verificationCodeService;
             this.userEntityService = userEntityService;
         }
@@ -35,14 +33,8 @@
 
             var CreatedAccount = await Save(Admin);
 
-            var verificationCode = new VerificationCode() {
-                UserID = CreatedAccount.id,
-                UserType = RoleTypes.Admin
-            };
 
-            var createdVerificationCode = await verificationCodeService.CreateVerificationCode(verificationCode);
-
-            var IsSentVerificationEmail = await mailService.SendVerificationCode(Admin.Email, Admin.ID, createdVerificationCode.Code);
+            var IsSentVerificationEmail = await verificationCodeService.SendVerificationCode(CreatedAccount.id, RoleTypes.Admin, Admin.Email);
 
             if(!IsSentVerificationEmail) return new DefaultErrorResponse<AdminDto>();
 
@@ -61,7 +53,7 @@
 
         public async Task<DefaultResponse<AdminLoginResponse>> LoginAsAdmin(LoginModel loginModel) {
 
-            var ExistingAdmin = await userEntityService.GetUserEntityByEmail(loginModel.Email);
+            var ExistingAdmin = await GetAdminByEmail(loginModel.Email);
 
             var InvalidResponse = new DefaultErrorResponse<AdminLoginResponse>() {
                 ResponseCode = ResponseCodes.INVALID_CREDENTIALS,
@@ -75,17 +67,43 @@
 
             if (!isPasswordCorrect) return InvalidResponse;
 
-            if (!ExistingAdmin.IsEmailConfirmed) return new DefaultErrorResponse<AdminLoginResponse>() {
-                ResponseCode = ResponseCodes.UNAUTHORIZED,
-                ResponseMessage = "Confirm your email before logging in",
-                ResponseData = null
-            };
+            if (!ExistingAdmin.IsEmailConfirmed) {
+
+                //Send Verification code to user if not confirmed
+                var IsVerificationCodeSent = await verificationCodeService.SendVerificationCode(ExistingAdmin.ID, RoleTypes.Admin, ExistingAdmin.Email);
+
+
+
+
+                if(!IsVerificationCodeSent) return new DefaultErrorResponse<AdminLoginResponse>() {
+                    ResponseCode = ResponseCodes.FAILURE,
+                    ResponseMessage = "Something went wrong",
+                    ResponseData = null
+                };
+
+
+
+
+
+                return new DefaultErrorResponse<AdminLoginResponse>() {
+                    ResponseCode = ResponseCodes.UNAUTHORIZED,
+                    ResponseMessage = "A verification code was sent to you",
+                    ResponseData = null
+                };
+            }
+
+
+
 
             var authClaims = new List<Claim>() {    
                 new Claim(ClaimTypes.Role, ExistingAdmin.Role),
                 new Claim(ClaimTypes.Email, ExistingAdmin.Email),
                 new Claim(RestaurantIdentifier.RestaurantClaimType, ExistingAdmin.RestaurantID.ToString())
             };
+
+
+
+
 
             var token = JwtUtils.GenerateToken(authClaims);
 
@@ -98,6 +116,11 @@
             return new DefaultSuccessResponse<AdminLoginResponse>(response);
 
 
+        }
+
+        public async Task<Admin> GetAdminByEmail(string Email) {
+
+            return await adminRepository.GetAdminByEmail(Email);
         }
 
         public async Task<AdminDto> Save(Admin admin) {

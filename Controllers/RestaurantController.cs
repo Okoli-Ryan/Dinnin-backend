@@ -23,6 +23,15 @@
 
             return Ok(RestaurantResponse);
         }
+        
+        [HttpGet("slug/{Slug}")]
+        public async Task<IActionResult> DoesSlugExist(string Slug) {
+
+            var Response = await restaurantService.DoesSlugExist(Slug);
+
+
+            return Ok(Response);
+        }
 
 
         [HttpGet("{ID}")]

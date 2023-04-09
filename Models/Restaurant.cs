@@ -32,8 +32,8 @@ namespace OrderUp_API.Models {
         [MaxLength(500)]
         [DataType(DataType.ImageUrl)]
         public string LogoUrl { get; set; }
-    
 
+        [Required]
         [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
         public string ContactEmailAddress { get; set; }

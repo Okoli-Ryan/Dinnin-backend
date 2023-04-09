@@ -6,14 +6,27 @@
         private readonly UserRepository userRepository;
         private readonly IUserEntityService<Admin> AdminUserEntityService;
         private readonly IUserEntityService<User> CustomerUserEntityService;
+        private readonly IMailService mailService;
 
-        public VerificationCodeService(VerificationCodeRepository verificationCodeRepository, IUserEntityService<User> CustomerUserEntityService, IUserEntityService<Admin> AdminUserEntityService, AdminRepository adminRepository, UserRepository userRepository) {
+        public VerificationCodeService(VerificationCodeRepository verificationCodeRepository, IUserEntityService<User> CustomerUserEntityService, IUserEntityService<Admin> AdminUserEntityService, AdminRepository adminRepository, UserRepository userRepository, IMailService mailService) {
             this.verificationCodeRepository = verificationCodeRepository;
             this.userRepository = userRepository;
             this.adminRepository = adminRepository;
             this.CustomerUserEntityService = CustomerUserEntityService;
             this.AdminUserEntityService = AdminUserEntityService;
-       
+            this.mailService = mailService;
+        }
+
+        public async Task<bool> SendVerificationCode(Guid UserID, string RoleType, string UserEmail) {
+
+            var verificationCode = new VerificationCode() {
+                UserID = UserID,
+                UserType = RoleType
+            };
+
+            var createdVerificationCode = await CreateVerificationCode(verificationCode);
+
+            return await mailService.SendVerificationCode(UserEmail, UserID, createdVerificationCode.Code);
         }
 
         public async Task<VerificationCode> CreateVerificationCode(VerificationCode VerificationModel) {
