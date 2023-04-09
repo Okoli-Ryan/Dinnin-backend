@@ -4,12 +4,11 @@ namespace OrderUp_API.Models {
     [Table(name: "Admin")]
     public class Admin : IUserEntity{
 
-        [ForeignKey("Restaurant")]
-        public Guid RestaurantID { get; set; }
+        public Admin() { 
+            Restaurant = new Restaurant();
+        }
 
         public string Role { get; set; }
-
-        public virtual Restaurant? Restaurant { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -17,6 +16,10 @@ namespace OrderUp_API.Models {
 
         [MaxLength(50)]
         public string LastName { get; set; }
+
+        public Guid? RestaurantID { get; set; }
+
+        public virtual Restaurant? Restaurant { get; set; }
 
         [MaxLength(50)]
         [Required]

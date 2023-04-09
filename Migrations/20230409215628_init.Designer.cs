@@ -11,8 +11,8 @@ using OrderUp_API.Data;
 namespace OrderUpAPI.Migrations
 {
     [DbContext(typeof(OrderUpDbContext))]
-    [Migration("20230227133928_mysql")]
-    partial class mysql
+    [Migration("20230409215628_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,7 +70,7 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("phone_number");
 
-                    b.Property<Guid>("RestaurantID")
+                    b.Property<Guid?>("RestaurantID")
                         .HasColumnType("char(36)")
                         .HasColumnName("restaurant_id");
 
@@ -342,6 +342,7 @@ namespace OrderUpAPI.Migrations
                         .HasColumnName("city");
 
                     b.Property<string>("ContactEmailAddress")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("contact_email_address");
@@ -680,10 +681,8 @@ namespace OrderUpAPI.Migrations
             modelBuilder.Entity("OrderUp_API.Models.Admin", b =>
                 {
                     b.HasOne("OrderUp_API.Models.Restaurant", "Restaurant")
-                        .WithMany()
+                        .WithMany("Admins")
                         .HasForeignKey("RestaurantID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_admin_restaurants_restaurant_id");
 
                     b.Navigation("Restaurant");
@@ -809,6 +808,8 @@ namespace OrderUpAPI.Migrations
 
             modelBuilder.Entity("OrderUp_API.Models.Restaurant", b =>
                 {
+                    b.Navigation("Admins");
+
                     b.Navigation("MenuCategories");
                 });
 

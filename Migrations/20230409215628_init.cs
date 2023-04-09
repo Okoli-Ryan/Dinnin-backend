@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OrderUpAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class mysql : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,7 @@ namespace OrderUpAPI.Migrations
                     address = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     contactphonenumber = table.Column<string>(name: "contact_phone_number", type: "varchar(20)", maxLength: 20, nullable: false),
                     logourl = table.Column<string>(name: "logo_url", type: "varchar(500)", maxLength: 500, nullable: true),
-                    contactemailaddress = table.Column<string>(name: "contact_email_address", type: "varchar(100)", maxLength: 100, nullable: true),
+                    contactemailaddress = table.Column<string>(name: "contact_email_address", type: "varchar(100)", maxLength: 100, nullable: false),
                     country = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     state = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     city = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
@@ -108,10 +108,10 @@ namespace OrderUpAPI.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
-                    restaurantid = table.Column<Guid>(name: "restaurant_id", type: "char(36)", nullable: false),
                     role = table.Column<string>(type: "longtext", nullable: true),
                     firstname = table.Column<string>(name: "first_name", type: "varchar(50)", maxLength: 50, nullable: false),
                     lastname = table.Column<string>(name: "last_name", type: "varchar(50)", maxLength: 50, nullable: true),
+                    restaurantid = table.Column<Guid>(name: "restaurant_id", type: "char(36)", nullable: true),
                     phonenumber = table.Column<string>(name: "phone_number", type: "varchar(50)", maxLength: 50, nullable: false),
                     activestatus = table.Column<bool>(name: "active_status", type: "tinyint(1)", nullable: false),
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
@@ -127,8 +127,7 @@ namespace OrderUpAPI.Migrations
                         name: "fk_admin_restaurants_restaurant_id",
                         column: x => x.restaurantid,
                         principalTable: "restaurants",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 

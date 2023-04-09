@@ -17,7 +17,7 @@
 
         public async Task<DefaultResponse<AdminDto>> RegisterAdmin(Admin Admin) {
 
-            var ExistingAdmin = await userEntityService.GetUserEntityByEmail(Admin.Email);
+            var ExistingAdmin = await GetAdminByEmail(Admin.Email);
 
             if (ExistingAdmin is not null) return new DefaultResponse<AdminDto>() {
                 ResponseCode = ResponseCodes.USER_ALREADY_EXIST,
@@ -26,7 +26,7 @@
             };
 
 
-            Admin.Role = RoleTypes.Admin;
+            Admin.Role = RoleTypes.SuperAdmin;
             Admin.IsEmailConfirmed = false;
 
             using var transaction = context.Database.BeginTransaction();

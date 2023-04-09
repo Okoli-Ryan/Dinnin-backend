@@ -67,7 +67,7 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("phone_number");
 
-                    b.Property<Guid>("RestaurantID")
+                    b.Property<Guid?>("RestaurantID")
                         .HasColumnType("char(36)")
                         .HasColumnName("restaurant_id");
 
@@ -678,10 +678,8 @@ namespace OrderUpAPI.Migrations
             modelBuilder.Entity("OrderUp_API.Models.Admin", b =>
                 {
                     b.HasOne("OrderUp_API.Models.Restaurant", "Restaurant")
-                        .WithMany()
+                        .WithMany("Admins")
                         .HasForeignKey("RestaurantID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("fk_admin_restaurants_restaurant_id");
 
                     b.Navigation("Restaurant");
@@ -807,6 +805,8 @@ namespace OrderUpAPI.Migrations
 
             modelBuilder.Entity("OrderUp_API.Models.Restaurant", b =>
                 {
+                    b.Navigation("Admins");
+
                     b.Navigation("MenuCategories");
                 });
 

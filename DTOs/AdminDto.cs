@@ -1,7 +1,15 @@
 ﻿namespace OrderUp_API.DTOs {
-    public class AdminDto : UserDto{
+    public class AdminDto : IUserEntityDto{
 
-        public Guid restaurantId { get; set; }
+        public string firstName { get; set; }
+
+        public string lastName { get; set; }
+
+        public string phoneNumber { get; set; }
+
+        public string imageUrl { get; set; }
+
+        public Guid? restaurantId { get; set; }
 
         public RestaurantDto? restaurant { get; set; }
     }

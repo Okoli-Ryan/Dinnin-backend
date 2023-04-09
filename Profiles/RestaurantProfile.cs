@@ -19,6 +19,7 @@
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.description))
                 .ForMember(dest => dest.Slug, opt => opt.MapFrom(src => src.slug))
                 .ForMember(dest => dest.MenuCategories, opt => opt.MapFrom(src => src.categories))
+                .ForMember(dest => dest.Admins, opt => opt.MapFrom(src => src.admins))
                 .ForMember(dest => dest.ContactEmailAddress, opt => opt.MapFrom(src => src.contactEmail))
                 .ForMember(dest => dest.ContactPhoneNumber, opt => opt.MapFrom(src => src.contactPhoneNumber));
 
@@ -38,6 +39,7 @@
                 .ForMember(dest => dest.restaurantName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.xCoordinate, opt => opt.MapFrom(src => src.XCoordinate))
                 .ForMember(dest => dest.yCoordinate, opt => opt.MapFrom(src => src.YCoordinate))
+                .ForMember(dest => dest.admins, opt => opt.MapFrom(src => src.Admins))
                 .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.categories, opt => opt.MapFrom(src => src.MenuCategories));
 
