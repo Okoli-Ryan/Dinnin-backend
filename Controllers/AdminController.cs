@@ -10,11 +10,13 @@ namespace OrderUp_API.Controllers {
 
         readonly AdminService adminService;
         readonly IMapper mapper;
+        readonly ControllerResponseHandler ResponseHandler;
 
         public AdminController(AdminService adminService, IMapper mapper) {
 
             this.adminService = adminService;
             this.mapper = mapper;
+            ResponseHandler = new ControllerResponseHandler();
         }
 
 
@@ -23,10 +25,10 @@ namespace OrderUp_API.Controllers {
 
             var addedAdmin = await adminService.GetByID(ID);
 
-            if (addedAdmin is null) return Ok(new DefaultErrorResponse<Admin>());
-
+            if (addedAdmin is null) return Ok(new DefaultErrorResponse<AdminDto>());
 
             return Ok(new DefaultSuccessResponse<AdminDto>(addedAdmin));
+            //return ResponseHandler.HandleResponse<AdminDto(addedAdmin);
         }
 
 
@@ -39,7 +41,11 @@ namespace OrderUp_API.Controllers {
 
             var addedAdmin = await adminService.RegisterAdmin(mappedAdmin);
 
-            return Ok(addedAdmin);
+            if (!addedAdmin.ResponseCode.Equals(ResponseCodes.SUCCESS)) {
+                return BadRequest(addedAdmin);
+            }
+
+            return Ok(addedAdmin.ResponseData);
         }
 
 
@@ -48,7 +54,7 @@ namespace OrderUp_API.Controllers {
 
             var response = await adminService.LoginAsAdmin(loginModel);
 
-            return Ok(response);
+            return ResponseHandler.HandleResponse(response);
         }
 
 

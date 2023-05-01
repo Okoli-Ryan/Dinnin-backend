@@ -8,6 +8,8 @@
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { 
         
             optionsBuilder.UseSnakeCaseNamingConvention();
+
+
         }
 
         public OrderUpDbContext() { }

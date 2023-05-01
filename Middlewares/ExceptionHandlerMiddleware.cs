@@ -21,6 +21,7 @@ namespace OrderUp_API.Middlewares {
         public async Task HandleExceptionAsync(HttpContext context, Exception ex) {
 
             context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
             var errorResponse = new DefaultErrorResponse<object>();
 

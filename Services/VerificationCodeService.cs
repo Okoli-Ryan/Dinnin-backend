@@ -1,20 +1,25 @@
-﻿namespace OrderUp_API.Services {
+﻿using OrderUp_API.Classes;
+using OrderUp_API.DTOs;
+
+namespace OrderUp_API.Services {
     public class VerificationCodeService {
 
         private readonly VerificationCodeRepository verificationCodeRepository;
         private readonly AdminRepository adminRepository;
         private readonly UserRepository userRepository;
+        private readonly IMapper mapper;
         private readonly IUserEntityService<Admin> AdminUserEntityService;
         private readonly IUserEntityService<User> CustomerUserEntityService;
         private readonly IMailService mailService;
 
-        public VerificationCodeService(VerificationCodeRepository verificationCodeRepository, IUserEntityService<User> CustomerUserEntityService, IUserEntityService<Admin> AdminUserEntityService, AdminRepository adminRepository, UserRepository userRepository, IMailService mailService) {
+        public VerificationCodeService(VerificationCodeRepository verificationCodeRepository, IUserEntityService<User> CustomerUserEntityService, IUserEntityService<Admin> AdminUserEntityService, AdminRepository adminRepository, UserRepository userRepository, IMailService mailService, IMapper mapper) {
             this.verificationCodeRepository = verificationCodeRepository;
             this.userRepository = userRepository;
             this.adminRepository = adminRepository;
             this.CustomerUserEntityService = CustomerUserEntityService;
             this.AdminUserEntityService = AdminUserEntityService;
             this.mailService = mailService;
+            this.mapper = mapper;
         }
 
         public async Task<bool> SendVerificationCode(Guid UserID, string RoleType, string UserEmail) {
@@ -65,34 +70,47 @@
 
         }
 
-        public async Task<object> VerifyUser(Guid UserId, string Code) {
+        public async Task<DefaultResponse<IUserEntityDto>> VerifyUser(Guid UserId, string Code) {
 
             var VerificationModel = await VerifyVerificationCode(UserId, Code);
 
+            var InvalidToken = new DefaultErrorResponse<IUserEntityDto>() {
+
+                ResponseCode = ResponseCodes.INVALID_TOKEN,
+                ResponseMessage = "Verification code doesn't exist",
+                ResponseData = null
+            };
+
             if (VerificationModel is null) {
 
-                return new DefaultErrorResponse<IUserEntityDto>() {
-
-                    ResponseCode = ResponseCodes.INVALID_TOKEN,
-                    ResponseMessage = "Verification code doesn't exist",
-                    ResponseData = null
-                };
+                return InvalidToken;
 
             }
 
             if (VerificationModel.UserType.Equals(RoleTypes.Admin)) {
 
-                var VerifyAdminResponse = await AdminUserEntityService.VerifyUserEntity<AdminDto, AdminRepository>(VerificationModel.UserID, adminRepository);
+                var VerifyAdminResponse = await AdminUserEntityService.VerifyUserEntity(VerificationModel.UserID, adminRepository);
 
-                return VerifyAdminResponse;
+                if (VerifyAdminResponse is null) {
+                    return InvalidToken;
+                }
+
+                var AdminDtoResponse = mapper.Map<AdminDto>(VerifyAdminResponse);
+
+                return new DefaultSuccessResponse<IUserEntityDto>(AdminDtoResponse);
 
             }
 
             if (VerificationModel.UserType.Equals(RoleTypes.Customer)) {
 
-                var VerifyUserResponse = await CustomerUserEntityService.VerifyUserEntity<UserDto, UserRepository>(VerificationModel.UserID, userRepository);
+                var VerifyUserResponse = await CustomerUserEntityService.VerifyUserEntity(VerificationModel.UserID, userRepository);
 
-                return VerifyUserResponse;
+                if(VerifyUserResponse is null) {
+                    return InvalidToken;
+                }
+
+                var UserDtoResponse = mapper.Map<UserDto>(VerifyUserResponse);
+                return new DefaultSuccessResponse<IUserEntityDto>(UserDtoResponse);
 
             }
 

@@ -6,11 +6,13 @@
 
         readonly RestaurantService restaurantService;
         readonly IMapper mapper;
+        readonly ControllerResponseHandler ResponseHandler;
 
         public RestaurantController(RestaurantService restaurantService, IMapper mapper) {
 
             this.restaurantService = restaurantService;
             this.mapper = mapper;
+            ResponseHandler = new ControllerResponseHandler();
         }
 
 

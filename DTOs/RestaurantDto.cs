@@ -1,17 +1,9 @@
 ﻿namespace OrderUp_API.DTOs {
-    public class RestaurantDto : IAbstractDto {
+    public class RestaurantDto : AbstractDto {
 
         public RestaurantDto() {
             admins = new HashSet<AdminDto>();
         }
-
-        public Guid id { get; set; }
-
-        public bool activeStatus { get; set; }
-
-        public DateTime createdAt { get; set; }
-
-        public DateTime updatedAt { get; set; }
 
         public string restaurantName { get; set; }
 

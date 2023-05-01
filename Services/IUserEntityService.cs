@@ -16,26 +16,32 @@
         }
 
 
-        public async Task<T> GetUserEntityByID(Guid ID) {
+        public async Task<T> GetUserEntityByID(Guid ID)  {
             var User = await UserEntityRepository.GetUserEntityByID<T>(ID);
 
             return User;
         }
 
-        public async Task<DefaultResponse<V>> VerifyUserEntity<V, K>(Guid VerificationID, K repository) where K : IUserEntityRepository<T> where V : IUserEntityDto {
+        public async Task<T> VerifyUserEntity<K>(Guid VerificationID, K repository) where K : IUserEntityRepository<T> {
 
 
             T UserEntity = await GetUserEntityByID(VerificationID);
 
             UserEntity.IsEmailConfirmed = true;
 
+            if (UserEntity == null) {
+                return null;
+            }
+
             var UpdatedUserEntity = await repository.Update(UserEntity);
 
-            var UserEntityDto = Mapper.Map<V>(UpdatedUserEntity);
+            if (UpdatedUserEntity == null) {
+                return null;
+            }
 
-            UserEntityDto.password = null;
+            UpdatedUserEntity.Password = null;
 
-            return new DefaultSuccessResponse<V>(UserEntityDto);
+            return UpdatedUserEntity;
 
         }
 

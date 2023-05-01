@@ -95,12 +95,11 @@ builder.Services.AddCors(options => {
         opt.AllowAnyHeader()
            .AllowAnyMethod()
            .AllowCredentials()
-           .WithOrigins("https://order-up-frontend.vercel.app", "https://localhost:5173");
+           .WithOrigins("https://order-up-frontend.vercel.app", "https://localhost:5173", "http://localhost:5173");
     });
 });
 
 builder.Services.AddScoped<ModelValidationActionFilter>();
-//builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.Configure<ApiBehaviorOptions>(options => {
     options.SuppressModelStateInvalidFilter = true;
@@ -125,14 +124,14 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseMiddleware<ExceptionHandlerMiddleware>();
+
 app.UseEndpoints(endpoints => {
 
     endpoints.MapControllers();
 
- //   endpoints.MapHub<ServerHub>("/chat");
+    //   endpoints.MapHub<ServerHub>("/chat");
 });
 
-
-app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.Run();

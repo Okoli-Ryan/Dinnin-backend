@@ -16,9 +16,9 @@ namespace OrderUp_API.Services {
 
         public async Task<bool> SendVerificationCode(string Receipient, Guid UserID, string Code) {
 
-            var body = $"Use this code to verify your account: {Code}, user id: {UserID}";
+            var body = $"<a href='http://localhost:5173/verify/{UserID}/{Code}'>Verify your account</a>";
 
-            return await SendMail(new List<string> { Receipient }, "Email Verification", body, "text/plain");
+            return await SendMail(new List<string> { Receipient }, "Email Verification", body, "text/html");
         }
     }
 }

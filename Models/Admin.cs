@@ -4,10 +4,6 @@ namespace OrderUp_API.Models {
     [Table(name: "Admin")]
     public class Admin : IUserEntity{
 
-        public Admin() { 
-            Restaurant = new Restaurant();
-        }
-
         public string Role { get; set; }
 
         [Required]
