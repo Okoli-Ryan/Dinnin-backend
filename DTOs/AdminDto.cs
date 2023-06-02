@@ -11,6 +11,8 @@
 
         public Guid? restaurantId { get; set; }
 
+        public string role { get; set; }
+
         public RestaurantDto? restaurant { get; set; }
     }
 }

@@ -15,4 +15,5 @@ namespace OrderUp_API.Utils {
             return StatusCode(500, response);
         }
     }
+
 }

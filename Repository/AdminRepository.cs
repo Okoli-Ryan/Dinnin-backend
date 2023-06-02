@@ -5,7 +5,7 @@
 
         public async Task<Admin> GetAdminByEmail(string Email) {
 
-            return await context.Admins.Where(x => x.Email == Email).AsNoTracking().FirstOrDefaultAsync();
+            return await context.Admins.Where(x => x.Email == Email).Include(x => x.Restaurant).AsNoTracking().FirstOrDefaultAsync();
         }
 
     }

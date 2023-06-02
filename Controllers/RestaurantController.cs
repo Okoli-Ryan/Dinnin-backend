@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/restaurant")]
@@ -49,23 +51,13 @@
 
 
 
-
+        [Authorize]
         [HttpPost()]
         public async Task<IActionResult> AddRestaurant([FromBody] RestaurantDto restaurantDto) {
 
-            DefaultResponse<RestaurantDto> response = new();
+            var response = await restaurantService.Save(restaurantDto);
 
-            var mappedRestaurant = mapper.Map<Restaurant>(restaurantDto);
-
-            var addedRestaurant = await restaurantService.Save(mappedRestaurant);
-
-            if (addedRestaurant is null) return Ok(new DefaultErrorResponse<RestaurantDto>());
-
-            response.ResponseCode = ResponseCodes.SUCCESS;
-            response.ResponseMessage = ResponseMessages.SUCCESS;
-            response.ResponseData = addedRestaurant;
-
-            return Ok(response);
+            return ResponseHandler.HandleResponse(response);
         }
 
 

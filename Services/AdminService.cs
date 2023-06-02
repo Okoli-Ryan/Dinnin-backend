@@ -2,17 +2,15 @@
     public class AdminService {
 
         private readonly AdminRepository adminRepository;
-        private readonly IUserEntityService<Admin> userEntityService;
         private readonly IMapper mapper;
         private readonly OrderUpDbContext context;
         private readonly VerificationCodeService verificationCodeService;
 
-        public AdminService(AdminRepository adminRepository, IMapper mapper, IUserEntityService<Admin> userEntityService, IMailService mailService, OrderUpDbContext context, VerificationCodeService verificationCodeService) {
+        public AdminService(AdminRepository adminRepository, IMapper mapper, OrderUpDbContext context, VerificationCodeService verificationCodeService) {
             this.adminRepository = adminRepository;
             this.mapper = mapper;
             this.context = context;
             this.verificationCodeService = verificationCodeService;
-            this.userEntityService = userEntityService;
         }
 
         public async Task<DefaultResponse<AdminDto>> RegisterAdmin(Admin Admin) {
@@ -98,6 +96,7 @@
             var authClaims = new List<Claim>() {    
                 new Claim(ClaimTypes.Role, ExistingAdmin.Role),
                 new Claim(ClaimTypes.Email, ExistingAdmin.Email),
+                new Claim(ClaimTypes.PrimarySid, ExistingAdmin.ID.ToString()),
                 new Claim(RestaurantIdentifier.RestaurantClaimType, ExistingAdmin.RestaurantID.ToString())
             };
 
