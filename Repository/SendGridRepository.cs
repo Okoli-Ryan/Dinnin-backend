@@ -22,7 +22,7 @@ namespace OrderUp_API.Repository {
 
         public async Task<bool> SendMail(List<string> receipients, string subject, string body, string contentType, string sender) {
 
-            SendGridRequestBody requestBody = new SendGridRequestBody {
+            SendGridRequestBody requestBody = new() {
 
                 Personalizations = new List<Personalization> {
 

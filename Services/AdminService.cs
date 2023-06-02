@@ -5,12 +5,14 @@
         private readonly IMapper mapper;
         private readonly OrderUpDbContext context;
         private readonly VerificationCodeService verificationCodeService;
+        private readonly IMessageProducerService messageProducerService;
 
-        public AdminService(AdminRepository adminRepository, IMapper mapper, OrderUpDbContext context, VerificationCodeService verificationCodeService) {
+        public AdminService(AdminRepository adminRepository, IMapper mapper, OrderUpDbContext context, VerificationCodeService verificationCodeService, IMessageProducerService messageProducerService) {
             this.adminRepository = adminRepository;
             this.mapper = mapper;
             this.context = context;
             this.verificationCodeService = verificationCodeService;
+            this.messageProducerService = messageProducerService;
         }
 
         public async Task<DefaultResponse<AdminDto>> RegisterAdmin(Admin Admin) {
@@ -59,6 +61,12 @@
             };
 
 
+
+            messageProducerService.SendMessage<EmailMQModel>("Email", new() {
+                ID = ExistingAdmin.ID,
+                Role = RoleTypes.Admin,
+                Email = ExistingAdmin.Email
+            });
             if (ExistingAdmin is null) return InvalidResponse;
 
             var isPasswordCorrect = AuthenticationHelper.VerifyPassword(loginModel.Password, ExistingAdmin.Password);
@@ -67,17 +75,19 @@
 
             if (!ExistingAdmin.IsEmailConfirmed) {
 
+                messageProducerService.SendMessage("Email", ExistingAdmin);
+
                 //Send Verification code to user if not confirmed
-                var IsVerificationCodeSent = await verificationCodeService.SendVerificationCode(ExistingAdmin.ID, RoleTypes.Admin, ExistingAdmin.Email);
+                //var IsVerificationCodeSent = await verificationCodeService.SendVerificationCode(ExistingAdmin.ID, RoleTypes.Admin, ExistingAdmin.Email);
 
 
 
 
-                if(!IsVerificationCodeSent) return new DefaultErrorResponse<AdminLoginResponse>() {
-                    ResponseCode = ResponseCodes.FAILURE,
-                    ResponseMessage = "Something went wrong",
-                    ResponseData = null
-                };
+                //if(!IsVerificationCodeSent) return new DefaultErrorResponse<AdminLoginResponse>() {
+                //    ResponseCode = ResponseCodes.FAILURE,
+                //    ResponseMessage = "Something went wrong",
+                //    ResponseData = null
+                //};
 
 
 

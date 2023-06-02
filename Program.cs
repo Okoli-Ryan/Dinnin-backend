@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OrderUp_API.Interfaces;
+using OrderUp_API.MessageConsumers;
 using OrderUp_API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,6 +90,8 @@ builder.Services.AddScoped<RealTimeMessageService>();
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
 builder.Services.AddSingleton<OnlineRestaurantDb>();
 builder.Services.AddScoped<NetworkService>();
+builder.Services.AddScoped<IMessageProducerService, MessageProducerService>();
+builder.Services.AddHostedService<EmailMessageConsumer>();
 
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(opt => {

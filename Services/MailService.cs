@@ -1,9 +1,11 @@
 ﻿using OrderUp_API.Interfaces;
+using RabbitMQ.Client;
 
 namespace OrderUp_API.Services {
     public class MailService : IMailService{
 
         private readonly IMailRepository emailRepository;
+
         public MailService(IMailRepository emailRepository) {
             this.emailRepository = emailRepository;
         }
