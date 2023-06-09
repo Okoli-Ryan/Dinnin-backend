@@ -129,3 +129,4 @@ C:\Users\okoli\Vscode\OrderUp API\OrderUp API\bin\Debug\net6.0\Castle.Core.dll
 C:\Users\okoli\Vscode\OrderUp API\OrderUp API\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Proxies.dll
 C:\Users\okoli\Vscode\OrderUp API\OrderUp API\bin\Debug\net6.0\RabbitMQ.Client.dll
 C:\Users\okoli\Vscode\OrderUp API\OrderUp API\bin\Debug\net6.0\System.Threading.Channels.dll
+C:\Users\okoli\Vscode\OrderUp API\OrderUp API\bin\Debug\net6.0\CloudinaryDotNet.dll

@@ -1,4 +1,6 @@
 ﻿namespace OrderUp_API.Constants {
-    public class MessageQueueTopics {
+    public interface MessageQueueTopics {
+
+        public const string EMAIL = "Email";
     }
 }

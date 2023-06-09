@@ -17,7 +17,7 @@ namespace OrderUp_API.MessageConsumers {
 
             channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: "Email");
+            channel.QueueDeclare(queue: MessageQueueTopics.EMAIL);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken) {
@@ -48,7 +48,7 @@ namespace OrderUp_API.MessageConsumers {
 
             };
 
-            channel.BasicConsume(queue: "Email", autoAck: true, consumer: consumer);
+            channel.BasicConsume(queue: MessageQueueTopics.EMAIL, autoAck: true, consumer: consumer);
 
             return Task.CompletedTask;
 

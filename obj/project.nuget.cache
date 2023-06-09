@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "/qBhZ5DLFETvD8z2zWb7e/J7SU9IzfOco7axFpZ2crQZNPbxgDRcWUTM0rTVtCFGk85axt5Jh/oz9RRHY24v1A==",
+  "dgSpecHash": "xgnwu0oUsue4SLC1A0ORoBvaHyqfhZo/l+1RRqBLfEiKFWK1p3LPIidVfps+eL85w/nNeaW7zqUAQkrGOzMPoA==",
   "success": true,
   "projectFilePath": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp_API.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "C:\\Users\\okoli\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\castle.core\\4.4.1\\castle.core.4.4.1.nupkg.sha512",
+    "C:\\Users\\okoli\\.nuget\\packages\\cloudinarydotnet\\1.21.0\\cloudinarydotnet.1.21.0.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\efcore.namingconventions\\7.0.0\\efcore.namingconventions.7.0.0.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\google.protobuf\\3.21.9\\google.protobuf.3.21.9.nupkg.sha512",
@@ -24,6 +25,9 @@
     "C:\\Users\\okoli\\.nuget\\packages\\microsoft.aspnet.webapi.core\\5.2.9\\microsoft.aspnet.webapi.core.5.2.9.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\microsoft.aspnet.webpages\\3.2.9\\microsoft.aspnet.webpages.3.2.9.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.12\\microsoft.aspnetcore.authentication.jwtbearer.6.0.12.nupkg.sha512",
+    "C:\\Users\\okoli\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",
+    "C:\\Users\\okoli\\.nuget\\packages\\microsoft.aspnetcore.http.abstractions\\2.2.0\\microsoft.aspnetcore.http.abstractions.2.2.0.nupkg.sha512",
+    "C:\\Users\\okoli\\.nuget\\packages\\microsoft.aspnetcore.http.features\\2.2.0\\microsoft.aspnetcore.http.features.2.2.0.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\okoli\\.nuget\\packages\\microsoft.data.sqlclient\\5.0.1\\microsoft.data.sqlclient.5.0.1.nupkg.sha512",

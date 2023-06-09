@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using OrderUp_API.Utils;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/menu-item")]
@@ -6,11 +8,14 @@
 
         readonly MenuItemService menuItemService;
         readonly IMapper mapper;
+        readonly ControllerResponseHandler responseHandler;
 
         public MenuItemController(MenuItemService menuItemService, IMapper mapper) {
 
             this.menuItemService = menuItemService;
             this.mapper = mapper;
+            responseHandler = new ControllerResponseHandler();
+
         }
 
 
@@ -49,17 +54,11 @@
 
 
         [HttpPatch()]
-        public async Task<IActionResult> UpdateMenuItem([FromBody] MenuItemDto menuItemDto) {
+        public async Task<IActionResult> UpdateMenuItem(MenuItemDto menuItemDto) {
 
+            var updatedMenuItem = await menuItemService.Update(menuItemDto);
 
-            var mappedMenuItem = mapper.Map<MenuItem>(menuItemDto);
-
-            var updatedMenuItem = await menuItemService.Update(mappedMenuItem);
-
-            if (updatedMenuItem is null) return Ok(new DefaultErrorResponse<MenuItemDto>());
-
-
-            return Ok(new DefaultSuccessResponse<MenuItemDto>(updatedMenuItem));
+            return responseHandler.HandleResponse(updatedMenuItem);
 
         }
 

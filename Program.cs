@@ -90,6 +90,7 @@ builder.Services.AddScoped<RealTimeMessageService>();
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
 builder.Services.AddSingleton<OnlineRestaurantDb>();
 builder.Services.AddScoped<NetworkService>();
+builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IMessageProducerService, MessageProducerService>();
 builder.Services.AddHostedService<EmailMessageConsumer>();
 

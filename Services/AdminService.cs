@@ -34,9 +34,11 @@
             var CreatedAccount = await Save(Admin);
 
 
-            var IsSentVerificationEmail = await verificationCodeService.SendVerificationCode(CreatedAccount.id, RoleTypes.Admin, Admin.Email);
-
-            if(!IsSentVerificationEmail) return new DefaultErrorResponse<AdminDto>();
+            messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
+                ID = CreatedAccount.id,
+                Role = RoleTypes.Admin,
+                Email = CreatedAccount.emailAddress
+            });
 
             transaction.Commit();
 
@@ -44,12 +46,6 @@
 
         }
 
-
-        //public async Task<DefaultResponse<AdminDto>> ConfirmAdminAccount(Guid UserID, string Code) {
-
-        //    var VerifyAdminResponse 
-
-        //}
 
         public async Task<DefaultResponse<AdminLoginResponse>> LoginAsAdmin(LoginModel loginModel) {
 
@@ -61,13 +57,8 @@
             };
 
 
-
-            messageProducerService.SendMessage<EmailMQModel>("Email", new() {
-                ID = ExistingAdmin.ID,
-                Role = RoleTypes.Admin,
-                Email = ExistingAdmin.Email
-            });
             if (ExistingAdmin is null) return InvalidResponse;
+
 
             var isPasswordCorrect = AuthenticationHelper.VerifyPassword(loginModel.Password, ExistingAdmin.Password);
 
@@ -75,22 +66,11 @@
 
             if (!ExistingAdmin.IsEmailConfirmed) {
 
-                messageProducerService.SendMessage("Email", ExistingAdmin);
-
-                //Send Verification code to user if not confirmed
-                //var IsVerificationCodeSent = await verificationCodeService.SendVerificationCode(ExistingAdmin.ID, RoleTypes.Admin, ExistingAdmin.Email);
-
-
-
-
-                //if(!IsVerificationCodeSent) return new DefaultErrorResponse<AdminLoginResponse>() {
-                //    ResponseCode = ResponseCodes.FAILURE,
-                //    ResponseMessage = "Something went wrong",
-                //    ResponseData = null
-                //};
-
-
-
+                messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
+                    ID = ExistingAdmin.ID,
+                    Role = RoleTypes.Admin,
+                    Email = ExistingAdmin.Email
+                });
 
 
                 return new DefaultErrorResponse<AdminLoginResponse>() {

@@ -1,4 +1,5 @@
-﻿namespace OrderUp_API.Services {
+﻿
+namespace OrderUp_API.Services {
     public class MenuItemService {
 
         readonly IMapper mapper;
@@ -28,11 +29,17 @@
             return mapper.Map<MenuItemDto>(menuItem);
         }
 
-        public async Task<MenuItemDto> Update(MenuItem menuItem) {
+        public async Task<DefaultResponse<MenuItemDto>> Update(MenuItemDto menuItem) {
 
-            var updatedMenuItem = await menuItemRepository.Update(menuItem);
+            var mappedMenuItem = mapper.Map<MenuItem>(menuItem);
 
-            return mapper.Map<MenuItemDto>(updatedMenuItem);
+            var updatedMenuItem = await menuItemRepository.Update(mappedMenuItem);
+
+            if (updatedMenuItem is null) return new DefaultErrorResponse<MenuItemDto>();
+
+            var mappedResponse = mapper.Map<MenuItemDto>(updatedMenuItem);
+
+            return new DefaultSuccessResponse<MenuItemDto>(mappedResponse);
         }
 
         public async Task<bool> Delete(Guid ID) {
