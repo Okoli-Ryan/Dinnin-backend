@@ -1,5 +1,6 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using OrderUp_API.Classes.ResponseModels;
 
 namespace OrderUp_API.Utils {
     public class CloudinaryService : IImageUploadService {
@@ -18,9 +19,9 @@ namespace OrderUp_API.Utils {
             cloudinary = new Cloudinary(CloudinaryAccount);
         }
 
-        public DefaultResponse<string> Upload(IFormFile file, string FolderName) {
+        public DefaultResponse<FileUploadResponse> Upload(IFormFile file, string FolderName) {
 
-            if (file is null || file.Length == 0) return new DefaultErrorResponse<string> {
+            if (file is null || file.Length == 0) return new DefaultErrorResponse<FileUploadResponse> {
                 ResponseMessage = "No file was uploaded"
             };
 
@@ -38,13 +39,15 @@ namespace OrderUp_API.Utils {
 
                 var imageUrl = uploadResult.SecureUrl.ToString();
 
-                return new DefaultSuccessResponse<string>(imageUrl);
+                FileUploadResponse response = new FileUploadResponse() { url = imageUrl };
+
+                return new DefaultSuccessResponse<FileUploadResponse>(response);
             }
 
             catch (Exception e) {
 
                 Debug.WriteLine(e.Message);
-                return new DefaultErrorResponse<string> {
+                return new DefaultErrorResponse<FileUploadResponse> {
                     ResponseMessage = "Unable to upload image"
                 };
             }

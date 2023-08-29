@@ -1,4 +1,5 @@
 ﻿
+using Azure;
 using Microsoft.AspNetCore.Authorization;
 
 namespace OrderUp_API.Controllers {
@@ -62,15 +63,9 @@ namespace OrderUp_API.Controllers {
         [HttpPatch()]
         public async Task<IActionResult> UpdateAdmin([FromBody] AdminDto adminDto) {
 
+            var response = await adminService.Update(adminDto);
 
-            var mappedAdmin = mapper.Map<Admin>(adminDto);
-
-            var updatedAdmin = await adminService.Update(mappedAdmin);
-
-            if (updatedAdmin is null) return Ok(new DefaultErrorResponse<AdminDto>());
-
-
-            return Ok(new DefaultSuccessResponse<AdminDto>(updatedAdmin));
+            return ResponseHandler.HandleResponse(response);
 
         }
 

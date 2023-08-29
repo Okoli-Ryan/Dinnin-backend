@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using OrderUp_API.Classes.RequestModels;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/image")]
@@ -14,11 +16,13 @@
         }
 
         [HttpPost]
-        public IActionResult Upload([FromForm(Name = "image")] IFormFile file, [FromForm] string folderName) {
+        public IActionResult Upload([FromForm] FileUploadRequest fileBody) {
 
-            var response = imageUploadService.Upload(file, folderName);
+
+            var response = imageUploadService.Upload(fileBody.file, fileBody.folderName);
 
             return ResponseHandler.HandleResponse(response);
         } 
+        
     }
 }

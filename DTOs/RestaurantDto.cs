@@ -9,7 +9,7 @@
 
         public string slug { get; set; }
 
-        public string description { get; set; }
+        public string description { get; set; } 
 
         public decimal xCoordinate { get; set; }
 

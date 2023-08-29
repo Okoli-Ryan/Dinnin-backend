@@ -135,11 +135,17 @@
             return mapper.Map<AdminDto>(admin);
         }
 
-        public async Task<AdminDto> Update(Admin admin) {
+        public async Task<DefaultResponse<AdminDto>> Update(AdminDto admin) {
 
-            var updatedAdmin = await adminRepository.Update(admin);
+            var mappedAdmin = mapper.Map<Admin>(admin);
 
-            return mapper.Map<AdminDto>(updatedAdmin);
+            var updatedAdmin = await adminRepository.Update(mappedAdmin);
+
+            if(updatedAdmin is null) return new DefaultErrorResponse<AdminDto>();
+
+            var mappedResponse = mapper.Map<AdminDto>(updatedAdmin);
+
+            return new DefaultSuccessResponse<AdminDto>(mappedResponse);
         }
 
         public async Task<bool> Delete(Guid ID) {

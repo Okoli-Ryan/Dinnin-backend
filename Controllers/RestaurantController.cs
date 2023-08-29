@@ -65,15 +65,9 @@ namespace OrderUp_API.Controllers {
         [HttpPatch()]
         public async Task<IActionResult> UpdateRestaurant([FromBody] RestaurantDto restaurantDto) {
 
+            var response = await restaurantService.Update(restaurantDto);
 
-            var mappedRestaurant = mapper.Map<Restaurant>(restaurantDto);
-
-            var updatedRestaurant = await restaurantService.Update(mappedRestaurant);
-
-            if (updatedRestaurant is null) return Ok(new DefaultErrorResponse<RestaurantDto>());
-
-
-            return Ok(new DefaultSuccessResponse<RestaurantDto>(updatedRestaurant));
+            return ResponseHandler.HandleResponse(response);
 
         }
 

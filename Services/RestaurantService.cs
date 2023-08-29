@@ -81,11 +81,17 @@ namespace OrderUp_API.Services {
             return mapper.Map<RestaurantDto>(restaurant);
         }
 
-        public async Task<RestaurantDto> Update(Restaurant restaurant) {
+        public async Task<DefaultResponse<RestaurantDto>> Update(RestaurantDto restaurantDto) {
 
-            var updatedRestaurant = await restaurantRepository.Update(restaurant);
+            var mappedRestaurant = mapper.Map<Restaurant>(restaurantDto);
 
-            return mapper.Map<RestaurantDto>(updatedRestaurant);
+            var updatedRestaurant = await restaurantRepository.Update(mappedRestaurant);
+
+            if (updatedRestaurant is null) return new DefaultErrorResponse<RestaurantDto>();
+
+            var mappedUpdatedRestaurant = mapper.Map<RestaurantDto>(updatedRestaurant);
+
+            return new DefaultSuccessResponse<RestaurantDto>(mappedUpdatedRestaurant);
         }
 
         public async Task<bool> Delete(Guid ID) {
