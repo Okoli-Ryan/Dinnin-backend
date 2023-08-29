@@ -20,6 +20,14 @@ namespace OrderUp_API.Controllers {
             ResponseHandler = new ControllerResponseHandler();
         }
 
+        [AllowAnonymous]
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            var result = new List<int>() { 1, 2, 3 };
+            return Ok(result);
+        }
+
 
         [HttpGet("{ID}")]
         public async Task<IActionResult> GetAdminByID(Guid ID) {
