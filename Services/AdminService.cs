@@ -58,15 +58,12 @@
 
 
             if (ExistingAdmin is null) return InvalidResponse;
-<<<<<<< HEAD
-=======
 
             messageProducerService.SendMessage<EmailMQModel>("Email", new() {
                 ID = ExistingAdmin.ID,
                 Role = RoleTypes.Admin,
                 Email = ExistingAdmin.Email
             });
->>>>>>> 2e50c2de1e3a19d4b68234336f7b8ee605ba9471
 
 
             var isPasswordCorrect = AuthenticationHelper.VerifyPassword(loginModel.Password, ExistingAdmin.Password);
@@ -75,16 +72,13 @@
 
             if (!ExistingAdmin.IsEmailConfirmed) {
 
-<<<<<<< HEAD
                 messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
                     ID = ExistingAdmin.ID,
                     Role = RoleTypes.Admin,
                     Email = ExistingAdmin.Email
                 });
 
-=======
                 messageProducerService.SendMessage("Email", ExistingAdmin);
->>>>>>> 2e50c2de1e3a19d4b68234336f7b8ee605ba9471
 
                 return new DefaultErrorResponse<AdminLoginResponse>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
