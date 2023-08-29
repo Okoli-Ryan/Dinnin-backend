@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp_API.csproj": {}
+    "C:\\__Practice\\dinnin-backend-cs\\OrderUp_API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp_API.csproj": {
+    "C:\\__Practice\\dinnin-backend-cs\\OrderUp_API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp_API.csproj",
+        "projectUniqueName": "C:\\__Practice\\dinnin-backend-cs\\OrderUp_API.csproj",
         "projectName": "OrderUp_API",
-        "projectPath": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\OrderUp_API.csproj",
-        "packagesPath": "C:\\Users\\okoli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\okoli\\Vscode\\OrderUp API\\OrderUp API\\obj\\",
+        "projectPath": "C:\\__Practice\\dinnin-backend-cs\\OrderUp_API.csproj",
+        "packagesPath": "C:\\Users\\OLISALOKA-OKOLI\\.nuget\\packages\\",
+        "outputPath": "C:\\__Practice\\dinnin-backend-cs\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\okoli\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\OLISALOKA-OKOLI\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.306\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -150,7 +151,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }

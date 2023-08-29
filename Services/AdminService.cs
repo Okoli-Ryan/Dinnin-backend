@@ -61,13 +61,13 @@
             };
 
 
+            if (ExistingAdmin is null) return InvalidResponse;
 
             messageProducerService.SendMessage<EmailMQModel>("Email", new() {
                 ID = ExistingAdmin.ID,
                 Role = RoleTypes.Admin,
                 Email = ExistingAdmin.Email
             });
-            if (ExistingAdmin is null) return InvalidResponse;
 
             var isPasswordCorrect = AuthenticationHelper.VerifyPassword(loginModel.Password, ExistingAdmin.Password);
 
@@ -76,22 +76,6 @@
             if (!ExistingAdmin.IsEmailConfirmed) {
 
                 messageProducerService.SendMessage("Email", ExistingAdmin);
-
-                //Send Verification code to user if not confirmed
-                //var IsVerificationCodeSent = await verificationCodeService.SendVerificationCode(ExistingAdmin.ID, RoleTypes.Admin, ExistingAdmin.Email);
-
-
-
-
-                //if(!IsVerificationCodeSent) return new DefaultErrorResponse<AdminLoginResponse>() {
-                //    ResponseCode = ResponseCodes.FAILURE,
-                //    ResponseMessage = "Something went wrong",
-                //    ResponseData = null
-                //};
-
-
-
-
 
                 return new DefaultErrorResponse<AdminLoginResponse>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
