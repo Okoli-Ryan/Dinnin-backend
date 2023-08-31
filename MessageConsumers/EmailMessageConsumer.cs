@@ -12,7 +12,7 @@ namespace OrderUp_API.MessageConsumers {
 
             this.serviceProvider = serviceProvider;
 
-            var factory = new ConnectionFactory { HostName = "localhost" };
+            var factory = new ConnectionFactory {HostName = "host.docker.internal" };
             connection = factory.CreateConnection();
 
             channel = connection.CreateModel();

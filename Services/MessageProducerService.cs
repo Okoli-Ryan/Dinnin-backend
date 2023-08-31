@@ -9,7 +9,7 @@ namespace OrderUp_API.Services {
 
         public MessageProducerService() {
 
-            var factory = new ConnectionFactory { HostName = "localhost" };
+            var factory = new ConnectionFactory { HostName = "host.docker.internal" };
 
             this.connection = factory.CreateConnection();
 
