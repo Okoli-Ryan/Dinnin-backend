@@ -18,7 +18,9 @@ namespace OrderUp_API.Services {
 
         public async Task<bool> SendVerificationCode(string Receipient, Guid UserID, string Code) {
 
-            var body = $"<a href='http://localhost:5173/verify/{UserID}/{Code}'>Verify your account</a>";
+            var dashboardClient = ConfigurationUtil.GetConfigurationValue("Dinnin-Dashboard-Client");
+
+            var body = $"<a href='{dashboardClient}/verify/{UserID}/{Code}'>Verify your account</a>";
 
             return await SendMail(new List<string> { Receipient }, "Email Verification", body, "text/html");
         }
