@@ -99,7 +99,7 @@ builder.Services.AddCors(options => {
         opt.AllowAnyHeader()
            .AllowAnyMethod()
            .AllowCredentials()
-           .WithOrigins("https://order-up-frontend.vercel.app", "http://localhost:4200", "https://localhost:5173", "http://localhost:5173");
+           .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "http://localhost:4200", "https://localhost:5173", "http://localhost:5173");
     });
 });
 
