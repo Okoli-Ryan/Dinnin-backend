@@ -4,6 +4,8 @@ namespace OrderUp_API.Models {
     [Table(name: "Admin")]
     public class Admin : IUserEntity{
 
+        [Required]
+        [MaxLength(16)]
         public string Role { get; set; }
 
         [Required]

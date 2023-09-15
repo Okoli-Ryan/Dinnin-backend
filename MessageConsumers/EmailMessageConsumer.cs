@@ -12,7 +12,12 @@ namespace OrderUp_API.MessageConsumers {
 
             this.serviceProvider = serviceProvider;
 
-            var factory = new ConnectionFactory {HostName = "host.docker.internal" };
+            var ConnectionString = ConfigurationUtil.GetConfigurationValue("RabbitMQ_URI");
+
+            Uri ConnectionUri = new (ConnectionString);
+
+            var factory = new ConnectionFactory { Uri = ConnectionUri };
+
             connection = factory.CreateConnection();
 
             channel = connection.CreateModel();

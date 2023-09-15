@@ -113,10 +113,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
+//if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseRouting();
 app.UseCors();
@@ -136,6 +136,15 @@ app.UseEndpoints(endpoints => {
 
     //   endpoints.MapHub<ServerHub>("/chat");
 });
+
+using (var scope = app.Services.CreateScope()) {
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<OrderUpDbContext>();
+    if (context.Database.GetPendingMigrations().Any()) {
+        context.Database.Migrate();
+    }
+}
 
 
 app.Run();

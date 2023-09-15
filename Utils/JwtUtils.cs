@@ -1,6 +1,10 @@
 ﻿namespace OrderUp_API.Utils {
     public class JwtUtils {
 
+
+        public JwtUtils() { 
+        }
+
         public static JwtToken GenerateToken(List<Claim> authClaims) {
 
             var defaultClaims = new List<Claim>() {

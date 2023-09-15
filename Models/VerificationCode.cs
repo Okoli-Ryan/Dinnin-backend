@@ -11,7 +11,7 @@
         public DateTime ExpiryDate { get; set; }
 
         [Required]
-        [MaxLength(10)]
+        [MaxLength(15)]
         public string UserType { get; set; }
     }
 }

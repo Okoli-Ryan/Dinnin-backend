@@ -1,17 +1,21 @@
 ﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace OrderUp_API.Services {
     public class MessageProducerService : IMessageProducerService {
 
         private readonly IConnection connection;
 
-        public MessageProducerService() {
+        public MessageProducerService(IConfiguration _configuration) {
 
-            var factory = new ConnectionFactory { HostName = "host.docker.internal" };
 
-            this.connection = factory.CreateConnection();
+            var ConnectionString = ConfigurationUtil.GetConfigurationValue("RabbitMQ_URI");
+
+            Uri ConnectionUri = new(ConnectionString);
+
+            var factory = new ConnectionFactory { Uri = ConnectionUri };
+
+            connection = factory.CreateConnection();
 
 
         }
