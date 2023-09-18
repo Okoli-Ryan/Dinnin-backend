@@ -16,7 +16,13 @@
         public DefaultErrorResponse() : base() {
             ResponseCode = ResponseCodes.FAILURE;
             ResponseMessage = ResponseMessages.FAILURE;
-            ResponseData = default(T);
+            ResponseData = default;
+        }
+        
+        public DefaultErrorResponse(T response) : base() {
+            ResponseCode = ResponseCodes.FAILURE;
+            ResponseMessage = ResponseMessages.FAILURE;
+            ResponseData = response;
         }
     }
 

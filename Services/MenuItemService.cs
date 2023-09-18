@@ -10,10 +10,15 @@ namespace OrderUp_API.Services {
             this.menuItemRepository = menuItemRepository;
         }
 
-        public async Task<MenuItemDto> Save(MenuItem menuItem) {
+        public async Task<DefaultResponse<MenuItemDto>> Save(MenuItem menuItem) {
 
             var addedMenuItem = await menuItemRepository.Save(menuItem);
-            return mapper.Map<MenuItemDto>(addedMenuItem);
+
+            if (addedMenuItem is null) return new DefaultErrorResponse<MenuItemDto>();
+
+            var mappedResponse = mapper.Map<MenuItemDto>(addedMenuItem);
+
+            return new DefaultSuccessResponse<MenuItemDto>(mappedResponse);
         }
 
         public async Task<List<MenuItemDto>> Save(List<MenuItem> menuItem) {

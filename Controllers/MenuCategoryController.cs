@@ -5,12 +5,22 @@
     public class MenuCategoryController: ControllerBase {
 
         readonly MenuCategoryService menuCategoryService;
+        readonly ControllerResponseHandler responseHandler;
         readonly IMapper mapper;
 
         public MenuCategoryController(MenuCategoryService menuCategoryService, IMapper mapper) { 
         
             this.menuCategoryService = menuCategoryService;
             this.mapper = mapper;
+            responseHandler = new ControllerResponseHandler();
+        }
+
+        [HttpGet("rid/{RestaurantID}")]
+        public IActionResult GetMenuCategoryByRestaurantID(Guid RestaurantID) {
+
+            var menuCategoies = menuCategoryService.GetMenuCategoryByRestaurantID(RestaurantID);
+
+            return responseHandler.HandleResponse(menuCategoies);
         }
 
 
@@ -31,35 +41,35 @@
         [HttpPost()]
         public async Task<IActionResult> AddMenuCategory([FromBody] MenuCategoryDto menuCategoryDto) {
 
-            DefaultResponse<MenuCategoryDto> response = new();
-
             var mappedMenuCategory = mapper.Map<MenuCategory>(menuCategoryDto);
 
             var addedMenuCategory = await menuCategoryService.Save(mappedMenuCategory);
 
-            if (addedMenuCategory is null) return Ok(new DefaultErrorResponse<MenuCategoryDto>());
-
-            response.ResponseCode = ResponseCodes.SUCCESS;
-            response.ResponseMessage = ResponseMessages.SUCCESS;
-            response.ResponseData = addedMenuCategory;
-
-            return Ok(response);
+            return responseHandler.HandleResponse(addedMenuCategory);
         }
 
 
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<IActionResult> UpdateMenuCategory([FromBody] MenuCategoryDto menuCategoryDto) {
-
 
             var mappedMenuCategory = mapper.Map<MenuCategory>(menuCategoryDto);
 
             var updatedMenuCategory = await menuCategoryService.Update(mappedMenuCategory);
 
-            if (updatedMenuCategory is null) return Ok(new DefaultErrorResponse<MenuCategoryDto>());
+            return responseHandler.HandleResponse(updatedMenuCategory);
+
+        }
 
 
-            return Ok(new DefaultSuccessResponse<MenuCategoryDto>(updatedMenuCategory));
+        [HttpPut("multiple")]
+        public async Task<IActionResult> UpdateMenuCategoryList([FromBody] List<MenuCategoryDto> menuCategoryDto) {
+
+            var mappedMenuCategory = mapper.Map<List<MenuCategory>>(menuCategoryDto);
+
+            var updatedMenuCategory = await menuCategoryService.Update(mappedMenuCategory);
+
+            return responseHandler.HandleResponse(updatedMenuCategory);
 
         }
 
@@ -70,9 +80,7 @@
 
             var isDeletedMenuCategory = await menuCategoryService.Delete(ID);
 
-            if (!isDeletedMenuCategory) return Ok(new DefaultErrorResponse<bool>());
-
-            return Ok(new DefaultSuccessResponse<bool>(isDeletedMenuCategory));
+            return responseHandler.HandleResponse(isDeletedMenuCategory);
         }
 
 

@@ -9,7 +9,6 @@
         
             optionsBuilder.UseSnakeCaseNamingConvention();
 
-
         }
 
         public OrderUpDbContext() { }

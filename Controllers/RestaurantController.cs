@@ -62,7 +62,7 @@ namespace OrderUp_API.Controllers {
 
 
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<IActionResult> UpdateRestaurant([FromBody] RestaurantDto restaurantDto) {
 
             var response = await restaurantService.Update(restaurantDto);

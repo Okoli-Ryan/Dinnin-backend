@@ -94,14 +94,7 @@ builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IMessageProducerService, MessageProducerService>();
 builder.Services.AddHostedService<EmailMessageConsumer>();
 
-builder.Services.AddCors(options => {
-    options.AddDefaultPolicy(opt => {
-        opt.AllowAnyHeader()
-           .AllowAnyMethod()
-           .AllowCredentials()
-           .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "http://localhost:4200", "https://localhost:5173", "http://localhost:5173");
-    });
-});
+builder.Services.AddCors();
 
 builder.Services.AddScoped<ModelValidationActionFilter>();
 
@@ -114,12 +107,18 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
 
 app.UseRouting();
-app.UseCors();
+app.UseCors(options => {
+        options
+           .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "https://localhost:5173")
+           .WithMethods("GET", "PATCH", "POST", "DELETE", "OPTIONS")
+           .AllowAnyHeader()
+           .AllowCredentials();
+});
 
 
 app.UseHttpsRedirection();
@@ -144,6 +143,20 @@ using (var scope = app.Services.CreateScope()) {
     if (context.Database.GetPendingMigrations().Any()) {
         context.Database.Migrate();
     }
+}
+
+
+using (var scope = app.Services.CreateScope()) {
+    var services = scope.ServiceProvider;
+
+    var lifeTime = services.GetRequiredService<IHostApplicationLifetime>();
+
+    var rabbitMQProducer = services.GetRequiredService<IMessageProducerService>();
+
+    lifeTime.ApplicationStopping.Register(() => {
+
+        rabbitMQProducer.Dispose();
+    });
 }
 
 

@@ -48,7 +48,7 @@
 
 
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<IActionResult> UpdateSideOrderItem([FromBody] SideOrderItemDto sideOrderItemDto) {
 
 

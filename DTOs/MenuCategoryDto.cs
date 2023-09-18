@@ -6,7 +6,7 @@
 
         public Guid restaurantId { get; set; }
 
-        //public Restaurant restaurant { get; set; }
+        public int? sortingOrder { get; set; }
 
         public List<MenuItemDto> menuItems { get; set; }
     }

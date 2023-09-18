@@ -6,7 +6,7 @@ namespace OrderUp_API.Services {
 
         private readonly IConnection connection;
 
-        public MessageProducerService(IConfiguration _configuration) {
+        public MessageProducerService() {
 
 
             var ConnectionString = ConfigurationUtil.GetConfigurationValue("RabbitMQ_URI");
@@ -32,6 +32,10 @@ namespace OrderUp_API.Services {
             channel.BasicPublish(exchange: "", routingKey: key, body: body);
 
 
+        }
+
+        public void Dispose() {
+            connection.Dispose();
         }
 
     }

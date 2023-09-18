@@ -20,7 +20,7 @@
         public string? ImageUrl { get; set; }
 
         [ForeignKey("MenuCategory")]
-        public Guid? MenuCategoryID { get; set; }  
+        public Guid MenuCategoryID { get; set; }  
 
         //public virtual MenuCategory? MenuCategory { get; set; }
 

@@ -56,7 +56,7 @@
 
 
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<IActionResult> UpdateOrder([FromBody] OrderDto orderDto) {
 
 

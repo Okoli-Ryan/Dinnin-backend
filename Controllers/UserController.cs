@@ -50,7 +50,7 @@ namespace OrderUp_API.Controllers {
 
 
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<IActionResult> UpdateUser([FromBody] UserDto userDto) {
 
 

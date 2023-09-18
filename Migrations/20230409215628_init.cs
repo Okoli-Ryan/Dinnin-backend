@@ -3,21 +3,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace OrderUpAPI.Migrations
-{
+namespace OrderUpAPI.Migrations {
     /// <inheritdoc />
-    public partial class init : Migration
-    {
+    public partial class init : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.AlterDatabase()
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "order",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     ordernote = table.Column<string>(name: "order_note", type: "varchar(100)", maxLength: 100, nullable: true),
                     orderamount = table.Column<decimal>(name: "order_amount", type: "decimal(18,2)", nullable: false),
@@ -29,16 +25,14 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_order", x => x.id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "restaurants",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true),
@@ -56,16 +50,14 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_restaurants", x => x.id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "users",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     firstname = table.Column<string>(name: "first_name", type: "varchar(50)", maxLength: 50, nullable: false),
                     lastname = table.Column<string>(name: "last_name", type: "varchar(50)", maxLength: 50, nullable: true),
@@ -78,16 +70,14 @@ namespace OrderUpAPI.Migrations
                     email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     isemailconfirmed = table.Column<bool>(name: "is_email_confirmed", type: "tinyint(1)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_users", x => x.id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "verification_code",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     code = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     userid = table.Column<Guid>(name: "user_id", type: "char(100)", maxLength: 100, nullable: false),
@@ -97,16 +87,14 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_verification_code", x => x.id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Admin",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     role = table.Column<string>(type: "longtext", nullable: true),
                     firstname = table.Column<string>(name: "first_name", type: "varchar(50)", maxLength: 50, nullable: false),
@@ -120,8 +108,7 @@ namespace OrderUpAPI.Migrations
                     email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     isemailconfirmed = table.Column<bool>(name: "is_email_confirmed", type: "tinyint(1)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_admin", x => x.id);
                     table.ForeignKey(
                         name: "fk_admin_restaurants_restaurant_id",
@@ -133,8 +120,7 @@ namespace OrderUpAPI.Migrations
 
             migrationBuilder.CreateTable(
                 name: "menu_category",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     categoryname = table.Column<string>(name: "category_name", type: "varchar(50)", maxLength: 50, nullable: false),
                     restaurantid = table.Column<Guid>(name: "restaurant_id", type: "char(36)", nullable: false),
@@ -142,8 +128,7 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_menu_category", x => x.id);
                     table.ForeignKey(
                         name: "fk_menu_category_restaurants_restaurant_id",
@@ -156,8 +141,7 @@ namespace OrderUpAPI.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tables",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     tablename = table.Column<string>(name: "table_name", type: "varchar(50)", maxLength: 50, nullable: true),
                     restaurantid = table.Column<Guid>(name: "restaurant_id", type: "char(36)", nullable: false),
@@ -165,8 +149,7 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_tables", x => x.id);
                     table.ForeignKey(
                         name: "fk_tables_restaurants_restaurant_id",
@@ -179,8 +162,7 @@ namespace OrderUpAPI.Migrations
 
             migrationBuilder.CreateTable(
                 name: "saved_restaurants",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     restaurantid = table.Column<Guid>(name: "restaurant_id", type: "char(36)", nullable: false),
                     userid = table.Column<Guid>(name: "user_id", type: "char(36)", nullable: false),
@@ -188,8 +170,7 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_saved_restaurants", x => x.id);
                     table.ForeignKey(
                         name: "fk_saved_restaurants_restaurants_restaurant_id",
@@ -208,8 +189,7 @@ namespace OrderUpAPI.Migrations
 
             migrationBuilder.CreateTable(
                 name: "menu_items",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     menuitemname = table.Column<string>(name: "menu_item_name", type: "varchar(50)", maxLength: 50, nullable: false),
                     price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -221,21 +201,21 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_menu_items", x => x.id);
                     table.ForeignKey(
                         name: "fk_menu_items_menu_category_menu_category_id",
                         column: x => x.menucategoryid,
                         principalTable: "menu_category",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade
+                        );
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "menu_item_images",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     imageurl = table.Column<string>(name: "image_url", type: "varchar(500)", maxLength: 500, nullable: false),
                     menuitemid = table.Column<Guid>(name: "menu_item_id", type: "char(36)", nullable: false),
@@ -243,8 +223,7 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_menu_item_images", x => x.id);
                     table.ForeignKey(
                         name: "fk_menu_item_images_menu_items_menu_item_id",
@@ -257,8 +236,7 @@ namespace OrderUpAPI.Migrations
 
             migrationBuilder.CreateTable(
                 name: "order_item",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     quantity = table.Column<int>(type: "int", nullable: false),
                     menuitemid = table.Column<Guid>(name: "menu_item_id", type: "char(36)", nullable: false),
@@ -267,8 +245,7 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_order_item", x => x.id);
                     table.ForeignKey(
                         name: "fk_order_item_menu_items_menu_item_id",
@@ -287,16 +264,14 @@ namespace OrderUpAPI.Migrations
 
             migrationBuilder.CreateTable(
                 name: "sides",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     menuitemid = table.Column<Guid>(name: "menu_item_id", type: "char(36)", nullable: false),
                     activestatus = table.Column<bool>(name: "active_status", type: "tinyint(1)", nullable: false),
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_sides", x => x.id);
                     table.ForeignKey(
                         name: "fk_sides_menu_items_menu_item_id",
@@ -309,8 +284,7 @@ namespace OrderUpAPI.Migrations
 
             migrationBuilder.CreateTable(
                 name: "side_items",
-                columns: table => new
-                {
+                columns: table => new {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     sideitemname = table.Column<string>(name: "side_item_name", type: "varchar(100)", maxLength: 100, nullable: false),
                     sideitemprice = table.Column<decimal>(name: "side_item_price", type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -319,8 +293,7 @@ namespace OrderUpAPI.Migrations
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("pk_side_items", x => x.id);
                     table.ForeignKey(
                         name: "fk_side_items_sides_sides_id",
@@ -400,8 +373,7 @@ namespace OrderUpAPI.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
                 name: "Admin");
 

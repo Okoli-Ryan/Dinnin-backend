@@ -68,7 +68,7 @@ namespace OrderUp_API.Controllers {
 
 
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<IActionResult> UpdateAdmin([FromBody] AdminDto adminDto) {
 
             var response = await adminService.Update(adminDto);

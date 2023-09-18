@@ -61,7 +61,7 @@
 
 
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<IActionResult> UpdateTable([FromBody] TableDto tableDto) {
 
 

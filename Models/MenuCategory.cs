@@ -8,7 +8,7 @@
         [ForeignKey("Restaurant")]
         public Guid RestaurantID { get; set; }
 
-        //public virtual Restaurant? Restaurant { get; set; }
+        public int Order { get; set; }
 
         public virtual List<MenuItem>? MenuItems { get; set; }
     }

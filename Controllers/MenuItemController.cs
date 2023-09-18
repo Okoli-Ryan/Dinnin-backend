@@ -36,24 +36,16 @@ namespace OrderUp_API.Controllers {
         [HttpPost()]
         public async Task<IActionResult> AddMenuItem([FromBody] MenuItemDto menuItemDto) {
 
-            DefaultResponse<MenuItemDto> response = new();
-
             var mappedMenuItem = mapper.Map<MenuItem>(menuItemDto);
 
             var addedMenuItem = await menuItemService.Save(mappedMenuItem);
 
-            if (addedMenuItem is null) return Ok(new DefaultErrorResponse<MenuItemDto>());
-
-            response.ResponseCode = ResponseCodes.SUCCESS;
-            response.ResponseMessage = ResponseMessages.SUCCESS;
-            response.ResponseData = addedMenuItem;
-
-            return Ok(response);
+            return responseHandler.HandleResponse(addedMenuItem);
         }
 
 
 
-        [HttpPatch()]
+        [HttpPut()]
         public async Task<IActionResult> UpdateMenuItem(MenuItemDto menuItemDto) {
 
             var updatedMenuItem = await menuItemService.Update(menuItemDto);

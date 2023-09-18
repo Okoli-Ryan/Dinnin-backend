@@ -74,6 +74,26 @@
 
 
 
+        public async Task<List<T>> Update(List<T> entities) {
+            try {
+                var updatedEntities = new List<T>();
+
+                foreach (var entity in entities) {
+                    entity.UpdatedAt = DateTime.Now;
+                    context.Set<T>().Update(entity);
+                    updatedEntities.Add(entity);
+                }
+
+                await context.SaveChangesAsync();
+
+                return updatedEntities;
+            }
+            catch (Exception ex) {
+                Debug.WriteLine(ex.StackTrace);
+                return null;
+            }
+        }
+
 
 
 
