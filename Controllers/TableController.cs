@@ -1,16 +1,36 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using OrderUp_API.Utils;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/table")]
     public class TableController : ControllerBase {
 
         readonly TableService tableService;
+        readonly ControllerResponseHandler responseHandler;
         readonly IMapper mapper;
 
         public TableController(TableService tableService, IMapper mapper) {
 
             this.tableService = tableService;
             this.mapper = mapper;
+            responseHandler = new ControllerResponseHandler();
+        }
+
+        [HttpGet("rid/{ID}")]
+        public async Task<IActionResult> GetTablesByRestaurantID(Guid ID) {
+
+            var TablesResponse = await tableService.GetTablesByRestaurantID(ID);
+
+            return responseHandler.HandleResponse(TablesResponse);
+        }
+
+        [HttpPut("generate-code/{ID}")]
+        public async Task<IActionResult> GenerateTableCode(Guid ID) {
+
+            var TableResponse = await tableService.GenerateTableCode(ID);
+
+            return responseHandler.HandleResponse(TableResponse);
         }
 
 
@@ -30,12 +50,9 @@
         [HttpGet("s/{ID}")]
         public async Task<IActionResult> GetTableByID(Guid ID) {
 
-            var Table = await tableService.GetByID(ID);
+            var TableResponse = await tableService.GetByID(ID);
 
-            if (Table is null) return Ok(new DefaultErrorResponse<Table>());
-
-
-            return Ok(new DefaultSuccessResponse<TableDto>(Table));
+            return responseHandler.HandleResponse(TableResponse);
         }
 
 
@@ -44,19 +61,11 @@
         [HttpPost()]
         public async Task<IActionResult> AddTable([FromBody] TableDto tableDto) {
 
-            DefaultResponse<TableDto> response = new();
-
             var mappedTable = mapper.Map<Table>(tableDto);
 
-            var addedTable = await tableService.Save(mappedTable);
+            var addedTableResponse = await tableService.Save(mappedTable);
 
-            if (addedTable is null) return Ok(new DefaultErrorResponse<TableDto>());
-
-            response.ResponseCode = ResponseCodes.SUCCESS;
-            response.ResponseMessage = ResponseMessages.SUCCESS;
-            response.ResponseData = addedTable;
-
-            return Ok(response);
+            return responseHandler.HandleResponse(addedTableResponse);
         }
 
 
@@ -64,15 +73,11 @@
         [HttpPut()]
         public async Task<IActionResult> UpdateTable([FromBody] TableDto tableDto) {
 
-
             var mappedTable = mapper.Map<Table>(tableDto);
 
-            var updatedTable = await tableService.Update(mappedTable);
+            var updatedTableResponse = await tableService.Update(mappedTable);
 
-            if (updatedTable is null) return Ok(new DefaultErrorResponse<TableDto>());
-
-
-            return Ok(new DefaultSuccessResponse<TableDto>(updatedTable));
+            return responseHandler.HandleResponse(updatedTableResponse);
 
         }
 

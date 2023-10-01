@@ -9,6 +9,7 @@
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.createdAt))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.updatedAt))
                 .ForMember(dest => dest.TableName, opt => opt.MapFrom(src => src.tableName))
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.code))
                 .ForMember(dest => dest.Restaurant, opt => opt.MapFrom(src => src.restaurant))
                 .ForMember(dest => dest.RestaurantID, opt => opt.MapFrom(src => src.restaurantId));
 
@@ -18,6 +19,7 @@
                 .ForMember(dest => dest.createdAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.updatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
                 .ForMember(dest => dest.tableName, opt => opt.MapFrom(src => src.TableName))
+                .ForMember(dest => dest.code, opt => opt.MapFrom(src => src.Code))
                 .ForMember(dest => dest.restaurant, opt => opt.MapFrom(src => src.Restaurant))
                 .ForMember(dest => dest.restaurantId, opt => opt.MapFrom(src => src.RestaurantID));
         }

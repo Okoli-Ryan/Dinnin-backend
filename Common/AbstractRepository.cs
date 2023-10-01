@@ -142,7 +142,7 @@
         public async Task<T> GetByID(Guid ID) {
 
             try {
-                var t = await context.Set<T>().Where(x => x.ID.Equals(ID)).FirstOrDefaultAsync();
+                var t = await context.Set<T>().Where(x => x.ID.Equals(ID)).AsNoTracking().FirstOrDefaultAsync();
                 return t;
             }
             catch (Exception ex){

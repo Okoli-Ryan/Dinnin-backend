@@ -12,5 +12,10 @@
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<List<Table>> GetTablesByRestaurantID(Guid RestaurantID) {
+            return await context.Tables.Where(x => x.RestaurantID.Equals(RestaurantID)).ToListAsync();
+        }
+        
     }
 }

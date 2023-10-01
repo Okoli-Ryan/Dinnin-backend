@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Services {
+﻿using OrderUp_API.Constants;
+
+namespace OrderUp_API.Services {
     public class TableService {
 
         readonly IMapper mapper;
@@ -17,10 +19,51 @@
             
         }
 
-        public async Task<TableDto> Save(Table table) {
+        public async Task<DefaultResponse<TableDto>> GenerateTableCode(Guid ID) {
+
+            var table = await tableRepository.GetByID(ID);
+
+            if (table is null) return new DefaultErrorResponse<TableDto>() { 
+                ResponseCode = ResponseCodes.NOT_FOUND,
+                ResponseMessage = ResponseMessages.NOT_FOUND,
+                ResponseData = null
+            };
+
+            table.Code = RandomStringGenerator.GenerateRandomString(TableModelConstants.TableCodeLength);
+
+            return await Update(table);
+
+        }
+
+
+
+
+        public async Task<DefaultResponse<List<TableDto>>> GetTablesByRestaurantID(Guid RestaurantID) {
+
+            var Tables = await tableRepository.GetTablesByRestaurantID(RestaurantID);
+
+            if (Tables is null) return new DefaultErrorResponse<List<TableDto>>() {
+                ResponseCode = ResponseCodes.NOT_FOUND,
+                ResponseMessage = ResponseMessages.NOT_FOUND,
+                ResponseData = null
+            };
+
+            var mappedResponse = mapper.Map<List<TableDto>>(Tables);
+
+            return new DefaultSuccessResponse<List<TableDto>>(mappedResponse);
+        }
+
+        public async Task<DefaultResponse<TableDto>> Save(Table table) {
+
+            table.Code = RandomStringGenerator.GenerateRandomString(TableModelConstants.TableCodeLength);
 
             var addedTable = await tableRepository.Save(table);
-            return mapper.Map<TableDto>(addedTable);
+
+            if (addedTable is null) return new DefaultErrorResponse<TableDto>();
+
+            var mappedResponse = mapper.Map<TableDto>(addedTable);
+
+            return new DefaultSuccessResponse<TableDto>(mappedResponse);
         }
 
         public async Task<List<TableDto>> Save(List<Table> table) {
@@ -29,18 +72,30 @@
             return mapper.Map<List<TableDto>>(addedTable);
         }
 
-        public async Task<TableDto> GetByID(Guid ID) {
+        public async Task<DefaultResponse<TableDto>> GetByID(Guid ID) {
 
             var table = await tableRepository.GetByID(ID);
 
-            return mapper.Map<TableDto>(table);
+            if (table is null) return new DefaultErrorResponse<TableDto>() {
+                ResponseCode = ResponseCodes.NOT_FOUND,
+                ResponseMessage = ResponseMessages.NOT_FOUND,
+                ResponseData = null
+            };
+
+            var mappedResponse = mapper.Map<TableDto>(table);
+
+            return new DefaultSuccessResponse<TableDto>(mappedResponse);
         }
 
-        public async Task<TableDto> Update(Table table) {
+        public async Task<DefaultResponse<TableDto>> Update(Table table) {
 
             var updatedTable = await tableRepository.Update(table);
 
-            return mapper.Map<TableDto>(updatedTable);
+            if (updatedTable is null) return new DefaultErrorResponse<TableDto>();
+
+            var mappedResponse = mapper.Map<TableDto>(updatedTable);
+
+            return new DefaultSuccessResponse<TableDto>(mappedResponse);
         }
 
         public async Task<bool> Delete(Guid ID) {
