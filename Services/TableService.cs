@@ -98,9 +98,13 @@ namespace OrderUp_API.Services {
             return new DefaultSuccessResponse<TableDto>(mappedResponse);
         }
 
-        public async Task<bool> Delete(Guid ID) {
+        public async Task<DefaultResponse<bool>> Delete(Guid ID) {
 
-            return await tableRepository.Delete(ID);
+            var response = await tableRepository.Delete(ID);
+
+            if (!response) return new DefaultErrorResponse<bool>();
+
+            return new DefaultSuccessResponse<bool>(response);
         }
 
         public async Task<bool> Delete(List<Table> table) {

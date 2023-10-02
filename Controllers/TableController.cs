@@ -86,11 +86,9 @@ namespace OrderUp_API.Controllers {
         [HttpDelete("{ID}")]
         public async Task<IActionResult> DeleteTable(Guid ID) {
 
-            var isDeletedTable = await tableService.Delete(ID);
+            var DeletedTableResponse = await tableService.Delete(ID);
 
-            if (!isDeletedTable) return Ok(new DefaultErrorResponse<bool>());
-
-            return Ok(new DefaultSuccessResponse<bool>(isDeletedTable));
+            return responseHandler.HandleResponse(DeletedTableResponse);
         }
 
 
