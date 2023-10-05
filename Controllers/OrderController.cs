@@ -6,11 +6,13 @@
 
         readonly OrderService orderService;
         readonly IMapper mapper;
+        readonly ControllerResponseHandler responseHandler;
 
-        public OrderController(OrderService orderService, IMapper mapper) {
+        public OrderController(OrderService orderService, IMapper mapper, ControllerResponseHandler responseHandler) {
 
             this.orderService = orderService;
             this.mapper = mapper;
+            this.responseHandler = responseHandler;
         }
 
 
@@ -23,6 +25,15 @@
 
 
             return Ok(order);
+        }
+
+
+        [HttpGet("active")]
+        public async Task<IActionResult> GetActiveOrders() {
+
+            var ordersResponse = await orderService.GetActiveOrders<List<OrderDto>>();
+
+            return responseHandler.HandleResponse(ordersResponse);
         }
 
 

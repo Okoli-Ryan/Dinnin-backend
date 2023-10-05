@@ -12,6 +12,9 @@
         [MaxLength(20)]
         public string PaymentOption { get; set; }
 
+        [MaxLength(10)]
+        public string OrderStatus { get; set; } = OrderModelConstants.INITIAL;
+
         public virtual List<OrderItem>? OrderItems { get; set; }
 
         public Guid? UserID { get; set; }

@@ -45,7 +45,7 @@ namespace OrderUp_API.Services {
 
             if (addedRestaurant is null) return new DefaultErrorResponse<RestaurantDto>();
 
-            string AdminId = GetJwtValue.GetJwtValueFromHeader(contextAccessor, ClaimTypes.PrimarySid);
+            string AdminId = GetJwtValue.GetValueFromBearerToken(contextAccessor, ClaimTypes.PrimarySid);
 
             if (AdminId is null) return new DefaultErrorResponse<RestaurantDto>() { 
                 ResponseCode = ResponseCodes.UNAUTHORIZED,

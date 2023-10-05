@@ -33,9 +33,6 @@
             // Specify the absolute path to the directory containing secrets.json
             string secretsDirectoryPath = @"C:\\Users\\okoli\\AppData\\Roaming\\Microsoft\\UserSecrets\\f85c94e3-d73f-41d8-8cfd-201e9923d858";
 
-            // Combine the directory path and the file name to create the absolute file path
-            string secretsFilePath = Path.Combine(secretsDirectoryPath, "secrets.json");
-
             // Load secrets.json and check if the key exists
             var secretsConfiguration = new ConfigurationBuilder()
                 .SetBasePath(secretsDirectoryPath) // Set the base path to the directory

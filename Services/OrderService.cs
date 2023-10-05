@@ -6,6 +6,7 @@
         private readonly MenuItemRepository menuItemRepository;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly HttpContext _context;
 
         public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor) {
             this.orderRepository = orderRepository;
@@ -13,6 +14,7 @@
             this.menuItemRepository = menuItemRepository;
             this.orderItemRepository = orderItemRepository;
             this.httpContextAccessor = httpContextAccessor;
+            _context = httpContextAccessor.HttpContext;
         }
 
         public async Task<MakeOrder> SaveOrder(MakeOrder OrderRequest) {
@@ -24,7 +26,7 @@
 
             var menuItems = await menuItemRepository.GetMenuItemsByRestaurantID(Order.restaurantId);
 
-            foreach(var item in OrderItems) {
+            foreach (var item in OrderItems) {
 
                 var menuItem = menuItems.Find(x => x.ID.Equals(item.menuItemId));
 
@@ -68,11 +70,36 @@
             return mapper.Map<List<OrderDto>>(addedOrder);
         }
 
+
+        public async Task<DefaultResponse<T>> GetActiveOrders<T>() where T : List<OrderDto> {
+
+            string RestaurantIDString = GetJwtValue.GetValueFromBearerToken(_context, RestaurantIdentifier.RestaurantClaimType);
+
+            if (!Guid.TryParse(RestaurantIDString, out Guid restaurantId)) {
+
+                return new DefaultResponse<T> {
+                    ResponseCode = ResponseCodes.UNAUTHORIZED,
+                    ResponseData = null,
+                    ResponseMessage = "Unauthorized Access"
+                };
+            }
+
+            var OrderList = await orderRepository.GetActiveOrders(restaurantId);
+
+            if (OrderList == null) {
+                return new DefaultErrorResponse<T>();
+            }
+
+            var ListOfOrders = mapper.Map<T>(OrderList);
+            return new DefaultSuccessResponse<T>(ListOfOrders);
+        }
+
+
         public async Task<DefaultResponse<T>> GetOrdersByRestaurantID<T>(int Page) where T : List<OrderDto> {
 
             var context = httpContextAccessor.HttpContext;
 
-            string RestaurantIDString = GetJwtValue.GetJwtValueFromHeader(context, RestaurantIdentifier.RestaurantClaimType);
+            string RestaurantIDString = GetJwtValue.GetValueFromBearerToken(context, RestaurantIdentifier.RestaurantClaimType);
 
             if (Guid.TryParse(RestaurantIDString, out Guid restaurantId)) {
                 var OrderList = await orderRepository.GetOrdersByRestaurantID(restaurantId, Page);

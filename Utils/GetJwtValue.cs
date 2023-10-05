@@ -1,7 +1,7 @@
 ﻿namespace OrderUp_API.Utils {
     public class GetJwtValue {
 
-        public static string GetJwtValueFromHeader(HttpContext context, string key) {
+        public static string GetValueFromBearerToken(HttpContext context, string key) {
             // Get the Authorization header from the request
             var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
 

@@ -59,7 +59,6 @@
 
             try {
 
-
                 t.UpdatedAt = DateTime.Now;
                 context.Set<T>().Update(t);
                 await context.SaveChangesAsync();
@@ -100,11 +99,12 @@
         public async Task<bool> Delete(Guid ID) {
             try {
 
-                var Entity = await GetByID(ID);
+                var Entity = await GetByID(ID) ?? throw new Exception();
 
-                context.Entry(Entity).State = EntityState.Deleted;
+                Entity.ActiveStatus = false;
 
-                await context.SaveChangesAsync();
+                var isUpdated = await Update(Entity) ?? throw new Exception();
+
                 return true;
 
             }
@@ -121,10 +121,13 @@
 
         public async Task<bool> Delete(List<T> t) {
             try {
+                foreach (var entity in t) {
+                    entity.ActiveStatus = false;
+                    context.Entry(entity).State = EntityState.Modified;
+                }
 
-                context.Set<T>().RemoveRange(t);
+                await context.SaveChangesAsync();
                 return true;
-
             }
             catch (Exception ex) {
                 Debug.WriteLine(ex.StackTrace);
@@ -139,17 +142,23 @@
 
 
 
-        public async Task<T> GetByID(Guid ID) {
-
+        public async Task<T> GetByID(Guid ID, bool filterByActiveStatus = false) {
             try {
-                var t = await context.Set<T>().Where(x => x.ID.Equals(ID)).AsNoTracking().FirstOrDefaultAsync();
+                var query = context.Set<T>().Where(x => x.ID.Equals(ID));
+
+                if (filterByActiveStatus) {
+                    query = query.Where(x => x.ActiveStatus);
+                }
+
+                var t = await query.AsNoTracking().FirstOrDefaultAsync();
                 return t;
             }
-            catch (Exception ex){
+            catch (Exception ex) {
                 Debug.WriteLine(ex.StackTrace);
                 return default;
             }
         }
+
 
 
 

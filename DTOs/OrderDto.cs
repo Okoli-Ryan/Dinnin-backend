@@ -13,6 +13,8 @@
 
         public string paymentOption { get; set; }
 
+        public string orderStatus { get; set; }
+
         public List<OrderItemDto> orderItems { get; set; }
 
     }

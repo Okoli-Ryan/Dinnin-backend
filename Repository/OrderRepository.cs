@@ -15,5 +15,13 @@
                                       .Take(PageSize).AsNoTracking()
                                       .ToListAsync();
         }
+
+        public async Task<List<Order>> GetActiveOrders(Guid RestaurantID) {
+            return await context.Order
+                                .Where(x => x.RestaurantId.Equals(RestaurantID) && x.ActiveStatus)
+                                .Include(o => o.OrderItems)
+                                .OrderByDescending(x => x.CreatedAt)
+                                .ToListAsync();
+        }
     }
 }

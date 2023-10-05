@@ -8,6 +8,10 @@ namespace OrderUp_API.ActionFilters {
 
         void IActionFilter.OnActionExecuting(ActionExecutingContext context) {
 
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            if (environment.Equals("Development")) return;
+
             if (context.HttpContext.Request.Headers.ContainsKey("x-api-key")) {
 
                 string apiKey = context.HttpContext.Request.Headers["x-api-key"];
