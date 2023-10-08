@@ -106,19 +106,19 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment()) {
-app.UseSwagger();
-app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment()) {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseRouting();
 app.UseCors(options => {
-        options
-           .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "https://localhost:5173")
-           .WithMethods("GET", "PATCH", "POST", "DELETE", "OPTIONS")
-           .AllowAnyHeader()
-           .AllowCredentials();
+    options
+       .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "https://localhost:5173", "https://localhost:5001")
+       .WithMethods("GET", "PATCH", "POST", "DELETE", "OPTIONS")
+       .AllowAnyHeader()
+       .AllowCredentials();
 });
+app.UseRouting();
 
 
 app.UseHttpsRedirection();

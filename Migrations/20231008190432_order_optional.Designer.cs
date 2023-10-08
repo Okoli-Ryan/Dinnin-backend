@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderUp_API.Data;
 
@@ -10,9 +11,11 @@ using OrderUp_API.Data;
 namespace OrderUpAPI.Migrations
 {
     [DbContext(typeof(OrderUpDbContext))]
-    partial class OrderUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231008190432_order_optional")]
+    partial class orderoptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,9 +283,6 @@ namespace OrderUpAPI.Migrations
                     b.HasKey("ID")
                         .HasName("pk_order");
 
-                    b.HasIndex("TableID")
-                        .HasDatabaseName("ix_order_table_id");
-
                     b.ToTable("order", (string)null);
                 });
 
@@ -305,17 +305,9 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("menu_item_id");
 
-                    b.Property<string>("MenuItemName")
-                        .HasColumnType("longtext")
-                        .HasColumnName("menu_item_name");
-
                     b.Property<Guid>("OrderID")
                         .HasColumnType("char(36)")
                         .HasColumnName("order_id");
-
-                    b.Property<decimal>("OrderItemPrice")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("order_item_price");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
@@ -742,16 +734,6 @@ namespace OrderUpAPI.Migrations
                         .HasConstraintName("fk_menu_item_images_menu_items_menu_item_id");
 
                     b.Navigation("MenuItem");
-                });
-
-            modelBuilder.Entity("OrderUp_API.Models.Order", b =>
-                {
-                    b.HasOne("OrderUp_API.Models.Table", "Table")
-                        .WithMany()
-                        .HasForeignKey("TableID")
-                        .HasConstraintName("fk_order_tables_table_id");
-
-                    b.Navigation("Table");
                 });
 
             modelBuilder.Entity("OrderUp_API.Models.OrderItem", b =>

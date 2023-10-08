@@ -5,8 +5,8 @@
     }
 
     public interface OrderModelConstants {
-        public const string INITIAL = "Initial";
-        public const string PENDING = "Pending";
-        public const string COMPLETED = "Completed";
+        public const string INITIAL = "INITIAL";
+        public const string PENDING = "PENDING";
+        public const string COMPLETED = "COMPLETED";
     }
 }

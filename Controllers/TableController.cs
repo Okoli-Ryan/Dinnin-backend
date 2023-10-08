@@ -34,20 +34,17 @@ namespace OrderUp_API.Controllers {
         }
 
 
-        [HttpGet("{ID}")]
-        public async Task<IActionResult> GetTableData(Guid ID) {
+        [HttpGet("data/{TableCode}")]
+        public async Task<IActionResult> GetTableData(string TableCode) {
 
-            var Table = await tableService.GetTableData(ID);
+            var TableResponse = await tableService.GetTableData(TableCode);
 
-            if (Table is null) return BadRequest(Table);
-
-
-            return Ok(Table);
+            return responseHandler.HandleResponse(TableResponse);
         }
 
 
 
-        [HttpGet("s/{ID}")]
+        [HttpGet("{ID}")]
         public async Task<IActionResult> GetTableByID(Guid ID) {
 
             var TableResponse = await tableService.GetByID(ID);

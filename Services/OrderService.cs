@@ -7,17 +7,19 @@
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly HttpContext _context;
+        private readonly OrderUpDbContext _dbContext;
 
-        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor) {
+        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor, OrderUpDbContext dbContext) {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
             this.menuItemRepository = menuItemRepository;
             this.orderItemRepository = orderItemRepository;
             this.httpContextAccessor = httpContextAccessor;
             _context = httpContextAccessor.HttpContext;
+            _dbContext = dbContext;
         }
 
-        public async Task<MakeOrder> SaveOrder(MakeOrder OrderRequest) {
+        public async Task<DefaultResponse<MakeOrder>> SaveOrder(MakeOrder OrderRequest) {
 
             decimal Price = 0;
 
@@ -26,21 +28,46 @@
 
             var menuItems = await menuItemRepository.GetMenuItemsByRestaurantID(Order.restaurantId);
 
+
+            if (menuItems is null) return new DefaultErrorResponse<MakeOrder>() {
+                ResponseCode = ResponseCodes.NOT_FOUND,
+                ResponseData = null,
+                ResponseMessage = "Unable to find Restaurant"
+            };
+
+
+
             foreach (var item in OrderItems) {
 
                 var menuItem = menuItems.Find(x => x.ID.Equals(item.menuItemId));
 
                 Price += menuItem.Price * item.quantity;
 
+                item.menuItemName = menuItem.MenuItemName;
+
+                item.itemPrice = menuItem.Price;
+
             }
 
             Order.price = Price;
 
+            Order.orderStatus = OrderModelConstants.INITIAL;
+
             Order MappedOrder = mapper.Map<Order>(Order);
+
+
+
+
+            using var transaction = _dbContext.Database.BeginTransaction();
 
             var SavedOrder = await orderRepository.Save(MappedOrder);
 
-            if (SavedOrder is null) return null;
+            if (SavedOrder is null) return new DefaultErrorResponse<MakeOrder>();
+
+
+
+
+
 
             foreach (var item in OrderItems) {
 
@@ -52,7 +79,12 @@
 
             var SavedOrderItems = await orderItemRepository.Save(MappedOrderItems);
 
-            if (SavedOrderItems is null) return null;
+            if (SavedOrderItems is null) return new DefaultErrorResponse<MakeOrder>();
+
+
+            transaction.Commit();
+
+
 
             MakeOrder OrderResponse = new MakeOrder() {
                 Order = mapper.Map<OrderDto>(SavedOrder),
@@ -60,7 +92,9 @@
             };
 
 
-            return mapper.Map<MakeOrder>(OrderResponse);
+            var mappedRseponse = mapper.Map<MakeOrder>(OrderResponse);
+
+            return new DefaultSuccessResponse<MakeOrder>(mappedRseponse);
         }
 
         public async Task<List<OrderDto>> Save(List<Order> order) {
@@ -86,7 +120,7 @@
 
             var OrderList = await orderRepository.GetActiveOrders(restaurantId);
 
-            if (OrderList == null) {
+            if (OrderList is null) {
                 return new DefaultErrorResponse<T>();
             }
 

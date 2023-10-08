@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderUp_API.Data;
 
@@ -10,9 +11,11 @@ using OrderUp_API.Data;
 namespace OrderUpAPI.Migrations
 {
     [DbContext(typeof(OrderUpDbContext))]
-    partial class OrderUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231008222522_order_table")]
+    partial class ordertable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -305,17 +308,9 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("menu_item_id");
 
-                    b.Property<string>("MenuItemName")
-                        .HasColumnType("longtext")
-                        .HasColumnName("menu_item_name");
-
                     b.Property<Guid>("OrderID")
                         .HasColumnType("char(36)")
                         .HasColumnName("order_id");
-
-                    b.Property<decimal>("OrderItemPrice")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("order_item_price");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int")

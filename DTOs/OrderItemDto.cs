@@ -7,6 +7,10 @@
 
         public MenuItemDto menuItem { get; set; }
 
+        public string menuItemName { get; set; }
+
+        public decimal itemPrice { get; set; }
+
         public Guid orderId { get; set; }
 
         public OrderDto order { get; set; }

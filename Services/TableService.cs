@@ -11,11 +11,15 @@ namespace OrderUp_API.Services {
             this.tableRepository = tableRepository;
         }
 
-        public async Task<TableDto> GetTableData(Guid TableID) {
+        public async Task<DefaultResponse<TableDto>> GetTableData(string TableCode) {
 
-            var TableData = await tableRepository.GetTableData(TableID);
+            var TableData = await tableRepository.GetTableData(TableCode);
 
-            return mapper.Map<TableDto>(TableData);
+            if (TableData is null) return new DefaultErrorResponse<TableDto>();
+
+            var mappedResponse = mapper.Map<TableDto>(TableData);
+
+            return new DefaultSuccessResponse<TableDto>(mappedResponse);
             
         }
 

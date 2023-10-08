@@ -10,6 +10,11 @@
 
         public virtual MenuItem? MenuItem { get; set; }
 
+        public string? MenuItemName { get; set; }
+
+        public decimal OrderItemPrice { get; set; }
+
+
         [ForeignKey("Order")]
         public Guid OrderID { get; set; }
 

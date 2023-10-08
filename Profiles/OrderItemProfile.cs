@@ -11,6 +11,8 @@
               .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.quantity))
               .ForMember(dest => dest.MenuItemID, opt => opt.MapFrom(src => src.menuItemId))
               .ForMember(dest => dest.MenuItem, opt => opt.MapFrom(src => src.menuItem))
+              .ForMember(dest => dest.OrderItemPrice, opt => opt.MapFrom(src => src.itemPrice))
+              .ForMember(dest => dest.MenuItemName, opt => opt.MapFrom(src => src.menuItemName))
               .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.orderId))
               .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.order));
 
@@ -20,6 +22,8 @@
                 .ForMember(dest => dest.createdAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.updatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
                 .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.menuItemName, opt => opt.MapFrom(src => src.MenuItemName))
+                .ForMember(dest => dest.itemPrice, opt => opt.MapFrom(src => src.OrderItemPrice))
                 .ForMember(dest => dest.menuItemId, opt => opt.MapFrom(src => src.MenuItemID))
                 .ForMember(dest => dest.menuItem, opt => opt.MapFrom(src => src.MenuItem))
                 .ForMember(dest => dest.orderId, opt => opt.MapFrom(src => src.OrderID))

@@ -8,11 +8,11 @@
         readonly IMapper mapper;
         readonly ControllerResponseHandler responseHandler;
 
-        public OrderController(OrderService orderService, IMapper mapper, ControllerResponseHandler responseHandler) {
+        public OrderController(OrderService orderService, IMapper mapper) {
 
             this.orderService = orderService;
             this.mapper = mapper;
-            this.responseHandler = responseHandler;
+            responseHandler = new ControllerResponseHandler();
         }
 
 
@@ -55,14 +55,9 @@
         [HttpPost()]
         public async Task<IActionResult> AddOrder([FromBody] MakeOrder Order) {
 
-            //DefaultResponse<OrderDto> response = new();
+            var addedOrderResponse = await orderService.SaveOrder(Order);
 
-            var addedOrder = await orderService.SaveOrder(Order);
-
-            if (addedOrder is null) return BadRequest(addedOrder);
-
-
-            return Ok(addedOrder);
+            return responseHandler.HandleResponse(addedOrderResponse);
         }
 
 

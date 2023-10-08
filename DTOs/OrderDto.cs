@@ -15,6 +15,8 @@
 
         public string orderStatus { get; set; }
 
+        public TableDto table { get; set; }
+
         public List<OrderItemDto> orderItems { get; set; }
 
     }
