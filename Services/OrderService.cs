@@ -1,20 +1,24 @@
-﻿namespace OrderUp_API.Services {
+﻿using System.Net;
+
+namespace OrderUp_API.Services {
     public class OrderService {
 
         private readonly OrderRepository orderRepository;
         private readonly OrderItemRepository orderItemRepository;
         private readonly MenuItemRepository menuItemRepository;
+        private readonly TableRepository tableRepository;
         private readonly IMapper mapper;
-        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly HttpContext _context;
         private readonly OrderUpDbContext _dbContext;
+        private readonly PusherService pusherService;
 
-        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor, OrderUpDbContext dbContext) {
+        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor, OrderUpDbContext dbContext, PusherService pusherService, TableRepository tableRepository) {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
             this.menuItemRepository = menuItemRepository;
             this.orderItemRepository = orderItemRepository;
-            this.httpContextAccessor = httpContextAccessor;
+            this.pusherService = pusherService;
+            this.tableRepository = tableRepository; 
             _context = httpContextAccessor.HttpContext;
             _dbContext = dbContext;
         }
@@ -23,6 +27,7 @@
 
             decimal Price = 0;
 
+            //Convert to Model before operations
             var OrderItems = OrderRequest.OrderItems;
             var Order = OrderRequest.Order;
 
@@ -86,7 +91,23 @@
 
 
 
-            MakeOrder OrderResponse = new MakeOrder() {
+
+            var UserTable = await tableRepository.GetByID(Order.tableId);
+
+            if (UserTable is null) return new DefaultErrorResponse<MakeOrder>();
+
+
+
+            //Send Response To Dashboard Client
+            SavedOrder.OrderItems = SavedOrderItems;
+            SavedOrder.Table = UserTable;
+
+            var RestaurantIdString = GuidToString.Convert(SavedOrder.RestaurantId);
+
+            var pusherResponse = await pusherService.TriggerMessage(SavedOrder, OrderModelConstants.NEW_ORDER_EVENT, RestaurantIdString);
+
+
+            MakeOrder OrderResponse = new() {
                 Order = mapper.Map<OrderDto>(SavedOrder),
                 OrderItems = mapper.Map<List<OrderItemDto>>(SavedOrderItems)
             };
@@ -131,9 +152,7 @@
 
         public async Task<DefaultResponse<T>> GetOrdersByRestaurantID<T>(int Page) where T : List<OrderDto> {
 
-            var context = httpContextAccessor.HttpContext;
-
-            string RestaurantIDString = GetJwtValue.GetValueFromBearerToken(context, RestaurantIdentifier.RestaurantClaimType);
+            string RestaurantIDString = GetJwtValue.GetValueFromBearerToken(_context, RestaurantIdentifier.RestaurantClaimType);
 
             if (Guid.TryParse(RestaurantIDString, out Guid restaurantId)) {
                 var OrderList = await orderRepository.GetOrdersByRestaurantID(restaurantId, Page);

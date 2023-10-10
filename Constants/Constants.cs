@@ -5,8 +5,14 @@
     }
 
     public interface OrderModelConstants {
+
+        //Order Status 
         public const string INITIAL = "INITIAL";
         public const string PENDING = "PENDING";
         public const string COMPLETED = "COMPLETED";
+
+        //Order Events
+        public const string NEW_ORDER_EVENT = "NEW_ORDER_EVENT";
+        
     }
 }
