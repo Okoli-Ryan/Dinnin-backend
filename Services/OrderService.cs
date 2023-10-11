@@ -93,7 +93,7 @@ namespace OrderUp_API.Services {
             SavedOrder.OrderItems = SavedOrderItems;
             SavedOrder.Table = UserTable;
 
-            var RestaurantIdString = GuidToString.Convert(SavedOrder.RestaurantId);
+            var RestaurantIdString = GuidStringConverter.GuidToString(SavedOrder.RestaurantId);
 
             var MappedOrder = mapper.Map<OrderDto>(SavedOrder);
             var MappedOrderItems = mapper.Map<List<OrderItemDto>>(SavedOrderItems);
@@ -120,11 +120,11 @@ namespace OrderUp_API.Services {
         }
 
 
-        public async Task<DefaultResponse<T>> GetActiveOrders<T>() where T : List<OrderDto> {
+        public async Task<DefaultResponse<T>> GetActiveOrders<T>(DateTime LastTime) where T : List<OrderDto> {
 
-            string RestaurantIDString = GetJwtValue.GetValueFromBearerToken(_context, RestaurantIdentifier.RestaurantClaimType);
+            string RestaurantIDString = GetJwtValue.GetTokenFromCookie(_context, RestaurantIdentifier.RestaurantClaimType);
 
-            if (!Guid.TryParse(RestaurantIDString, out Guid restaurantId)) {
+            if (!Guid.TryParse(RestaurantIDString, out Guid RestaurantId)) {
 
                 return new DefaultResponse<T> {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
@@ -133,7 +133,7 @@ namespace OrderUp_API.Services {
                 };
             }
 
-            var OrderList = await orderRepository.GetActiveOrders(restaurantId);
+            var OrderList = await orderRepository.GetActiveOrders(RestaurantId, LastTime);
 
             if (OrderList is null) {
                 return new DefaultErrorResponse<T>();
@@ -166,8 +166,6 @@ namespace OrderUp_API.Services {
             }
 
         }
-
-
 
 
         public async Task<OrderDto> GetByID(Guid ID) {

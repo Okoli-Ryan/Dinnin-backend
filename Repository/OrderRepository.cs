@@ -16,14 +16,22 @@
                                       .ToListAsync();
         }
 
-        public async Task<List<Order>> GetActiveOrders(Guid RestaurantID) {
-            return await context.Order
-                                .Where(x => x.RestaurantId.Equals(RestaurantID) && x.ActiveStatus)
-                                .Include(x => x.Table)
-                                .Include(o => o.OrderItems)
-                                .OrderByDescending(x => x.CreatedAt)
-                                .AsNoTracking()
-                                .ToListAsync();
+        public async Task<List<Order>> GetActiveOrders(Guid RestaurantID, DateTime? LastTime = null) {
+            var query = context.Order
+                               .Where(x => x.RestaurantId.Equals(RestaurantID) && x.ActiveStatus);
+
+            if (LastTime.HasValue) {
+                query = query.Where(x => x.CreatedAt > LastTime.Value);
+            }
+
+            return await query.Include(x => x.Table)
+                              .Include(o => o.OrderItems)
+                              .OrderByDescending(x => x.CreatedAt)
+                              .AsNoTracking()
+                              .ToListAsync();
         }
+
+
+
     }
 }

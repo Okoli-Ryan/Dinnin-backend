@@ -25,5 +25,32 @@
             // If the header doesn't exist or the token doesn't contain a claim with the specified key, return null
             return default;
         }
+
+
+        public static string GetTokenFromCookie(HttpContext context, string key) {
+            // Get the Authorization header from the request
+            var token = context.Request.Cookies["Authorization"];
+
+            // Check if the header exists and starts with "Bearer "
+            if (!string.IsNullOrEmpty(token)) {
+
+                // Parse the JWT token
+                var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+
+                // Check if the token contains a claim with the specified key
+                var claim = jwt.Claims.FirstOrDefault(c => c.Type.Equals(key));
+
+                // If a claim with the specified key was found, return its value
+                if (claim != null) {
+                    return claim.Value;
+                }
+            }
+
+            // If the header doesn't exist or the token doesn't contain a claim with the specified key, return null
+            return default;
+        }
     }
 }
+
+// Convert Bearer Token Authorization to Cookies
+// Setup frontend to send cookies instead

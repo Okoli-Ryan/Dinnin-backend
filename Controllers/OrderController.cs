@@ -29,9 +29,9 @@
 
 
         [HttpGet("active")]
-        public async Task<IActionResult> GetActiveOrders() {
+        public async Task<IActionResult> GetActiveOrders([FromQuery] DateTime LastTime) {
 
-            var ordersResponse = await orderService.GetActiveOrders<List<OrderDto>>();
+            var ordersResponse = await orderService.GetActiveOrders<List<OrderDto>>(LastTime);
 
             return responseHandler.HandleResponse(ordersResponse);
         }
