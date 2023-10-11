@@ -25,13 +25,11 @@ namespace OrderUp_API.Services {
 
         public async Task<DefaultResponse<MakeOrder>> SaveOrder(MakeOrder OrderRequest) {
 
-            decimal Price = 0;
-
             //Convert to Model before operations
-            var OrderItems = OrderRequest.OrderItems;
-            var Order = OrderRequest.Order;
+            var OrderItems = mapper.Map<List<OrderItem>>(OrderRequest.OrderItems);
+            var Order = mapper.Map<Order>(OrderRequest.Order);
 
-            var menuItems = await menuItemRepository.GetMenuItemsByRestaurantID(Order.restaurantId);
+            var menuItems = await menuItemRepository.GetMenuItemsByRestaurantID(Order.RestaurantId);
 
 
             if (menuItems is null) return new DefaultErrorResponse<MakeOrder>() {
@@ -44,28 +42,23 @@ namespace OrderUp_API.Services {
 
             foreach (var item in OrderItems) {
 
-                var menuItem = menuItems.Find(x => x.ID.Equals(item.menuItemId));
+                var menuItem = menuItems.Find(x => x.ID.Equals(item.MenuItemID));
 
-                Price += menuItem.Price * item.quantity;
+                Order.OrderAmount += menuItem.Price * item.Quantity;
 
-                item.menuItemName = menuItem.MenuItemName;
+                item.MenuItemName = menuItem.MenuItemName;
 
-                item.itemPrice = menuItem.Price;
+                item.OrderItemPrice = menuItem.Price;
 
             }
 
-            Order.price = Price;
-
-            Order.orderStatus = OrderModelConstants.INITIAL;
-
-            Order MappedOrder = mapper.Map<Order>(Order);
-
+            Order.OrderStatus = OrderModelConstants.INITIAL;
 
 
 
             using var transaction = _dbContext.Database.BeginTransaction();
 
-            var SavedOrder = await orderRepository.Save(MappedOrder);
+            var SavedOrder = await orderRepository.Save(Order);
 
             if (SavedOrder is null) return new DefaultErrorResponse<MakeOrder>();
 
@@ -73,16 +66,14 @@ namespace OrderUp_API.Services {
 
 
 
-
             foreach (var item in OrderItems) {
 
-                item.orderId = SavedOrder.ID;
+                item.OrderID = SavedOrder.ID;
 
             }
 
-            List<OrderItem> MappedOrderItems = mapper.Map<List<OrderItem>>(OrderItems);
 
-            var SavedOrderItems = await orderItemRepository.Save(MappedOrderItems);
+            var SavedOrderItems = await orderItemRepository.Save(OrderItems);
 
             if (SavedOrderItems is null) return new DefaultErrorResponse<MakeOrder>();
 
@@ -92,7 +83,7 @@ namespace OrderUp_API.Services {
 
 
 
-            var UserTable = await tableRepository.GetByID(Order.tableId);
+            var UserTable = await tableRepository.GetByID(SavedOrder.TableID);
 
             if (UserTable is null) return new DefaultErrorResponse<MakeOrder>();
 
@@ -104,12 +95,15 @@ namespace OrderUp_API.Services {
 
             var RestaurantIdString = GuidToString.Convert(SavedOrder.RestaurantId);
 
-            var pusherResponse = await pusherService.TriggerMessage(SavedOrder, OrderModelConstants.NEW_ORDER_EVENT, RestaurantIdString);
+            var MappedOrder = mapper.Map<OrderDto>(SavedOrder);
+            var MappedOrderItems = mapper.Map<List<OrderItemDto>>(SavedOrderItems);
+
+            var pusherResponse = await pusherService.TriggerMessage(MappedOrder, OrderModelConstants.NEW_ORDER_EVENT, RestaurantIdString);
 
 
             MakeOrder OrderResponse = new() {
-                Order = mapper.Map<OrderDto>(SavedOrder),
-                OrderItems = mapper.Map<List<OrderItemDto>>(SavedOrderItems)
+                Order = MappedOrder,
+                OrderItems = MappedOrderItems
             };
 
 

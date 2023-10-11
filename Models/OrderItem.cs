@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Models {
+﻿using Newtonsoft;
+
+namespace OrderUp_API.Models {
     public class OrderItem : AbstractEntity {
 
 
@@ -18,6 +20,7 @@
         [ForeignKey("Order")]
         public Guid OrderID { get; set; }
 
+        [NotMapped]
         public virtual Order? Order { get; set; }
     }
 }

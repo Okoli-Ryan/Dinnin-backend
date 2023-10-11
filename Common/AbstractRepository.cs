@@ -142,7 +142,7 @@
 
 
 
-        public async Task<T> GetByID(Guid ID, bool filterByActiveStatus = false) {
+        public async Task<T> GetByID(Guid? ID, bool filterByActiveStatus = false) {
             try {
                 var query = context.Set<T>().Where(x => x.ID.Equals(ID));
 
