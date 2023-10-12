@@ -31,7 +31,7 @@
             // Get the Authorization header from the request
             var token = context.Request.Cookies["Authorization"];
 
-            // Check if the header exists and starts with "Bearer "
+            // Check if the token exists
             if (!string.IsNullOrEmpty(token)) {
 
                 // Parse the JWT token
@@ -46,7 +46,7 @@
                 }
             }
 
-            // If the header doesn't exist or the token doesn't contain a claim with the specified key, return null
+            // If the token doesn't exist or the token doesn't contain a claim with the specified key, return null
             return default;
         }
     }

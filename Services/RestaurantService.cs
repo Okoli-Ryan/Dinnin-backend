@@ -6,13 +6,13 @@ namespace OrderUp_API.Services {
         readonly IMapper mapper;
         readonly RestaurantRepository restaurantRepository;
         readonly AdminRepository adminRepository;
-        readonly IHttpContextAccessor httpContextAccessor;
+        readonly HttpContext httpContext;
         readonly OrderUpDbContext context;
 
         public RestaurantService(IMapper mapper, RestaurantRepository restaurantRepository, IHttpContextAccessor httpContextAccessor, OrderUpDbContext context, AdminRepository adminRepository) {
             this.mapper = mapper;
             this.restaurantRepository = restaurantRepository;
-            this.httpContextAccessor = httpContextAccessor;
+            this.httpContext = httpContextAccessor.HttpContext;
             this.context = context;
             this.adminRepository = adminRepository;
         }
@@ -36,8 +36,6 @@ namespace OrderUp_API.Services {
 
             var mappedAddedRestaurant = mapper.Map<Restaurant>(restaurantDto);
 
-            var contextAccessor = httpContextAccessor.HttpContext;
-
             using var transaction = context.Database.BeginTransaction();
 
 
@@ -45,7 +43,7 @@ namespace OrderUp_API.Services {
 
             if (addedRestaurant is null) return new DefaultErrorResponse<RestaurantDto>();
 
-            string AdminId = GetJwtValue.GetValueFromBearerToken(contextAccessor, ClaimTypes.PrimarySid);
+            string AdminId = GetJwtValue.GetTokenFromCookie(httpContext, ClaimTypes.PrimarySid);
 
             if (AdminId is null) return new DefaultErrorResponse<RestaurantDto>() { 
                 ResponseCode = ResponseCodes.UNAUTHORIZED,

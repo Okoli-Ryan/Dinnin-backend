@@ -8,7 +8,7 @@ namespace OrderUp_API.Services {
         private readonly MenuItemRepository menuItemRepository;
         private readonly TableRepository tableRepository;
         private readonly IMapper mapper;
-        private readonly HttpContext _context;
+        private readonly HttpContext httpContext;
         private readonly OrderUpDbContext _dbContext;
         private readonly PusherService pusherService;
 
@@ -19,7 +19,7 @@ namespace OrderUp_API.Services {
             this.orderItemRepository = orderItemRepository;
             this.pusherService = pusherService;
             this.tableRepository = tableRepository; 
-            _context = httpContextAccessor.HttpContext;
+            httpContext = httpContextAccessor.HttpContext;
             _dbContext = dbContext;
         }
 
@@ -122,7 +122,7 @@ namespace OrderUp_API.Services {
 
         public async Task<DefaultResponse<T>> GetActiveOrders<T>(DateTime LastTime) where T : List<OrderDto> {
 
-            string RestaurantIDString = GetJwtValue.GetTokenFromCookie(_context, RestaurantIdentifier.RestaurantClaimType);
+            string RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
 
             if (!Guid.TryParse(RestaurantIDString, out Guid RestaurantId)) {
 
@@ -146,7 +146,7 @@ namespace OrderUp_API.Services {
 
         public async Task<DefaultResponse<T>> GetOrdersByRestaurantID<T>(int Page) where T : List<OrderDto> {
 
-            string RestaurantIDString = GetJwtValue.GetValueFromBearerToken(_context, RestaurantIdentifier.RestaurantClaimType);
+            string RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
 
             if (Guid.TryParse(RestaurantIDString, out Guid restaurantId)) {
                 var OrderList = await orderRepository.GetOrdersByRestaurantID(restaurantId, Page);
