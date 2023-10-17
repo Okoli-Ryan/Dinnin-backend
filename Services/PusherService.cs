@@ -2,7 +2,7 @@
 
 namespace OrderUp_API.Services {
     public class PusherService {
-        readonly Pusher pusher;
+        readonly PusherServer.Pusher pusher;
 
         public PusherService() {
 
@@ -15,7 +15,7 @@ namespace OrderUp_API.Services {
             var Pusher_APP_KEY = ConfigurationUtil.GetConfigurationValue("Pusher:APP_KEY");
             var Pusher_APP_SECRET = ConfigurationUtil.GetConfigurationValue("Pusher:APP_SECRET");
 
-            var PusherInstance = new Pusher(Pusher_APP_ID, Pusher_APP_KEY, Pusher_APP_SECRET, options);
+            var PusherInstance = new PusherServer.Pusher(Pusher_APP_ID, Pusher_APP_KEY, Pusher_APP_SECRET, options);
 
             pusher = PusherInstance;
         }

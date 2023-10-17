@@ -6,21 +6,20 @@ namespace OrderUp_API.Controllers {
     [ApiController]
     public class PushNotificationController : ControllerBase {
 
-        readonly PushNotifications pushNotifications;
+        readonly PushNotificationService pushNotification;
+        readonly ControllerResponseHandler responseHandler;
 
-        public PushNotificationController() {
-            var pushNotificationsOptions = new PushNotificationsOptions {
-                InstanceId = "YOUR_INSTANCE_ID_HERE",
-                SecretKey = "YOUR_SECRET_KEY_HERE"
-            };
-
-            pushNotifications = new PushNotifications(new HttpClient(), pushNotificationsOptions);
+        public PushNotificationController(PushNotificationService pushNotification) {
+            this.pushNotification = pushNotification;
+            responseHandler = new ControllerResponseHandler();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GenerateToken() {
+        [HttpGet("gen-token")]
+        public IActionResult GenerateToken() {
 
-            var token = pushNotifications.GenerateToken();
+            var tokenResponse = pushNotification.GenerateToken();
+
+            return responseHandler.HandleResponse(tokenResponse);
 
         }
     }

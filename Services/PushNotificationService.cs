@@ -1,4 +1,4 @@
-﻿using PusherServer;
+﻿using Pusher.PushNotifications;
 
 namespace OrderUp_API.Services {
     public class PushNotificationService {
