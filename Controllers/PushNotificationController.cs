@@ -2,7 +2,7 @@
 using Pusher.PushNotifications;
 
 namespace OrderUp_API.Controllers {
-    [Route("pusher")]
+    [Route("api/v1/pusher")]
     [ApiController]
     public class PushNotificationController : ControllerBase {
 
@@ -15,9 +15,9 @@ namespace OrderUp_API.Controllers {
         }
 
         [HttpGet("gen-token")]
-        public IActionResult GenerateToken() {
+        public IActionResult GenerateToken([FromQuery(Name = "user_id")] string UserID) {
 
-            var tokenResponse = pushNotification.GenerateToken();
+            var tokenResponse = pushNotification.GenerateToken(UserID);
 
             return responseHandler.HandleResponse(tokenResponse);
 

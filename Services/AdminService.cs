@@ -128,8 +128,7 @@ namespace OrderUp_API.Services
 
             //var token = JwtUtils.GenerateToken(authClaims).Token;
 
-            //var httpCookieOptions = new CookieOptions()
-            //{
+            //var httpCookieOptions = new CookieOptions() {
             //    Expires = DateTime.Now.AddDays(1),
             //    HttpOnly = true,
             //    Secure = true
