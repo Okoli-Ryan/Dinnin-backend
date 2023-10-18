@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Classes {
-    public class EmailMQModel {
+    public class EmailMQModel : IQueueMessage {
 
         public Guid ID { get; set; }
 

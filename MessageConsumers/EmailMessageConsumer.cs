@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using OrderUp_API.Interfaces;
+using OrderUp_API.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -14,7 +16,7 @@ namespace OrderUp_API.MessageConsumers {
 
             var ConnectionString = ConfigurationUtil.GetConfigurationValue("RabbitMQ_URI");
 
-            Uri ConnectionUri = new (ConnectionString);
+            Uri ConnectionUri = new(ConnectionString);
 
             var factory = new ConnectionFactory { Uri = ConnectionUri };
 
@@ -26,34 +28,43 @@ namespace OrderUp_API.MessageConsumers {
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken) {
-            
-            if(stoppingToken.IsCancellationRequested) {
+
+            if (stoppingToken.IsCancellationRequested) {
                 channel.Dispose();
                 connection.Dispose();
                 return Task.CompletedTask;
             }
 
-            var consumer = new EventingBasicConsumer(channel);
-
-            consumer.Received += async (model, ea) => {
-
-                var body = ea.Body.ToArray();
-                var messageString = Encoding.UTF8.GetString(body);
-
-                var message = JsonConvert.DeserializeObject<EmailMQModel>(messageString);
-
-
-                using var scope = serviceProvider.CreateScope();
-
-                var verificationService = scope.ServiceProvider.GetRequiredService<VerificationCodeService>();
-
-                await verificationService.SendVerificationCode(message.ID, message.Role, message.Email);
+            using var scope = serviceProvider.CreateScope();
+            var verificationService = scope.ServiceProvider.GetRequiredService<VerificationCodeService>();
 
 
 
+            var queueHandlers = new Dictionary<string, IQueueHandler> {
+        {   MessageQueueTopics.EMAIL,
+            new VerificationQueueHandler<EmailMQModel>(verificationService)
+        }
             };
 
-            channel.BasicConsume(queue: MessageQueueTopics.EMAIL, autoAck: true, consumer: consumer);
+            foreach (var queueHandlerEntry in queueHandlers) {
+
+                var queueName = queueHandlerEntry.Key;
+                var queueHandler = queueHandlerEntry.Value;
+
+
+                var consumer = new EventingBasicConsumer(channel);
+
+                consumer.Received += async (model, ea) => {
+
+                    var body = ea.Body.ToArray();
+                    var messageString = Encoding.UTF8.GetString(body);
+
+                    await queueHandler.HandleMessageAsync(messageString);
+
+                };
+
+                channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+            }
 
             return Task.CompletedTask;
 
