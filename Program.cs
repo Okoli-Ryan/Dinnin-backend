@@ -75,8 +75,8 @@ builder.Services.AddScoped<IUserEntityService<User>>();
 builder.Services.AddScoped<IUserEntityService<Admin>>();
 builder.Services.AddScoped<VerificationCodeService>();
 
-builder.Services.AddScoped<IMailRepository, SendGridRepository>();
-builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IMailRepository, Mail_MeDeluxeRepository>();
+builder.Services.AddScoped<MailService>();
 
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
 builder.Services.AddSingleton<OnlineRestaurantDb>();

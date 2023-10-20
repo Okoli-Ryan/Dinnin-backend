@@ -10,9 +10,9 @@ namespace OrderUp_API.Services {
         private readonly IMapper mapper;
         private readonly IUserEntityService<Admin> AdminUserEntityService;
         private readonly IUserEntityService<User> CustomerUserEntityService;
-        private readonly IMailService mailService;
+        private readonly MailService mailService;
 
-        public VerificationCodeService(VerificationCodeRepository verificationCodeRepository, IUserEntityService<User> CustomerUserEntityService, IUserEntityService<Admin> AdminUserEntityService, AdminRepository adminRepository, UserRepository userRepository, IMailService mailService, IMapper mapper) {
+        public VerificationCodeService(VerificationCodeRepository verificationCodeRepository, IUserEntityService<User> CustomerUserEntityService, IUserEntityService<Admin> AdminUserEntityService, AdminRepository adminRepository, UserRepository userRepository, MailService mailService, IMapper mapper) {
             this.verificationCodeRepository = verificationCodeRepository;
             this.userRepository = userRepository;
             this.adminRepository = adminRepository;
