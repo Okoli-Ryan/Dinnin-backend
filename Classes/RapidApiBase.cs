@@ -7,7 +7,7 @@
 
             var headers = new Dictionary<string, string>() {
                 {"X-RapidAPI-Key", ConfigurationUtil.GetConfigurationValue("Rapid-api-header:key") },
-                {"X-RapidAPI-Host", ConfigurationUtil.GetConfigurationValue("Rapid-api-header:MeDeluxe-host")},
+                {"X-RapidAPI-Host", ConfigurationUtil.GetConfigurationValue("Rapid-api-header:host")},
             };
 
             NetworkService = new NetworkService(headers);

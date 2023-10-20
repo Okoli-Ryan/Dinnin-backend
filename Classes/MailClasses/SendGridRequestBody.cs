@@ -1,6 +1,7 @@
 ﻿namespace OrderUp_API.Classes.MailClasses {
-    public class SendGridRequestBody {
+    public class EmailRequestBody {
 
+        public string Subject { get; set; }
 
         public List<Personalization> Personalizations { get; set; }
         public EmailUser From { get; set; }
@@ -12,10 +13,8 @@
     public class Personalization {
 
         public List<EmailUser> To { get; set; }
-        public string Subject { get; set; }
-        public Personalization(List<string> Emails, string Subject) {
+        public Personalization(List<string> Emails) {
             To = Emails.Select(email => new EmailUser { Email = email }).ToList();
-            this.Subject = Subject;
         }
 
     }

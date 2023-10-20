@@ -75,7 +75,7 @@ builder.Services.AddScoped<IUserEntityService<User>>();
 builder.Services.AddScoped<IUserEntityService<Admin>>();
 builder.Services.AddScoped<VerificationCodeService>();
 
-builder.Services.AddScoped<IMailRepository, Mail_MeDeluxeRepository>();
+builder.Services.AddScoped<IMailRepository, MailServerlessRepository>();
 builder.Services.AddScoped<MailService>();
 
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
