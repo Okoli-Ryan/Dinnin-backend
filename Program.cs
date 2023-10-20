@@ -85,6 +85,9 @@ builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IMessageProducerService, MessageProducerService>();
 builder.Services.AddScoped<PusherService>();
 builder.Services.AddScoped<PushNotificationService>();
+builder.Services.AddScoped<VerificationQueueHandler<EmailMQModel>>();
+
+
 builder.Services.AddHostedService<EmailMessageConsumer>();
 
 builder.Services.AddCors();

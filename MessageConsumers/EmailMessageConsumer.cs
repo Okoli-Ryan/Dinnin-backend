@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Mailjet.Client.Resources;
+using Newtonsoft.Json;
 using OrderUp_API.Interfaces;
 using OrderUp_API.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Web.Helpers;
 
 namespace OrderUp_API.MessageConsumers {
     public class EmailMessageConsumer : BackgroundService {
@@ -35,21 +37,14 @@ namespace OrderUp_API.MessageConsumers {
                 return Task.CompletedTask;
             }
 
-            using var scope = serviceProvider.CreateScope();
-            var verificationService = scope.ServiceProvider.GetRequiredService<VerificationCodeService>();
 
 
-
-            var queueHandlers = new Dictionary<string, IQueueHandler> {
-        {   MessageQueueTopics.EMAIL,
-            new VerificationQueueHandler<EmailMQModel>(verificationService)
-        }
+            var queueNames = new List<string> {
+            {   MessageQueueTopics.EMAIL }
             };
 
-            foreach (var queueHandlerEntry in queueHandlers) {
+            foreach (var queueName in queueNames) {
 
-                var queueName = queueHandlerEntry.Key;
-                var queueHandler = queueHandlerEntry.Value;
 
 
                 var consumer = new EventingBasicConsumer(channel);
@@ -59,14 +54,35 @@ namespace OrderUp_API.MessageConsumers {
                     var body = ea.Body.ToArray();
                     var messageString = Encoding.UTF8.GetString(body);
 
+
+
+                    using var scope = serviceProvider.CreateScope();
+
+                    var queueHandler = GetQueueHandler(queueName, scope);
+
+
                     await queueHandler.HandleMessageAsync(messageString);
+
+                    //var Message = JsonConvert.DeserializeObject<EmailMQModel>(messageString);
+
+                    //await VerificationCodeService.SendVerificationCode(Message.ID, Message.Role, Message.Email);
 
                 };
 
-                channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+                channel.BasicConsume(queue: MessageQueueTopics.EMAIL, autoAck: true, consumer: consumer);
             }
 
             return Task.CompletedTask;
+
+        }
+
+        private static IQueueHandler GetQueueHandler(string queueName, IServiceScope scope) {
+
+            var queueHandlers = new Dictionary<string, IQueueHandler> {
+                { MessageQueueTopics.EMAIL, scope.ServiceProvider.GetRequiredService<VerificationQueueHandler<EmailMQModel>>() }
+            };
+
+            return queueHandlers.GetValueOrDefault(queueName);
 
         }
     }
