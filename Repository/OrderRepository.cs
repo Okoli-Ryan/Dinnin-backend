@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Repository {
+﻿using OrderUp_API.Classes.AnalyticsModels;
+
+namespace OrderUp_API.Repository {
     public class OrderRepository : AbstractRepository<Order> {
 
         public OrderRepository(OrderUpDbContext context) : base(context) { }
@@ -33,5 +35,12 @@
 
 
 
+        public async Task<List<OrderAmountAnalytics>> GetOrdersByDate(DateTime? StartTime, DateTime EndTime) {
+
+            StartTime = StartTime.HasValue ? StartTime.Value : DateTime.Now;
+
+            return await context.Order.Where(x => StartTime > x.CreatedAt && x.CreatedAt < EndTime).Select(x => new OrderAmountAnalytics { CreatedAt = x.CreatedAt, Amount = x.OrderAmount ?? 0 }).ToListAsync();
+        }
+        
     }
 }
