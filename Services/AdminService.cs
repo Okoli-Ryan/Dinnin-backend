@@ -1,4 +1,6 @@
-﻿using OrderUp_API.Constants;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using OrderUp_API.Constants;
 
 namespace OrderUp_API.Services
 {
@@ -114,19 +116,25 @@ namespace OrderUp_API.Services
             };
 
 
+            // Testing Cookie auth
+            var claimsIdentity = new ClaimsIdentity(authClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
 
 
-            var token = JwtUtils.GenerateToken(authClaims).Token;
 
-            var httpCookieOptions = new CookieOptions()
-            {
-                Expires = DateTime.Now.AddDays(1),
-                HttpOnly = true,
-                Secure = true
-            };
+            //var token = JwtUtils.GenerateToken(authClaims).Token;
 
-            httpContext.Response.Cookies.Append("Authorization", token, httpCookieOptions);
+            //var httpCookieOptions = new CookieOptions() {
+            //    Expires = DateTime.Now.AddDays(1),
+            //    HttpOnly = true,
+            //    Secure = true
+            //};
+
+            //httpContext.Response.Cookies.Append("Authorization", token, httpCookieOptions);
 
             return new DefaultSuccessResponse<AdminDto>(ParseAdminResponse(ExistingAdmin));
 

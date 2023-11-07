@@ -28,23 +28,17 @@
 
 
         public static string GetTokenFromCookie(HttpContext context, string key) {
-            // Get the Authorization header from the request
-            var token = context.Request.Cookies["Authorization"];
 
             // Check if the token exists
-            if (!string.IsNullOrEmpty(token)) {
 
-                // Parse the JWT token
-                var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            // Check if the token contains a claim with the specified key
+            var claim = context.User.Claims.FirstOrDefault(c => c.Type.Equals(key));
 
-                // Check if the token contains a claim with the specified key
-                var claim = jwt.Claims.FirstOrDefault(c => c.Type.Equals(key));
-
-                // If a claim with the specified key was found, return its value
-                if (claim != null) {
-                    return claim.Value;
-                }
+            // If a claim with the specified key was found, return its value
+            if (claim != null) {
+                return claim.Value;
             }
+
 
             // If the token doesn't exist or the token doesn't contain a claim with the specified key, return null
             return default;

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OrderUp_API.Interfaces;
 using OrderUp_API.MessageConsumers;
@@ -30,24 +31,13 @@ builder.Services.AddControllers(
 
 builder.Services.AddAuthentication(options => {
 
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
 })
 
-    .AddJwtBearer(options => {
-
-        options.SaveToken = true;
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters() {
-            ValidIssuer = configuration["Jwt:Issuer"],
-            ValidAudience = configuration["Jwt:Audience"],
-            ValidateLifetime = false,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]))
-        };
-    });
+    .AddCookie();
 
 builder.Services.AddSignalR();
 builder.Services.AddHttpContextAccessor();
@@ -87,7 +77,6 @@ builder.Services.AddScoped<VerificationCodeService>();
 
 builder.Services.AddScoped<IMailRepository, SendGridRepository>();
 builder.Services.AddScoped<IMailService, MailService>();
-builder.Services.AddScoped<RealTimeMessageService>();
 
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
 builder.Services.AddSingleton<OnlineRestaurantDb>();
@@ -95,6 +84,7 @@ builder.Services.AddScoped<NetworkService>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IMessageProducerService, MessageProducerService>();
 builder.Services.AddScoped<PusherService>();
+builder.Services.AddScoped<PushNotificationService>();
 builder.Services.AddHostedService<EmailMessageConsumer>();
 
 builder.Services.AddCors();
@@ -112,11 +102,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseCors(options => {
     options
-       .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "https://localhost:5173", "https://localhost:5001")
+       .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "https://localhost:5173", "https://localhost:5001", "https://localhost:7282")
        .WithMethods("GET", "PATCH", "POST", "DELETE", "OPTIONS")
        .AllowAnyHeader()
        .AllowCredentials();
@@ -125,6 +116,8 @@ app.UseRouting();
 
 
 app.UseHttpsRedirection();
+
+//app.UseCookiePolicy();
 
 app.UseAuthentication();
 

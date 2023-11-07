@@ -20,7 +20,7 @@ namespace OrderUp_API.Repository {
 
         public async Task<List<Order>> GetActiveOrders(Guid RestaurantID, DateTime? LastTime = null) {
             var query = context.Order
-                               .Where(x => x.RestaurantId.Equals(RestaurantID) && x.ActiveStatus);
+                               .Where(x => x.RestaurantId.Equals(RestaurantID) && x.ActiveStatus && !x.OrderStatus.Equals(OrderModelConstants.COMPLETED));
 
             if (LastTime.HasValue) {
                 query = query.Where(x => x.CreatedAt > LastTime.Value);

@@ -1,5 +1,6 @@
 ﻿
 using Azure;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 
 namespace OrderUp_API.Controllers {
@@ -20,7 +21,7 @@ namespace OrderUp_API.Controllers {
             ResponseHandler = new ControllerResponseHandler();
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("test")]
         public IActionResult Test()
         {
