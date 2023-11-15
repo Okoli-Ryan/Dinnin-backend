@@ -11,10 +11,10 @@ namespace OrderUp_API.Services
         private readonly IMapper mapper;
         private readonly OrderUpDbContext context;
         private readonly VerificationCodeService verificationCodeService;
-        private readonly IMessageProducerService messageProducerService;
+        private readonly MessageProducerService messageProducerService;
         private readonly HttpContext httpContext;
 
-        public AdminService(AdminRepository adminRepository, IMapper mapper, OrderUpDbContext context, VerificationCodeService verificationCodeService, IMessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor)
+        public AdminService(AdminRepository adminRepository, IMapper mapper, OrderUpDbContext context, VerificationCodeService verificationCodeService, MessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor)
         {
             this.adminRepository = adminRepository;
             this.mapper = mapper;
@@ -95,7 +95,7 @@ namespace OrderUp_API.Services
                     Email = ExistingAdmin.Email
                 });
 
-                messageProducerService.SendMessage("Email", ExistingAdmin);
+                //messageProducerService.SendMessage("Email", ExistingAdmin);
 
                 return new DefaultErrorResponse<AdminDto>()
                 {
@@ -124,6 +124,15 @@ namespace OrderUp_API.Services
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
             return new DefaultSuccessResponse<AdminDto>(ParseAdminResponse(ExistingAdmin));
+
+        }
+
+
+        public async Task<List<Admin>> GetAuthorizedPushNotificationRecipients(Guid RestaurantID) {
+
+            var recipients = await adminRepository.GetAuthorizedPushNotificationRecipients(RestaurantID);
+
+            return recipients;
 
         }
 

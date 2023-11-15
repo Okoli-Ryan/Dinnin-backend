@@ -5,10 +5,10 @@
         readonly UserRepository userRepository;
         readonly IUserEntityService<User> userEntityService;
         readonly OrderUpDbContext context;
-        readonly IMailService mailService;
+        readonly MailService mailService;
         readonly VerificationCodeService verificationCodeService;
 
-        public UserService(IMapper mapper, UserRepository userRepository, IUserEntityService<User> userEntityService, OrderUpDbContext context, IMailService mailService, VerificationCodeService verificationCodeService) {
+        public UserService(IMapper mapper, UserRepository userRepository, IUserEntityService<User> userEntityService, OrderUpDbContext context, MailService mailService, VerificationCodeService verificationCodeService) {
             this.mapper = mapper;
             this.userRepository = userRepository;
             this.context = context;

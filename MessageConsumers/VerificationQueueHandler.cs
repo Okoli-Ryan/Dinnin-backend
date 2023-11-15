@@ -11,9 +11,9 @@ namespace OrderUp_API.MessageConsumers {
         }
 
 
-        public async Task HandleMessageAsync(string message) {
+        public async Task HandleMessageAsync(string Payload) {
 
-            var Message = JsonConvert.DeserializeObject<T>(message);
+            var Message = JsonConvert.DeserializeObject<T>(Payload);
 
             await verificationCodeService.SendVerificationCode(Message.ID, Message.Role, Message.Email);
         }

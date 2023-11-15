@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Mailjet.Client.Resources;
+using Newtonsoft.Json;
 using OrderUp_API.Interfaces;
 using OrderUp_API.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using System.Web.Helpers;
 
 namespace OrderUp_API.MessageConsumers {
     public class EmailMessageConsumer : BackgroundService {
@@ -25,6 +27,8 @@ namespace OrderUp_API.MessageConsumers {
             channel = connection.CreateModel();
 
             channel.QueueDeclare(queue: MessageQueueTopics.EMAIL);
+            channel.QueueDeclare(queue: MessageQueueTopics.PUSH_NOTIFICATION);
+
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken) {
@@ -35,21 +39,15 @@ namespace OrderUp_API.MessageConsumers {
                 return Task.CompletedTask;
             }
 
-            using var scope = serviceProvider.CreateScope();
-            var verificationService = scope.ServiceProvider.GetRequiredService<VerificationCodeService>();
 
 
-
-            var queueHandlers = new Dictionary<string, IQueueHandler> {
-        {   MessageQueueTopics.EMAIL,
-            new VerificationQueueHandler<EmailMQModel>(verificationService)
-        }
+            var queueNames = new List<string> {
+               MessageQueueTopics.EMAIL,
+               MessageQueueTopics.PUSH_NOTIFICATION
             };
 
-            foreach (var queueHandlerEntry in queueHandlers) {
+            foreach (var queueName in queueNames) {
 
-                var queueName = queueHandlerEntry.Key;
-                var queueHandler = queueHandlerEntry.Value;
 
 
                 var consumer = new EventingBasicConsumer(channel);
@@ -59,6 +57,13 @@ namespace OrderUp_API.MessageConsumers {
                     var body = ea.Body.ToArray();
                     var messageString = Encoding.UTF8.GetString(body);
 
+
+
+                    using var scope = serviceProvider.CreateScope();
+
+                    var queueHandler = GetQueueHandler(queueName, scope);
+
+
                     await queueHandler.HandleMessageAsync(messageString);
 
                 };
@@ -67,6 +72,19 @@ namespace OrderUp_API.MessageConsumers {
             }
 
             return Task.CompletedTask;
+
+        }
+
+
+
+        private static IQueueHandler GetQueueHandler(string queueName, IServiceScope scope) {
+
+            var queueHandlers = new Dictionary<string, IQueueHandler> {
+                { MessageQueueTopics.EMAIL, scope.ServiceProvider.GetRequiredService<VerificationQueueHandler<EmailMQModel>>() },
+                { MessageQueueTopics.PUSH_NOTIFICATION, scope.ServiceProvider.GetRequiredService<PushNotificationQueueHandler<PushNotificationBody>>() }
+            };
+
+            return queueHandlers.GetValueOrDefault(queueName);
 
         }
     }

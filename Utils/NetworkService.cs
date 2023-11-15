@@ -22,7 +22,7 @@ namespace OrderUp_API.Utils {
             this.client = client;
         }
 
-        public async Task<DefaultResponse<ResponseBodyType>> Post<RequestBodyType, ResponseBodyType>(String url, RequestBodyType body, Dictionary<string, string>? headers) {
+        public async Task<DefaultResponse<ResponseBodyType>> Post<RequestBodyType, ResponseBodyType>(string url, RequestBodyType body, Dictionary<string, string>? headers) {
 
             var request = new HttpRequestMessage(HttpMethod.Post, new Uri(url));
             request.Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");

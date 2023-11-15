@@ -34,7 +34,7 @@ namespace OrderUp_API.Services {
         }
 
 
-        public async Task<string> PublishToUsers(List<IUserEntity> Users, PushNotificationMessage message) {
+        public async Task<string> PublishToUsers<T>(List<T> Users, PushNotificationMessage message) where T : IUserEntity {
 
             var UserIDs = Users.Select(x => x.ID.ToString()).ToList();
 
@@ -55,6 +55,7 @@ namespace OrderUp_API.Services {
 }
 
 public class PushNotificationMessage {
-    public string title { get; set; }
-    public string body { get; set; }
+
+    public string Title { get; set; }
+    public string Body { get; set; }
 }

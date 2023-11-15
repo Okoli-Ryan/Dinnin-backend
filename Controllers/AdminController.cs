@@ -13,20 +13,21 @@ namespace OrderUp_API.Controllers {
         readonly AdminService adminService;
         readonly IMapper mapper;
         readonly ControllerResponseHandler ResponseHandler;
+        readonly MailService mailService;
 
-        public AdminController(AdminService adminService, IMapper mapper) {
+        public AdminController(AdminService adminService, IMapper mapper, MailService mailService) {
 
             this.adminService = adminService;
             this.mapper = mapper;
             ResponseHandler = new ControllerResponseHandler();
+            this.mailService = mailService;
         }
 
-        [Authorize]
         [HttpGet("test")]
-        public IActionResult Test()
+        public async Task<IActionResult> Test([FromQuery] string To)
         {
-            var result = new List<int>() { 1, 2, 3 };
-            return Ok(result);
+            var response = await mailService.SendMail(new List<string> { To }, "No Subject", "Testing", "text");
+            return Ok(response);
         }
 
 

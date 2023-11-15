@@ -18,7 +18,7 @@
 
         public async Task<VerificationCode> GetVerificationModelByCode(string Code) {
 
-            var VerificationModel = await context.VerificationCode.FirstOrDefaultAsync(x => x.Code.Equals(Code));
+            var VerificationModel = await context.VerificationCode.Where(x => x.Code.Equals(Code)).FirstOrDefaultAsync();
 
             return VerificationModel;
         }

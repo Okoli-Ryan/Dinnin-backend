@@ -10,9 +10,9 @@ namespace OrderUp_API.Services {
             this.emailRepository = emailRepository;
         }
 
-        public async Task<bool> SendMail(List<string> Receipients, string Subject, string Body, string ContentType, string Sender = "Orderup@gmail.com") {
+        public async Task<bool> SendMail(List<string> Receipients, string Subject, string Body, string ContentType, string Sender = "Dinnin@firebese.com") {
 
-            return await emailRepository.SendMail(Receipients, Subject, Body, ContentType, "orderup@gmail.com");
+            return await emailRepository.SendMail(Receipients, Subject, Body, ContentType, Sender);
 
         }
 
