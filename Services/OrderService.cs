@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using OrderUp_API.MessageConsumers;
+using System.Net;
 
 namespace OrderUp_API.Services {
     public class OrderService {
@@ -11,14 +12,16 @@ namespace OrderUp_API.Services {
         private readonly HttpContext httpContext;
         private readonly OrderUpDbContext _dbContext;
         private readonly PusherService pusherService;
+        private readonly MessageProducerService messageProducerService;
 
-        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor, OrderUpDbContext dbContext, PusherService pusherService, TableRepository tableRepository) {
+        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor, OrderUpDbContext dbContext, PusherService pusherService, TableRepository tableRepository, MessageProducerService messageProducerService) {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
             this.menuItemRepository = menuItemRepository;
             this.orderItemRepository = orderItemRepository;
             this.pusherService = pusherService;
-            this.tableRepository = tableRepository; 
+            this.tableRepository = tableRepository;
+            this.messageProducerService = messageProducerService;
             httpContext = httpContextAccessor.HttpContext;
             _dbContext = dbContext;
         }
@@ -99,6 +102,15 @@ namespace OrderUp_API.Services {
             var MappedOrderItems = mapper.Map<List<OrderItemDto>>(SavedOrderItems);
 
             var pusherResponse = await pusherService.TriggerMessage(MappedOrder, OrderModelConstants.NEW_ORDER_EVENT, RestaurantIdString);
+
+            messageProducerService.SendMessage(MessageQueueTopics.PUSH_NOTIFICATION, new PushNotificationBody () {
+
+                RestaurantID = SavedOrder.RestaurantId,
+                Message = new PushNotificationMessage {
+                    Body = "A New Order has arrived",
+                    Title = "New Order"
+                }
+            });
 
 
             MakeOrder OrderResponse = new() {

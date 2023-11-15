@@ -82,10 +82,13 @@ builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
 builder.Services.AddSingleton<OnlineRestaurantDb>();
 builder.Services.AddScoped<NetworkService>();
 builder.Services.AddScoped<CloudinaryService>();
-builder.Services.AddScoped<IMessageProducerService, MessageProducerService>();
+builder.Services.AddScoped<MessageProducerService, MessageProducerService>();
 builder.Services.AddScoped<PusherService>();
 builder.Services.AddScoped<PushNotificationService>();
+
+
 builder.Services.AddScoped<VerificationQueueHandler<EmailMQModel>>();
+builder.Services.AddScoped<PushNotificationQueueHandler<PushNotificationBody>>();
 
 
 builder.Services.AddHostedService<EmailMessageConsumer>();
@@ -150,7 +153,7 @@ using (var scope = app.Services.CreateScope()) {
 
     var lifeTime = services.GetRequiredService<IHostApplicationLifetime>();
 
-    var rabbitMQProducer = services.GetRequiredService<IMessageProducerService>();
+    var rabbitMQProducer = services.GetRequiredService<MessageProducerService>();
 
     lifeTime.ApplicationStopping.Register(() => {
 

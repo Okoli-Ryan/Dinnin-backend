@@ -27,6 +27,8 @@ namespace OrderUp_API.MessageConsumers {
             channel = connection.CreateModel();
 
             channel.QueueDeclare(queue: MessageQueueTopics.EMAIL);
+            channel.QueueDeclare(queue: MessageQueueTopics.PUSH_NOTIFICATION);
+
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken) {
@@ -40,7 +42,8 @@ namespace OrderUp_API.MessageConsumers {
 
 
             var queueNames = new List<string> {
-            {   MessageQueueTopics.EMAIL }
+               MessageQueueTopics.EMAIL,
+               MessageQueueTopics.PUSH_NOTIFICATION
             };
 
             foreach (var queueName in queueNames) {
@@ -63,23 +66,22 @@ namespace OrderUp_API.MessageConsumers {
 
                     await queueHandler.HandleMessageAsync(messageString);
 
-                    //var Message = JsonConvert.DeserializeObject<EmailMQModel>(messageString);
-
-                    //await VerificationCodeService.SendVerificationCode(Message.ID, Message.Role, Message.Email);
-
                 };
 
-                channel.BasicConsume(queue: MessageQueueTopics.EMAIL, autoAck: true, consumer: consumer);
+                channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
             }
 
             return Task.CompletedTask;
 
         }
 
+
+
         private static IQueueHandler GetQueueHandler(string queueName, IServiceScope scope) {
 
             var queueHandlers = new Dictionary<string, IQueueHandler> {
-                { MessageQueueTopics.EMAIL, scope.ServiceProvider.GetRequiredService<VerificationQueueHandler<EmailMQModel>>() }
+                { MessageQueueTopics.EMAIL, scope.ServiceProvider.GetRequiredService<VerificationQueueHandler<EmailMQModel>>() },
+                { MessageQueueTopics.PUSH_NOTIFICATION, scope.ServiceProvider.GetRequiredService<PushNotificationQueueHandler<PushNotificationBody>>() }
             };
 
             return queueHandlers.GetValueOrDefault(queueName);
