@@ -123,19 +123,6 @@ namespace OrderUp_API.Services
 
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
-
-
-
-            //var token = JwtUtils.GenerateToken(authClaims).Token;
-
-            //var httpCookieOptions = new CookieOptions() {
-            //    Expires = DateTime.Now.AddDays(1),
-            //    HttpOnly = true,
-            //    Secure = true
-            //};
-
-            //httpContext.Response.Cookies.Append("Authorization", token, httpCookieOptions);
-
             return new DefaultSuccessResponse<AdminDto>(ParseAdminResponse(ExistingAdmin));
 
         }

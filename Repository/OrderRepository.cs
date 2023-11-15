@@ -37,10 +37,10 @@ namespace OrderUp_API.Repository {
 
 
 
-        public async Task<List<OrderAmountAnalytics>> GetOrderAmountAnalytics(DateTime StartTime, DateTime EndTime) {
+        public async Task<List<OrderAmountAnalytics>> GetOrderAmountAnalytics(string RestaurantID, DateTime StartTime, DateTime EndTime) {
 
             return await context.Order
-                                .Where(x => StartTime > x.CreatedAt && x.CreatedAt < EndTime)
+                                .Where(x => StartTime > x.CreatedAt && x.CreatedAt < EndTime && x.RestaurantId.Equals(RestaurantID))
                                 .GroupBy(o => System.Data.Entity.DbFunctions.TruncateTime(o.CreatedAt))
                                 .Select(x => new OrderAmountAnalytics { Date = x.Key ?? DateTime.Now, Data = x.Sum(o => o.OrderAmount ?? 0) })
                                 .ToListAsync();

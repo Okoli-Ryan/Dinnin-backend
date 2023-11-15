@@ -1,28 +1,42 @@
 ﻿using OrderUp_API.Classes.AnalyticsModels;
+using OrderUp_API.Utils;
 
 namespace OrderUp_API.Services
 {
     public class AnalyticsService {
 
         private OrderRepository orderRepository;
+        private HttpContext httpContext;
 
-        public AnalyticsService(OrderRepository orderRepository) {
+        public AnalyticsService(OrderRepository orderRepository, HttpContextAccessor httpContextAccessor) {
             this.orderRepository = orderRepository;
+            this.httpContext = httpContextAccessor.HttpContext;
         }
 
-        public async Task<DefaultResponse<T>> GetOrderAmountAnalytics<T>(DateTime? StartTime, DateTime? EndTime) where T : List<OrderAmountAnalytics> {
+        public async Task<DefaultResponse<List<OrderAmountAnalytics>>> GetOrderAmountAnalytics(DateTime? StartTime, DateTime? EndTime) {
 
             var InitialDate = StartTime ?? DateTime.MinValue;
             var LastDate = EndTime ?? DateTime.MinValue;
 
-            var OrderAmountAnalyticsData = await orderRepository.GetOrderAmountAnalytics(InitialDate, LastDate);
+            var RestaurantID = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
+
+            if(string.IsNullOrEmpty(RestaurantID)) {
+
+                return new DefaultErrorResponse<List<OrderAmountAnalytics>>() {
+                    ResponseCode = ResponseCodes.UNAUTHORIZED,
+                    ResponseMessage = ResponseCodes.UNAUTHORIZED,
+                    ResponseData = null
+                };
+            }
+
+            List<OrderAmountAnalytics> OrderAmountAnalyticsData = await orderRepository.GetOrderAmountAnalytics(RestaurantID, InitialDate, LastDate);
 
             if (OrderAmountAnalyticsData is null) { 
                 
-                return new DefaultErrorResponse<T>();
+                return new DefaultErrorResponse<List<OrderAmountAnalytics>>();
             }
 
-            return new DefaultSuccessResponse<T>((T) OrderAmountAnalyticsData);
+            return new DefaultSuccessResponse<List<OrderAmountAnalytics>>(OrderAmountAnalyticsData);
 
         }
     }
