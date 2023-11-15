@@ -59,6 +59,7 @@ builder.Services.AddScoped<VerificationCodeRepository>();
 builder.Services.AddScoped<IUserEntityRepository<User>>();
 builder.Services.AddScoped<IUserEntityRepository<Admin>>();
 
+builder.Services.AddScoped<AnalyticsService>();
 builder.Services.AddScoped<MenuCategoryService>();
 builder.Services.AddScoped<MenuItemService>();
 builder.Services.AddScoped<MenuItemImageService>();
