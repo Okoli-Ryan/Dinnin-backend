@@ -1,4 +1,6 @@
-﻿using OrderUp_API.Classes.AnalyticsModels;
+﻿using Microsoft.EntityFrameworkCore;
+using OrderUp_API.Classes.AnalyticsModels;
+using System.Data.Entity.Core.Objects;
 
 namespace OrderUp_API.Repository {
     public class OrderRepository : AbstractRepository<Order> {
@@ -35,11 +37,13 @@ namespace OrderUp_API.Repository {
 
 
 
-        public async Task<List<OrderAmountAnalytics>> GetOrdersByDate(DateTime? StartTime, DateTime EndTime) {
+        public async Task<List<OrderAmountAnalytics>> GetOrderAmountAnalytics(DateTime StartTime, DateTime EndTime) {
 
-            StartTime = StartTime.HasValue ? StartTime.Value : DateTime.Now;
-
-            return await context.Order.Where(x => StartTime > x.CreatedAt && x.CreatedAt < EndTime).Select(x => new OrderAmountAnalytics { CreatedAt = x.CreatedAt, Amount = x.OrderAmount ?? 0 }).ToListAsync();
+            return await context.Order
+                                .Where(x => StartTime > x.CreatedAt && x.CreatedAt < EndTime)
+                                .GroupBy(o => System.Data.Entity.DbFunctions.TruncateTime(o.CreatedAt))
+                                .Select(x => new OrderAmountAnalytics { Date = x.Key ?? DateTime.Now, Data = x.Sum(o => o.OrderAmount ?? 0) })
+                                .ToListAsync();
         }
         
     }
