@@ -27,5 +27,13 @@ namespace OrderUp_API.Controllers {
 
         }
 
+        [HttpGet("order-count")]
+        public async Task<IActionResult> GetOrderCountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
+
+            var response = await analyticsService.GetOrderCountAnalytics(StartTime, EndTime);
+
+            return responseHandler.HandleResponse(response);
+
+        }
     }
 }

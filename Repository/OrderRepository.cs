@@ -37,14 +37,25 @@ namespace OrderUp_API.Repository {
 
 
 
-        public async Task<List<OrderAmountAnalytics>> GetOrderAmountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
+        public async Task<List<ChartData<decimal>>> GetOrderAmountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
 
             return await context.Order
-                                .Where(x => StartTime > x.CreatedAt && x.CreatedAt < EndTime && x.RestaurantId.Equals(RestaurantID))
+                                .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
                                 .GroupBy(o => o.CreatedAt)
-                                .Select(x => new OrderAmountAnalytics { Date = x.Key, Data = x.Sum(o => o.OrderAmount ?? 0) })
+                                .Select(x => new ChartData<decimal> { Date = x.Key, Data = x.Sum(o => o.OrderAmount ?? 0) })
+                                .OrderBy(o => o.Date)
                                 .ToListAsync();
         }
-        
+
+
+        public async Task<List<ChartData<int>>> GetOrderCountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
+
+            return await context.Order
+                                .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
+                                .GroupBy(o => o.CreatedAt)
+                                .Select(x => new ChartData<int> { Date = x.Key, Data = x.Count() })
+                                .OrderBy(o => o.Date)
+                                .ToListAsync();
+        }
     }
 }
