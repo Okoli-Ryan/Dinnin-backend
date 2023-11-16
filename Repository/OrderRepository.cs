@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderUp_API.Classes.AnalyticsModels;
+using OrderUp_API.Models;
 using System.Data.Entity.Core.Objects;
 
 namespace OrderUp_API.Repository {
@@ -44,6 +45,7 @@ namespace OrderUp_API.Repository {
                                 .GroupBy(o => o.CreatedAt)
                                 .Select(x => new ChartData<decimal> { Date = x.Key, Data = x.Sum(o => o.OrderAmount ?? 0) })
                                 .OrderBy(o => o.Date)
+                                .AsNoTracking()
                                 .ToListAsync();
         }
 
@@ -55,6 +57,23 @@ namespace OrderUp_API.Repository {
                                 .GroupBy(o => o.CreatedAt)
                                 .Select(x => new ChartData<int> { Date = x.Key, Data = x.Count() })
                                 .OrderBy(o => o.Date)
+                                .AsNoTracking()
+                                .ToListAsync();
+        }
+
+
+        public async Task<List<OrderItemAnalyticsData>> GetOrderItemCountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
+
+            return await context.Order
+                                .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
+                                .Include(o => o.OrderItems)
+                                .SelectMany(o => o.OrderItems, (o, oi) => new { Order = o, OrderItem = oi })
+                                .GroupBy(x => x.OrderItem.MenuItemName)
+                                .Select(g => new OrderItemAnalyticsData {
+                                    ItemName = g.Key,
+                                    Count = g.Sum(x => x.OrderItem.Quantity)
+                                })
+                                .AsNoTracking()
                                 .ToListAsync();
         }
     }

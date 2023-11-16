@@ -77,7 +77,38 @@ namespace OrderUp_API.Services
 
         }
 
-        public List<ChartData<T>> GroupAndSumByDate<T>(List<ChartData<T>> results) where T : struct {
+
+        public async Task<DefaultResponse<List<OrderItemAnalyticsData>>> GetOrderItemCountAnalytics(DateTime? StartTime, DateTime? EndTime) {
+
+            var InitialDate = StartTime ?? DateTime.MinValue;
+            var LastDate = EndTime ?? DateTime.MaxValue;
+
+            var RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
+
+            var RestaurantID = GuidStringConverter.StringToGuid(RestaurantIDString);
+
+            if (RestaurantID is null) {
+
+                return new DefaultErrorResponse<List<OrderItemAnalyticsData>>() {
+                    ResponseCode = ResponseCodes.UNAUTHORIZED,
+                    ResponseMessage = ResponseCodes.UNAUTHORIZED,
+                    ResponseData = null
+                };
+            }
+
+            List<OrderItemAnalyticsData> OrderCountAnalyticsData = await orderRepository.GetOrderItemCountAnalytics(RestaurantID, InitialDate, LastDate);
+
+            if (OrderCountAnalyticsData is null) {
+
+                return new DefaultErrorResponse<List<OrderItemAnalyticsData>>();
+            }
+
+            return new DefaultSuccessResponse<List<OrderItemAnalyticsData>>(OrderCountAnalyticsData);
+
+        }
+
+
+        private List<ChartData<T>> GroupAndSumByDate<T>(List<ChartData<T>> results) where T : struct {
 
             var groupedResults = results
                 .GroupBy(r => r.Date.Date)  // Grouping by Date without considering the time
