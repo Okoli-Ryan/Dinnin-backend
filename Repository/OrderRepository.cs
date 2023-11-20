@@ -38,6 +38,16 @@ namespace OrderUp_API.Repository {
 
 
 
+        public async Task<List<Order>> GetOrderAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
+
+            return await context.Order
+                                .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
+                                .AsNoTracking()
+                                .ToListAsync();
+        }
+
+        
+        
         public async Task<List<ChartData<decimal>>> GetOrderAmountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
 
             return await context.Order
@@ -62,19 +72,19 @@ namespace OrderUp_API.Repository {
         }
 
 
-        public async Task<List<OrderItemAnalyticsData>> GetOrderItemCountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
+        public async Task<int> GetTotalOrderCount(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
 
             return await context.Order
                                 .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
-                                .Include(o => o.OrderItems)
-                                .SelectMany(o => o.OrderItems, (o, oi) => new { Order = o, OrderItem = oi })
-                                .GroupBy(x => x.OrderItem.MenuItemName)
-                                .Select(g => new OrderItemAnalyticsData {
-                                    ItemName = g.Key,
-                                    Count = g.Sum(x => x.OrderItem.Quantity)
-                                })
-                                .AsNoTracking()
-                                .ToListAsync();
+                                .CountAsync();
+        }
+
+
+        public async Task<decimal> GetTotalRevenue(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
+
+            return await context.Order
+                                .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
+                                .SumAsync(x => x.OrderAmount ?? 0);
         }
     }
 }

@@ -73,14 +73,7 @@ namespace OrderUp_API.Services
 
             if (ExistingAdmin is null) return InvalidResponse;
 
-            messageProducerService.SendMessage<EmailMQModel>("Email", new()
-            {
-                ID = ExistingAdmin.ID,
-                Role = RoleTypes.Admin,
-                Email = ExistingAdmin.Email
-            });
-
-
+            
             var isPasswordCorrect = AuthenticationHelper.VerifyPassword(loginModel.Password, ExistingAdmin.Password);
 
             if (!isPasswordCorrect) return InvalidResponse;

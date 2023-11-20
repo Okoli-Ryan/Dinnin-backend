@@ -34,14 +34,11 @@
             // Check if the token contains a claim with the specified key
             var claim = context.User.Claims.FirstOrDefault(c => c.Type.Equals(key));
 
-            // If a claim with the specified key was found, return its value
-            if (claim != null) {
-                return claim.Value;
-            }
+            if (claim is null) return default;
 
 
-            // If the token doesn't exist or the token doesn't contain a claim with the specified key, return null
-            return default;
+            return claim.Value;
+
         }
     }
 }
