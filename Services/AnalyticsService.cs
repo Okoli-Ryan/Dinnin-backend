@@ -17,9 +17,41 @@ namespace OrderUp_API.Services {
 
 
         // Get Orders and Order Items in parallel
+        public async Task<DefaultResponse<AnalyticsData>> GetInitialAnalyticsData() {
+
+            var response = new AnalyticsData();
+
+            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
+
+            if (RestaurantID is null) {
+
+                return new DefaultErrorResponse<AnalyticsData>() {
+                    ResponseCode = ResponseCodes.UNAUTHORIZED,
+                    ResponseMessage = ResponseCodes.UNAUTHORIZED,
+                    ResponseData = null
+                };
+            }
+
+            var Orders = await orderRepository.GetOrdersByRestaurantID(RestaurantID);
+
+            if (Orders is null) return new DefaultErrorResponse<AnalyticsData>();
+
+            var OrderItems = Orders.SelectMany(o => o.OrderItems).ToList();
 
 
-        public async Task<AnalyticsGrowth<int>> GetCompletedOrdersData(List<Order> Orders) {
+            response.CompletedOrders = GetCompletedOrdersData(Orders);
+            response.CompletedOrderItems = GetCompletedOrderItemsData(OrderItems);
+            response.OrderCountChartData = GetOrderCountAnalytics(Orders);
+            response.OrderAmountChartData = GetOrderAmountAnalytics(Orders);
+            response.TotalRevenue = GetTotalRevenueData(Orders);
+
+
+            return new DefaultSuccessResponse<AnalyticsData>(response);
+
+        }
+
+
+        public AnalyticsGrowth<int> GetCompletedOrdersData(List<Order> Orders) {
 
             var response = new AnalyticsGrowth<int>();
 
@@ -40,7 +72,7 @@ namespace OrderUp_API.Services {
         }
 
 
-        public async Task<AnalyticsGrowth<int>> GetCompletedOrderItemsData(List<OrderItem> OrderItems) {
+        public AnalyticsGrowth<int> GetCompletedOrderItemsData(List<OrderItem> OrderItems) {
 
             var response = new AnalyticsGrowth<int>();
 
@@ -62,7 +94,7 @@ namespace OrderUp_API.Services {
 
 
 
-        public async Task<AnalyticsGrowth<decimal>> GetTotalRevenueData(List<Order> Orders) {
+        public AnalyticsGrowth<decimal> GetTotalRevenueData(List<Order> Orders) {
 
             var response = new AnalyticsGrowth<decimal>();
 
@@ -84,7 +116,7 @@ namespace OrderUp_API.Services {
 
 
 
-        public async Task<List<ChartData<decimal>>> GetOrderAmountAnalytics(List<Order> Orders) {
+        public List<ChartData<decimal>> GetOrderAmountAnalytics(List<Order> Orders) {
 
             var GroupedOrderAmountData = Orders
                                             .GroupBy(o => o.CreatedAt)
@@ -100,7 +132,7 @@ namespace OrderUp_API.Services {
 
 
 
-        public async Task<List<ChartData<int>>> GetOrderCountAnalytics(List<Order> Orders) {
+        public List<ChartData<int>> GetOrderCountAnalytics(List<Order> Orders) {
 
             var GroupedOrderAmountData = Orders
                                             .GroupBy(o => o.CreatedAt)
@@ -122,9 +154,7 @@ namespace OrderUp_API.Services {
             var InitialDate = StartTime ?? DateTime.MinValue;
             var LastDate = EndTime ?? DateTime.MaxValue;
 
-            var RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
-
-            var RestaurantID = GuidStringConverter.StringToGuid(RestaurantIDString);
+            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
 
             if (RestaurantID is null) {
 

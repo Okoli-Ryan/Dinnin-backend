@@ -12,10 +12,19 @@ namespace OrderUp_API.Controllers {
         readonly AnalyticsService analyticsService;
 
         public AnalyticsController(AnalyticsService analyticsService) {
-        
+
             this.analyticsService = analyticsService;
             responseHandler = new ControllerResponseHandler();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInitialAnalyticsData() {
+
+            var response = await analyticsService.GetInitialAnalyticsData();
+
+            return responseHandler.HandleResponse(response);
+        }
+
 
 
         [HttpGet("order-amount")]
@@ -35,8 +44,8 @@ namespace OrderUp_API.Controllers {
             return responseHandler.HandleResponse(response);
 
         }
-        
-        
+
+
         [HttpGet("order-item-count")]
         public async Task<IActionResult> GetOrderItemCountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
 

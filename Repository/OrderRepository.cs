@@ -37,6 +37,16 @@ namespace OrderUp_API.Repository {
         }
 
 
+        public async Task<List<Order>> GetOrdersByRestaurantID(Guid? RestaurantID) {
+
+            return await context.Order
+                                .Where(x => x.RestaurantId == RestaurantID)
+                                .Include(x => x.OrderItems)
+                                .AsNoTracking()
+                                .ToListAsync();
+        }
+
+
 
         public async Task<List<Order>> GetOrderAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
 

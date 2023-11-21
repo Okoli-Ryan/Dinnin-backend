@@ -40,6 +40,21 @@
             return claim.Value;
 
         }
+        
+        
+        public static Guid? GetGuidFromCookie(HttpContext context, string key) {
+
+            // Check if the token exists
+
+            // Check if the token contains a claim with the specified key
+            var claim = context.User.Claims.FirstOrDefault(c => c.Type.Equals(key));
+
+            if (claim is null) return default;
+
+
+            return GuidStringConverter.StringToGuid(claim.Value);
+
+        }
     }
 }
 
