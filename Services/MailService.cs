@@ -24,5 +24,16 @@ namespace OrderUp_API.Services {
 
             return await SendMail(new List<string> { Receipient }, "Email Verification", body, "text/html");
         }
+
+
+
+        public async Task<bool> SendForgotPasswordEmail(string Receipient, Guid UserID, string Code) {
+
+            var dashboardClient = ConfigurationUtil.GetConfigurationValue("Dinnin-Dashboard-Client");
+
+            var body = $"<a href='{dashboardClient}/reset/{UserID}/{Code}'>Click link to reset your password</a>";
+
+            return await SendMail(new List<string> { Receipient }, "Forgot Password", body, "text/html");
+        }
     }
 }

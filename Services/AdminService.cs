@@ -88,8 +88,6 @@ namespace OrderUp_API.Services
                     Email = ExistingAdmin.Email
                 });
 
-                //messageProducerService.SendMessage("Email", ExistingAdmin);
-
                 return new DefaultErrorResponse<AdminDto>()
                 {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
@@ -109,7 +107,6 @@ namespace OrderUp_API.Services
             };
 
 
-            // Testing Cookie auth
             var claimsIdentity = new ClaimsIdentity(authClaims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -118,6 +115,24 @@ namespace OrderUp_API.Services
 
             return new DefaultSuccessResponse<AdminDto>(ParseAdminResponse(ExistingAdmin));
 
+        }
+
+        public async Task<DefaultResponse<bool>> handleForgotPasswordRequest(string email) {
+
+            var existingAdmin = await adminRepository.GetAdminByEmail(email);
+
+            if (existingAdmin is null) return new DefaultErrorResponse<bool> {
+                ResponseCode = ResponseCodes.NOT_FOUND,
+                ResponseMessage = "User doesn't exist",
+                ResponseData = false
+            };
+
+
+            var isVerificationCodeSent = await verificationCodeService.SendVerificationCode(existingAdmin.ID, RoleTypes.Admin, email);
+
+            if (!isVerificationCodeSent) return new DefaultErrorResponse<bool>();
+
+            return new DefaultSuccessResponse<bool>(true);
         }
 
 

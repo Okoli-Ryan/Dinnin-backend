@@ -22,6 +22,9 @@ namespace OrderUp_API.Services {
             this.mapper = mapper;
         }
 
+        /// <summary>
+        /// Creates a verification code based on UserID, RoleType, and email, then saves to the DB and sends the email
+        /// </summary>
         public async Task<bool> SendVerificationCode(Guid UserID, string RoleType, string UserEmail) {
 
             var verificationCode = new VerificationCode() {
@@ -30,6 +33,8 @@ namespace OrderUp_API.Services {
             };
 
             var createdVerificationCode = await CreateVerificationCode(verificationCode);
+
+            if (createdVerificationCode == null) return false;
 
             return await mailService.SendVerificationCode(UserEmail, UserID, createdVerificationCode.Code);
         }
