@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
 namespace OrderUp_API.MessageConsumers {
-    public class VerificationQueueHandler<T> : IQueueHandler where T : EmailMQModel {
+    public class ForgotPasswordQueueHandler<T> : IQueueHandler where T : EmailMQModel {
 
         readonly VerificationCodeService verificationCodeService;
 
-        public VerificationQueueHandler(VerificationCodeService verificationCodeService) {
+        public ForgotPasswordQueueHandler(VerificationCodeService verificationCodeService) {
             this.verificationCodeService = verificationCodeService;
         }
 
@@ -14,7 +14,7 @@ namespace OrderUp_API.MessageConsumers {
 
             var Message = JsonConvert.DeserializeObject<T>(Payload);
 
-            await verificationCodeService.SendCreateAccountVerificationCode(Message.ID, Message.Role, Message.Email);
+            await verificationCodeService.SendForgotPasswordVerificationCode(Message.ID, Message.Role, Message.Email);
         }
     }
 }

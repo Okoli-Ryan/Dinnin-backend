@@ -72,12 +72,7 @@
 
             var CreatedAccount = await Save(user);
 
-            var verificationCode = new VerificationCode() {
-                UserID = CreatedAccount.id,
-                UserType = RoleTypes.Customer
-            };
-
-            var SavedVerificationCode = await verificationCodeService.CreateVerificationCode(verificationCode);
+            var SavedVerificationCode = await verificationCodeService.CreateVerificationCode(CreatedAccount.id, RoleTypes.Customer);
 
             var IsEmailSent = await mailService.SendVerificationCode(user.Email, user.ID, SavedVerificationCode.Code);
 

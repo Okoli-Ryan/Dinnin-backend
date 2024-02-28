@@ -1,10 +1,5 @@
-﻿using Mailjet.Client.Resources;
-using Newtonsoft.Json;
-using OrderUp_API.Interfaces;
-using OrderUp_API.Services;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Web.Helpers;
 
 namespace OrderUp_API.MessageConsumers {
     public class EmailMessageConsumer : BackgroundService {
@@ -26,8 +21,11 @@ namespace OrderUp_API.MessageConsumers {
 
             channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: MessageQueueTopics.EMAIL);
-            channel.QueueDeclare(queue: MessageQueueTopics.PUSH_NOTIFICATION);
+            foreach (var queue in MessageQueueList.getQueue()) {
+
+                channel.QueueDeclare(queue: queue);
+
+            }
 
         }
 
@@ -40,13 +38,7 @@ namespace OrderUp_API.MessageConsumers {
             }
 
 
-
-            var queueNames = new List<string> {
-               MessageQueueTopics.EMAIL,
-               MessageQueueTopics.PUSH_NOTIFICATION
-            };
-
-            foreach (var queueName in queueNames) {
+            foreach (var queueName in MessageQueueList.getQueue()) {
 
 
 
@@ -81,7 +73,8 @@ namespace OrderUp_API.MessageConsumers {
 
             var queueHandlers = new Dictionary<string, IQueueHandler> {
                 { MessageQueueTopics.EMAIL, scope.ServiceProvider.GetRequiredService<VerificationQueueHandler<EmailMQModel>>() },
-                { MessageQueueTopics.PUSH_NOTIFICATION, scope.ServiceProvider.GetRequiredService<PushNotificationQueueHandler<PushNotificationBody>>() }
+                { MessageQueueTopics.PUSH_NOTIFICATION, scope.ServiceProvider.GetRequiredService<PushNotificationQueueHandler<PushNotificationBody>>() },
+                { MessageQueueTopics.FORGOT_PASSWORD, scope.ServiceProvider.GetRequiredService<ForgotPasswordQueueHandler<EmailMQModel>>() }
             };
 
             return queueHandlers.GetValueOrDefault(queueName);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using OrderUp_API.Constants;
+using OrderUp_API.Models;
 
 namespace OrderUp_API.Services
 {
@@ -117,7 +118,7 @@ namespace OrderUp_API.Services
 
         }
 
-        public async Task<DefaultResponse<bool>> handleForgotPasswordRequest(string email) {
+        public async Task<DefaultResponse<bool>> HandleForgotPasswordRequest(string email) {
 
             var existingAdmin = await adminRepository.GetAdminByEmail(email);
 
@@ -128,11 +129,34 @@ namespace OrderUp_API.Services
             };
 
 
-            var isVerificationCodeSent = await verificationCodeService.SendVerificationCode(existingAdmin.ID, RoleTypes.Admin, email);
-
-            if (!isVerificationCodeSent) return new DefaultErrorResponse<bool>();
+            messageProducerService.SendMessage(MessageQueueTopics.FORGOT_PASSWORD, new EmailMQModel {
+                ID = existingAdmin.ID,
+                Role = RoleTypes.Admin,
+                Email = existingAdmin.Email
+            });
 
             return new DefaultSuccessResponse<bool>(true);
+        }
+
+
+        public async Task<DefaultResponse<bool>> HandleResetPassword(Guid UserID, string newPassword) {
+
+            var Admin = await GetByID(UserID);
+
+            if(Admin is null) {
+
+                return new DefaultNotFoundResponse<bool>();
+            }
+
+
+            Admin.password = AuthenticationHelper.HashPassword(newPassword);
+
+            var UpdatedAdmin = await Update(Admin);
+
+            if(UpdatedAdmin is null) return new DefaultFailureResponse<bool>();
+
+            return new DefaultSuccessResponse<bool>(true);
+
         }
 
 
@@ -160,13 +184,6 @@ namespace OrderUp_API.Services
             return ParseAdminResponse(addedAdmin);
         }
 
-        public async Task<List<AdminDto>> Save(List<Admin> admin)
-        {
-
-            var addedAdmin = await adminRepository.Save(admin);
-
-            return ParseAdminResponse(addedAdmin);
-        }
 
         public async Task<AdminDto> GetByID(Guid ID)
         {
