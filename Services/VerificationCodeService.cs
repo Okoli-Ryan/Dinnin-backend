@@ -22,24 +22,45 @@ namespace OrderUp_API.Services {
             this.mapper = mapper;
         }
 
-        public async Task<bool> SendVerificationCode(Guid UserID, string RoleType, string UserEmail) {
+        /// <summary>
+        /// Creates a verification code based on UserID, RoleType, and email, then saves to the Database and sends the email
+        /// </summary>
+        public async Task<bool> SendCreateAccountVerificationCode(Guid UserID, string RoleType, string UserEmail) {
 
             var verificationCode = new VerificationCode() {
                 UserID = UserID,
                 UserType = RoleType
             };
 
-            var createdVerificationCode = await CreateVerificationCode(verificationCode);
+            var createdVerificationCode = await CreateVerificationCode(UserID, RoleType);
+
+            if (createdVerificationCode == null) return false;
 
             return await mailService.SendVerificationCode(UserEmail, UserID, createdVerificationCode.Code);
         }
 
-        public async Task<VerificationCode> CreateVerificationCode(VerificationCode VerificationModel) {
 
-            VerificationModel.ExpiryDate = DateTime.Now.AddHours(1);
-            VerificationModel.Code = RandomStringGenerator.GenerateRandomString(10);
+        public async Task<bool> SendForgotPasswordVerificationCode(Guid UserID, string RoleType, string UserEmail) {
 
-            var PendingVerificationModel = await verificationCodeRepository.GetPendingVerificationCode(VerificationModel.UserID);
+            var createdVerificationCode = await CreateVerificationCode(UserID, RoleType);
+
+            if (createdVerificationCode == null) return false;
+
+            return await mailService.SendForgotPasswordEmail(UserEmail, UserID, createdVerificationCode.Code);
+        }
+
+
+        public async Task<VerificationCode> CreateVerificationCode(Guid UserID, string RoleType) {
+
+            var verificationModel = new VerificationCode() {
+                UserID = UserID,
+                UserType = RoleType
+            };
+
+            verificationModel.ExpiryDate = DateTime.Now.AddHours(1);
+            verificationModel.Code = RandomStringGenerator.GenerateRandomString(10);
+
+            var PendingVerificationModel = await verificationCodeRepository.GetPendingVerificationCode(verificationModel.UserID);
 
             if (PendingVerificationModel is not null) {
 
@@ -48,7 +69,7 @@ namespace OrderUp_API.Services {
                 await verificationCodeRepository.Update(PendingVerificationModel);
             }
 
-            var SavedVerificationCode = await verificationCodeRepository.Save(VerificationModel);
+            var SavedVerificationCode = await verificationCodeRepository.Save(verificationModel);
 
             return SavedVerificationCode;
 

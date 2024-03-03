@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using OrderUp_API.Constants;
+using OrderUp_API.Models;
 
 namespace OrderUp_API.Services
 {
@@ -88,8 +89,6 @@ namespace OrderUp_API.Services
                     Email = ExistingAdmin.Email
                 });
 
-                //messageProducerService.SendMessage("Email", ExistingAdmin);
-
                 return new DefaultErrorResponse<AdminDto>()
                 {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
@@ -109,7 +108,6 @@ namespace OrderUp_API.Services
             };
 
 
-            // Testing Cookie auth
             var claimsIdentity = new ClaimsIdentity(authClaims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -117,6 +115,47 @@ namespace OrderUp_API.Services
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
             return new DefaultSuccessResponse<AdminDto>(ParseAdminResponse(ExistingAdmin));
+
+        }
+
+        public async Task<DefaultResponse<bool>> HandleForgotPasswordRequest(string email) {
+
+            var existingAdmin = await adminRepository.GetAdminByEmail(email);
+
+            if (existingAdmin is null) return new DefaultErrorResponse<bool> {
+                ResponseCode = ResponseCodes.NOT_FOUND,
+                ResponseMessage = "User doesn't exist",
+                ResponseData = false
+            };
+
+
+            messageProducerService.SendMessage(MessageQueueTopics.FORGOT_PASSWORD, new EmailMQModel {
+                ID = existingAdmin.ID,
+                Role = RoleTypes.Admin,
+                Email = existingAdmin.Email
+            });
+
+            return new DefaultSuccessResponse<bool>(true);
+        }
+
+
+        public async Task<DefaultResponse<bool>> HandleResetPassword(Guid UserID, string newPassword) {
+
+            var Admin = await GetByID(UserID);
+
+            if(Admin is null) {
+
+                return new DefaultNotFoundResponse<bool>();
+            }
+
+
+            Admin.password = AuthenticationHelper.HashPassword(newPassword);
+
+            var UpdatedAdmin = await Update(Admin);
+
+            if(UpdatedAdmin is null) return new DefaultFailureResponse<bool>();
+
+            return new DefaultSuccessResponse<bool>(true);
 
         }
 
@@ -145,13 +184,6 @@ namespace OrderUp_API.Services
             return ParseAdminResponse(addedAdmin);
         }
 
-        public async Task<List<AdminDto>> Save(List<Admin> admin)
-        {
-
-            var addedAdmin = await adminRepository.Save(admin);
-
-            return ParseAdminResponse(addedAdmin);
-        }
 
         public async Task<AdminDto> GetByID(Guid ID)
         {

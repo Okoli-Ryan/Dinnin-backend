@@ -67,6 +67,24 @@ namespace OrderUp_API.Controllers {
 
             return ResponseHandler.HandleResponse(response);
         }
+        
+        
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] string Email) {
+
+            var response = await adminService.HandleForgotPasswordRequest(Email);
+
+            return ResponseHandler.HandleResponse(response);
+        }
+
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] Guid UserID, [FromBody] string NewPassword) {
+
+            var response = await adminService.HandleResetPassword(UserID, NewPassword);
+
+            return ResponseHandler.HandleResponse(response);
+        }
 
 
 
