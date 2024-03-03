@@ -134,7 +134,7 @@ namespace OrderUp_API.Services {
 
         public async Task<DefaultResponse<T>> GetActiveOrders<T>(DateTime LastTime) where T : List<OrderDto> {
 
-            string RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
+            string RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
             if (!Guid.TryParse(RestaurantIDString, out Guid RestaurantId)) {
 
@@ -158,7 +158,7 @@ namespace OrderUp_API.Services {
 
         public async Task<DefaultResponse<T>> GetOrdersByRestaurantID<T>(int Page) where T : List<OrderDto> {
 
-            string RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
+            string RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
             if (Guid.TryParse(RestaurantIDString, out Guid restaurantId)) {
                 var OrderList = await orderRepository.GetOrdersByRestaurantID(restaurantId, Page);

@@ -6,7 +6,7 @@
             string connectionId;
 
 
-            Claim RestaurantClaim = connection.User?.FindFirst(RestaurantIdentifier.RestaurantClaimType);
+            Claim RestaurantClaim = connection.User?.FindFirst(RestaurantIdentifier.RestaurantID_ClaimType);
 
             if(RestaurantClaim is not null) {
 

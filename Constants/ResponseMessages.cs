@@ -2,7 +2,7 @@
     public interface ResponseMessages {
         public const String SUCCESS = "Okay";
         public const String FAILURE = "Internal Server Error";
-        public const String UNAUTHORIZED = "Unautorized access";
+        public const String UNAUTHORIZED = "Unauthorized access";
         public const String NOT_FOUND = "Data not found";
         public const String INSUFFICIENT_DATA = "Insufficient data supplied";
         public const String INVALID_TOKEN = "Invalid Token";

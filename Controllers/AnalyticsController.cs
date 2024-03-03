@@ -17,10 +17,13 @@ namespace OrderUp_API.Controllers {
             responseHandler = new ControllerResponseHandler();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetInitialAnalyticsData() {
 
-            var response = await analyticsService.GetInitialAnalyticsData();
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAnalyticsData([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
+
+            var response = await analyticsService.GetAnalyticsData(StartTime, EndTime);
 
             return responseHandler.HandleResponse(response);
         }
@@ -28,22 +31,26 @@ namespace OrderUp_API.Controllers {
 
 
         [HttpGet("order-amount")]
-        public async Task<IActionResult> GetOrderAmountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
+        public async Task<IActionResult> GetOrderAmountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime, [FromQuery] string GroupBy) {
 
-            var response = await analyticsService.GetOrderAmountAnalytics(StartTime, EndTime);
+            var response = await analyticsService.GetOrderAmountAnalytics(StartTime, EndTime, GroupBy);
 
             return responseHandler.HandleResponse(response);
 
         }
+
+
+
 
         [HttpGet("order-count")]
-        public async Task<IActionResult> GetOrderCountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
+        public async Task<IActionResult> GetOrderCountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime, [FromQuery] string GroupBy) {
 
-            var response = await analyticsService.GetOrderCountAnalytics(StartTime, EndTime);
+            var response = await analyticsService.GetOrderCountAnalytics(StartTime, EndTime, GroupBy);
 
             return responseHandler.HandleResponse(response);
 
         }
+
 
 
         [HttpGet("order-item-count")]

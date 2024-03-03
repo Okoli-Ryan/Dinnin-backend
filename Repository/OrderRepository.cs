@@ -17,7 +17,8 @@ namespace OrderUp_API.Repository {
                                       .Include(o => o.OrderItems)
                                       .OrderByDescending(o => o.CreatedAt)
                                       .Skip(SkipCount)
-                                      .Take(PageSize).AsNoTracking()
+                                      .Take(PageSize)
+                                      .AsNoTracking()
                                       .ToListAsync();
         }
 
@@ -37,10 +38,10 @@ namespace OrderUp_API.Repository {
         }
 
 
-        public async Task<List<Order>> GetOrdersByRestaurantID(Guid? RestaurantID) {
+        public async Task<List<Order>> GetOrdersByRestaurantID(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
 
             return await context.Order
-                                .Where(x => x.RestaurantId == RestaurantID)
+                                .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
                                 .Include(x => x.OrderItems)
                                 .AsNoTracking()
                                 .ToListAsync();
@@ -58,24 +59,24 @@ namespace OrderUp_API.Repository {
 
         
         
-        public async Task<List<ChartData<decimal>>> GetOrderAmountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
+        public async Task<List<ChartValue<decimal>>> GetOrderAmountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
 
             return await context.Order
                                 .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
                                 .GroupBy(o => o.CreatedAt)
-                                .Select(x => new ChartData<decimal> { Date = x.Key, Data = x.Sum(o => o.OrderAmount ?? 0) })
+                                .Select(x => new ChartValue<decimal> { Date = x.Key.ToString(), Value = x.Sum(o => o.OrderAmount ?? 0) })
                                 .OrderBy(o => o.Date)
                                 .AsNoTracking()
                                 .ToListAsync();
         }
 
 
-        public async Task<List<ChartData<int>>> GetOrderCountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
+        public async Task<List<ChartValue<int>>> GetOrderCountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
 
             return await context.Order
                                 .Where(x => x.RestaurantId == RestaurantID && x.CreatedAt >= StartTime && x.CreatedAt < EndTime)
                                 .GroupBy(o => o.CreatedAt)
-                                .Select(x => new ChartData<int> { Date = x.Key, Data = x.Count() })
+                                .Select(x => new ChartValue<int> { Date = x.Key.ToString(), Value = x.Count() })
                                 .OrderBy(o => o.Date)
                                 .AsNoTracking()
                                 .ToListAsync();

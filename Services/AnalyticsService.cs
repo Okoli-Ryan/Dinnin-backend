@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderUp_API.Classes.AnalyticsModels;
+using System.Globalization;
 
 namespace OrderUp_API.Services {
     public class AnalyticsService {
@@ -16,39 +17,71 @@ namespace OrderUp_API.Services {
         }
 
 
-        // Get Orders and Order Items in parallel
-        public async Task<DefaultResponse<AnalyticsData>> GetInitialAnalyticsData() {
 
-            var response = new AnalyticsData();
 
-            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
+
+        public async Task<DefaultResponse<Order_OrderItems>> GetOrdersAndOrderItemsByDate(DateTime? StartTime, DateTime? EndTime) {
+
+            var response = new Order_OrderItems();
+
+            var InitialDate = StartTime ?? DateTime.MinValue;
+            var LastDate = EndTime ?? DateTime.MaxValue;
+
+            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
             if (RestaurantID is null) {
 
-                return new DefaultErrorResponse<AnalyticsData>() {
+                return new DefaultErrorResponse<Order_OrderItems>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
-                    ResponseMessage = ResponseCodes.UNAUTHORIZED,
+                    ResponseMessage = ResponseMessages.UNAUTHORIZED,
                     ResponseData = null
                 };
             }
 
-            var Orders = await orderRepository.GetOrdersByRestaurantID(RestaurantID);
+            var Orders = await orderRepository.GetOrdersByRestaurantID(RestaurantID, InitialDate, LastDate);
 
-            if (Orders is null) return new DefaultErrorResponse<AnalyticsData>();
+            if (Orders is null) return new DefaultErrorResponse<Order_OrderItems>();
 
             var OrderItems = Orders.SelectMany(o => o.OrderItems).ToList();
 
+            response.Orders = Orders;
+            response.OrderItems = OrderItems;
 
+            return new DefaultSuccessResponse<Order_OrderItems>(response);
+        }
+
+
+
+
+
+        public async Task<DefaultResponse<AnalyticsData>> GetAnalyticsData(DateTime? StartTime, DateTime? EndTime) {
+
+            var OrderAndOrderItemsResponse = await GetOrdersAndOrderItemsByDate(StartTime, EndTime);
+
+            if (OrderAndOrderItemsResponse.ResponseCode != ResponseCodes.SUCCESS)
+
+                return new DefaultErrorResponse<AnalyticsData> {
+                    ResponseCode = OrderAndOrderItemsResponse.ResponseCode,
+                    ResponseMessage = OrderAndOrderItemsResponse.ResponseMessage,
+                    ResponseData = null
+                };
+
+            var Orders = OrderAndOrderItemsResponse.ResponseData.Orders;
+            var OrderItems = OrderAndOrderItemsResponse.ResponseData.OrderItems;
+
+            var response = new AnalyticsData();
+
+
+            response.TotalRevenue = GetTotalRevenueData(Orders);
             response.CompletedOrders = GetCompletedOrdersData(Orders);
             response.CompletedOrderItems = GetCompletedOrderItemsData(OrderItems);
-            response.OrderCountChartData = GetOrderCountAnalytics(Orders);
-            response.OrderAmountChartData = GetOrderAmountAnalytics(Orders);
-            response.TotalRevenue = GetTotalRevenueData(Orders);
-
 
             return new DefaultSuccessResponse<AnalyticsData>(response);
 
         }
+
+
+
 
 
         public AnalyticsGrowth<int> GetCompletedOrdersData(List<Order> Orders) {
@@ -116,101 +149,85 @@ namespace OrderUp_API.Services {
 
 
 
-        public List<ChartData<decimal>> GetOrderAmountAnalytics(List<Order> Orders) {
-
-            var GroupedOrderAmountData = Orders
-                                            .GroupBy(o => o.CreatedAt)
-                                            .Select(x => new ChartData<decimal> { Date = x.Key, Data = x.Sum(o => o.OrderAmount ?? 0) })
-                                            .OrderBy(o => o.Date)
-                                            .ToList();
-
-            var result = GroupAndSumByDate(GroupedOrderAmountData);
-
-            return result;
-
-        }
 
 
-
-        public List<ChartData<int>> GetOrderCountAnalytics(List<Order> Orders) {
-
-            var GroupedOrderAmountData = Orders
-                                            .GroupBy(o => o.CreatedAt)
-                                            .Select(x => new ChartData<int> { Date = x.Key, Data = x.Count() })
-                                            .OrderBy(o => o.Date)
-                                            .ToList();
-
-            var result = GroupAndSumByDate(GroupedOrderAmountData);
-
-            return result;
-
-        }
-
-
-
-
-        public async Task<DefaultResponse<List<ChartData<decimal>>>> GetOrderAmountAnalytics(DateTime? StartTime, DateTime? EndTime) {
+        public async Task<DefaultResponse<ChartResponse<decimal>>> GetOrderAmountAnalytics(DateTime? StartTime, DateTime? EndTime, string GroupBy = AnalyticsConstants.GROUP_BY_DATE) {
 
             var InitialDate = StartTime ?? DateTime.MinValue;
             var LastDate = EndTime ?? DateTime.MaxValue;
 
-            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
+            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
             if (RestaurantID is null) {
 
-                return new DefaultErrorResponse<List<ChartData<decimal>>>() {
+                return new DefaultErrorResponse<ChartResponse<decimal>>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
                     ResponseMessage = ResponseCodes.UNAUTHORIZED,
                     ResponseData = null
                 };
             }
 
-            List<ChartData<decimal>> OrderAmountAnalyticsData = await orderRepository.GetOrderAmountAnalytics(RestaurantID, InitialDate, LastDate);
+            List<ChartValue<decimal>> OrderAmountAnalyticsData = await orderRepository.GetOrderAmountAnalytics(RestaurantID, InitialDate, LastDate);
 
             if (OrderAmountAnalyticsData is null) {
 
-                return new DefaultErrorResponse<List<ChartData<decimal>>>();
+                return new DefaultErrorResponse<ChartResponse<decimal>>();
             }
 
-            var result = GroupAndSumByDate(OrderAmountAnalyticsData);
+            var ChartData = GroupAndSumByDate(OrderAmountAnalyticsData, GroupBy);
 
-            return new DefaultSuccessResponse<List<ChartData<decimal>>>(result);
+            var result = new ChartResponse<decimal> {
+                ChartData = ChartData,
+                Key = "Revenue"
+            };
+
+            return new DefaultSuccessResponse<ChartResponse<decimal>>(result);
 
         }
 
 
 
 
-        public async Task<DefaultResponse<List<ChartData<int>>>> GetOrderCountAnalytics(DateTime? StartTime, DateTime? EndTime) {
+
+        public async Task<DefaultResponse<ChartResponse<int>>> GetOrderCountAnalytics(DateTime? StartTime, DateTime? EndTime, string GroupBy = AnalyticsConstants.GROUP_BY_DATE) {
 
             var InitialDate = StartTime ?? DateTime.MinValue;
             var LastDate = EndTime ?? DateTime.MaxValue;
 
-            var RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
-
-            var RestaurantID = GuidStringConverter.StringToGuid(RestaurantIDString);
+            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
             if (RestaurantID is null) {
 
-                return new DefaultErrorResponse<List<ChartData<int>>>() {
+                return new DefaultErrorResponse<ChartResponse<int>>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
                     ResponseMessage = ResponseCodes.UNAUTHORIZED,
                     ResponseData = null
                 };
             }
 
-            List<ChartData<int>> OrderCountAnalyticsData = await orderRepository.GetOrderCountAnalytics(RestaurantID, InitialDate, LastDate);
+            List<ChartValue<int>> OrderCountAnalyticsData = await orderRepository.GetOrderCountAnalytics(RestaurantID, InitialDate, LastDate);
 
             if (OrderCountAnalyticsData is null) {
 
-                return new DefaultErrorResponse<List<ChartData<int>>>();
+                return new DefaultErrorResponse<ChartResponse<int>>();
             }
 
-            var result = GroupAndSumByDate(OrderCountAnalyticsData);
+            var ChartData = GroupAndSumByDate(OrderCountAnalyticsData, GroupBy);
 
-            return new DefaultSuccessResponse<List<ChartData<int>>>(result);
+
+            var result = new ChartResponse<int> {
+                Key = "Count",
+                ChartData = ChartData,
+            };
+
+
+            return new DefaultSuccessResponse<ChartResponse<int>>(result);
 
         }
+
+
+
+
 
 
         public async Task<DefaultResponse<List<OrderItemAnalyticsData>>> GetOrderItemCountAnalytics(DateTime? StartTime, DateTime? EndTime) {
@@ -218,9 +235,8 @@ namespace OrderUp_API.Services {
             var InitialDate = StartTime ?? DateTime.MinValue;
             var LastDate = EndTime ?? DateTime.MaxValue;
 
-            var RestaurantIDString = GetJwtValue.GetTokenFromCookie(httpContext, RestaurantIdentifier.RestaurantClaimType);
 
-            var RestaurantID = GuidStringConverter.StringToGuid(RestaurantIDString);
+            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
             if (RestaurantID is null) {
 
@@ -243,28 +259,83 @@ namespace OrderUp_API.Services {
         }
 
 
-        private List<ChartData<T>> GroupAndSumByDate<T>(List<ChartData<T>> results) where T : struct {
 
-            var groupedResults = results
-                .GroupBy(r => r.Date.Date)  // Grouping by Date without considering the time
-                .Select(g => new ChartData<T> {
-                    Date = g.Key,
-                    Data = (T)Convert.ChangeType(g.Sum(x => Convert.ToDecimal(x.Data)), typeof(T))  // Summing the values in Data for each grouped day
-                })
-                .ToList();
+
+
+
+        private static List<ChartValue<T>> GroupAndSumByDate<T>(List<ChartValue<T>> results, string groupBy) where T : struct {
+            var groupedResults = groupBy switch {
+
+
+                AnalyticsConstants.GROUP_BY_DAY => results
+                            .GroupBy(r => Convert.ToDateTime(r.Date).DayOfWeek)  // Grouping by Day of the week
+                            .Select(g => new ChartValue<T> {
+                                Date = g.Key.ToString(),
+                                Value = (T)Convert.ChangeType(g.Sum(x => Convert.ToDecimal(x.Value)), typeof(T))  // Summing the values in Data for each grouped day
+                            })
+                            .ToList(),
+
+
+                AnalyticsConstants.GROUP_BY_MONTH => results
+                            .GroupBy(r => Convert.ToDateTime(r.Date).Month)  // Grouping by Month
+                            .Select(g => new ChartValue<T> {
+                                Date = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key),
+                                Value = (T)Convert.ChangeType(g.Sum(x => Convert.ToDecimal(x.Value)), typeof(T))  // Summing the values in Data for each grouped month
+                            })
+                            .ToList(),
+
+
+                AnalyticsConstants.GROUP_BY_WEEK => results
+                            .GroupBy(r => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(Convert.ToDateTime(r.Date), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday))  // Grouping by Week of the year
+                            .Select(g => new ChartValue<T> {
+                                Date = "Week " + g.Key,
+                                Value = (T)Convert.ChangeType(g.Sum(x => Convert.ToDecimal(x.Value)), typeof(T))  // Summing the values in Data for each grouped week
+                            })
+                            .ToList(),
+
+
+
+                _ => results
+                            .GroupBy(r => Convert.ToDateTime(r.Date).Date)  // Default: Grouping by Date without considering the time
+                            .Select(g => new ChartValue<T> {
+                                Date = g.Key.ToString(),
+                                Value = (T)Convert.ChangeType(g.Sum(x => Convert.ToDecimal(x.Value)), typeof(T))  // Summing the values in Data for each grouped day
+                            })
+                            .ToList()
+
+
+            };
 
             return groupedResults;
         }
 
 
 
-        private decimal CalculatePercentageChange(decimal currentMonthCount, decimal lastMonthCount) {
+
+
+
+        private static decimal CalculatePercentageChange(decimal currentMonthCount, decimal lastMonthCount) {
             if (lastMonthCount != 0) {
-                return ((decimal)(currentMonthCount - lastMonthCount) / lastMonthCount) * 100;
+                return (currentMonthCount - lastMonthCount) / lastMonthCount * 100;
             }
             else {
                 return 0;
             }
         }
+
+
+
     }
+
+
+
+
+    public class Order_OrderItems {
+
+        public List<Order> Orders { get; set; }
+
+        public List<OrderItem> OrderItems { get; set; }
+    }
+
+
 }

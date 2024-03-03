@@ -105,7 +105,7 @@ namespace OrderUp_API.Services
                 new Claim(ClaimTypes.Role, ExistingAdmin.Role),
                 new Claim(ClaimTypes.Email, ExistingAdmin.Email),
                 new Claim(ClaimTypes.PrimarySid, ExistingAdmin.ID.ToString()),
-                new Claim(RestaurantIdentifier.RestaurantClaimType, ExistingAdmin.RestaurantID.ToString())
+                new Claim(RestaurantIdentifier.RestaurantID_ClaimType, ExistingAdmin.RestaurantID.ToString())
             };
 
 

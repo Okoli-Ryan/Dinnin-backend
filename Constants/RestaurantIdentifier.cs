@@ -2,7 +2,7 @@
     public class RestaurantIdentifier {
 
         public const string RestaurantPrefix = "Restaurant___";
-        public const string RestaurantClaimType = "RestaurantID";
+        public const string RestaurantID_ClaimType = "RestaurantID";
 
         public static bool IsRestaurant(string restaurantIdentifier) {
             return restaurantIdentifier.StartsWith(RestaurantPrefix);

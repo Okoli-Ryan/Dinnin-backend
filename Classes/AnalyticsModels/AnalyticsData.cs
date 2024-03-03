@@ -8,10 +8,6 @@
 
         public AnalyticsGrowth<decimal> TotalRevenue { get; set; }
 
-        public List<ChartData<decimal>> OrderAmountChartData { get; set; }
-
-        public List<ChartData<int>> OrderCountChartData { get; set; }
-
     }
 
     public class AnalyticsGrowth<T> {
