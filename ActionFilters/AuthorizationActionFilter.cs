@@ -12,11 +12,11 @@ namespace OrderUp_API.ActionFilters {
 
             if (environment.Equals("Development")) return;
 
-            if (context.HttpContext.Request.Headers.ContainsKey("x-api-key")) {
+            if (context.HttpContext.Request.Headers.ContainsKey("x_api_key")) {
 
-                string apiKey = context.HttpContext.Request.Headers["x-api-key"];
+                string apiKey = context.HttpContext.Request.Headers["x_api_key"];
 
-                string STORED_API_KEY = ConfigurationUtil.GetConfigurationValue("x-api-key");
+                string STORED_API_KEY = ConfigurationUtil.GetConfigurationValue("x_api_key");
 
                 if (!apiKey.Equals(STORED_API_KEY)) {
                     context.Result = new UnauthorizedResult();

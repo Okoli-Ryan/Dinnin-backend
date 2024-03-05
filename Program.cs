@@ -136,7 +136,6 @@ app.UseEndpoints(endpoints => {
 
     endpoints.MapControllers();
 
-    //   endpoints.MapHub<ServerHub>("/chat");
 });
 
 using (var scope = app.Services.CreateScope()) {

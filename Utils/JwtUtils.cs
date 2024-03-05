@@ -29,15 +29,15 @@
 
         public static JwtToken GetToken(List<Claim> authClaims) {
 
-            var Secret = ConfigurationUtil.GetConfigurationValue("Jwt:Secret");
+            var Secret = ConfigurationUtil.GetConfigurationValue("Jwt_Secret");
 
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Secret));
 
             var ExpiresAt = TimeSpan.FromDays(1);
 
             var token = new JwtSecurityToken(
-                issuer: ConfigurationUtil.GetConfigurationValue("Jwt:Issuer"),
-                audience: ConfigurationUtil.GetConfigurationValue("Jwt:Audience"),
+                issuer: ConfigurationUtil.GetConfigurationValue("Jwt_Issuer"),
+                audience: ConfigurationUtil.GetConfigurationValue("Jwt_Audience"),
                 expires: DateTime.Now.Add(ExpiresAt),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)

@@ -8,8 +8,8 @@ namespace OrderUp_API.Services {
 
         public PushNotificationService(IHttpContextAccessor contextAccessor) {
             var pushNotificationsOptions = new PushNotificationsOptions {
-                InstanceId = ConfigurationUtil.GetConfigurationValue("Pusher-Beams:INSTANCE_ID"),
-                SecretKey = ConfigurationUtil.GetConfigurationValue("Pusher-Beams:SECRET_KEY")
+                InstanceId = ConfigurationUtil.GetConfigurationValue("Pusher_Beams_INSTANCE_ID"),
+                SecretKey = ConfigurationUtil.GetConfigurationValue("Pusher_Beams_SECRET_KEY")
             };
 
             pushNotifications = new PushNotifications(new HttpClient(), pushNotificationsOptions);

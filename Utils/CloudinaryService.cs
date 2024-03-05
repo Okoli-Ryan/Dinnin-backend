@@ -9,9 +9,9 @@ namespace OrderUp_API.Utils {
 
         public CloudinaryService() {
 
-            var cloudName = ConfigurationUtil.GetConfigurationValue("Cloudinary:CLOUD_NAME");
-            var apiKey = ConfigurationUtil.GetConfigurationValue("Cloudinary:API_KEY");
-            var apiSecret = ConfigurationUtil.GetConfigurationValue("Cloudinary:API_SECRET");
+            var cloudName = ConfigurationUtil.GetConfigurationValue("Cloudinary_CLOUD_NAME");
+            var apiKey = ConfigurationUtil.GetConfigurationValue("Cloudinary_API_KEY");
+            var apiSecret = ConfigurationUtil.GetConfigurationValue("Cloudinary_API_SECRET");
 
 
             var CloudinaryAccount = new Account(cloudName, apiKey, apiSecret);

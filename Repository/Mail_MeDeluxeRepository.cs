@@ -18,7 +18,7 @@ namespace OrderUp_API.Repository {
                 Subject = subject,
             };
 
-            var rootUrl = $"https://{ConfigurationUtil.GetConfigurationValue("Rapid-api-header:MeDeluxe-host")}/send-mail";
+            var rootUrl = $"https://{ConfigurationUtil.GetConfigurationValue("Rapid_api_header:MeDeluxe-host")}/send-mail";
 
 
             var response = await NetworkService.Post<MeDeluxeRequestBody, object>(rootUrl, requestBody, null);

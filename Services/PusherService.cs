@@ -7,13 +7,13 @@ namespace OrderUp_API.Services {
         public PusherService() {
 
             var options = new PusherOptions() {
-                Cluster = ConfigurationUtil.GetConfigurationValue("Pusher:APP_CLUSTER"),
+                Cluster = ConfigurationUtil.GetConfigurationValue("Pusher_APP_CLUSTER"),
                 Encrypted = true
             };
 
-            var Pusher_APP_ID = ConfigurationUtil.GetConfigurationValue("Pusher:APP_ID");
-            var Pusher_APP_KEY = ConfigurationUtil.GetConfigurationValue("Pusher:APP_KEY");
-            var Pusher_APP_SECRET = ConfigurationUtil.GetConfigurationValue("Pusher:APP_SECRET");
+            var Pusher_APP_ID = ConfigurationUtil.GetConfigurationValue("Pusher_APP_ID");
+            var Pusher_APP_KEY = ConfigurationUtil.GetConfigurationValue("Pusher_APP_KEY");
+            var Pusher_APP_SECRET = ConfigurationUtil.GetConfigurationValue("Pusher_APP_SECRET");
 
             var PusherInstance = new PusherServer.Pusher(Pusher_APP_ID, Pusher_APP_KEY, Pusher_APP_SECRET, options);
 

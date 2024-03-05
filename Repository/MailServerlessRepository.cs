@@ -29,7 +29,7 @@ namespace OrderUp_API.Repository {
                 Subject = subject,
 
             };
-            var rootUrl = $"https://{ConfigurationUtil.GetConfigurationValue("Rapid-api-header:host")}/send";
+            var rootUrl = $"https://{ConfigurationUtil.GetConfigurationValue("Rapid_api_header_host")}/send";
 
 
             var response = await NetworkService.Post<EmailRequestBody, object>(rootUrl, requestBody, null);

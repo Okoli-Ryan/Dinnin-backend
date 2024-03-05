@@ -1,9 +1,4 @@
-﻿
-using Azure;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-
-namespace OrderUp_API.Controllers {
+﻿namespace OrderUp_API.Controllers {
 
     [ApiController]
     [ServiceFilter(typeof(ModelValidationActionFilter))]
@@ -13,21 +8,18 @@ namespace OrderUp_API.Controllers {
         readonly AdminService adminService;
         readonly IMapper mapper;
         readonly ControllerResponseHandler ResponseHandler;
-        readonly MailService mailService;
 
-        public AdminController(AdminService adminService, IMapper mapper, MailService mailService) {
+        public AdminController(AdminService adminService, IMapper mapper) {
 
             this.adminService = adminService;
             this.mapper = mapper;
             ResponseHandler = new ControllerResponseHandler();
-            this.mailService = mailService;
         }
 
         [HttpGet("test")]
-        public async Task<IActionResult> Test([FromQuery] string To)
+        public IActionResult Test()
         {
-            var response = await mailService.SendMail(new List<string> { To }, "No Subject", "Testing", "text");
-            return Ok(response);
+            return Ok("This works");
         }
 
 
@@ -78,8 +70,8 @@ namespace OrderUp_API.Controllers {
         }
 
 
-        [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] Guid UserID, [FromBody] string NewPassword) {
+        [HttpPost("reset-password/{UserID}")]
+        public async Task<IActionResult> ResetPassword(Guid UserID, [FromBody] string NewPassword) {
 
             var response = await adminService.HandleResetPassword(UserID, NewPassword);
 

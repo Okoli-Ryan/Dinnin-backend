@@ -18,7 +18,7 @@ namespace OrderUp_API.Services {
 
         public async Task<bool> SendVerificationCode(string Receipient, Guid UserID, string Code) {
 
-            var dashboardClient = ConfigurationUtil.GetConfigurationValue("Dinnin-Dashboard-Client");
+            var dashboardClient = ConfigurationUtil.GetConfigurationValue("Dinnin_Dashboard_Client");
 
             var body = $"<a href='{dashboardClient}/verify/{UserID}/{Code}'>Verify your account</a>";
 
@@ -29,7 +29,7 @@ namespace OrderUp_API.Services {
 
         public async Task<bool> SendForgotPasswordEmail(string Receipient, Guid UserID, string Code) {
 
-            var dashboardClient = ConfigurationUtil.GetConfigurationValue("Dinnin-Dashboard-Client");
+            var dashboardClient = ConfigurationUtil.GetConfigurationValue("Dinnin_Dashboard_Client");
 
             var body = $"<a href='{dashboardClient}/reset/{UserID}/{Code}'>Click link to reset your password</a>";
 

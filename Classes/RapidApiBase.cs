@@ -6,8 +6,8 @@
         public RapidApiBase() {
 
             var headers = new Dictionary<string, string>() {
-                {"X-RapidAPI-Key", ConfigurationUtil.GetConfigurationValue("Rapid-api-header:key") },
-                {"X-RapidAPI-Host", ConfigurationUtil.GetConfigurationValue("Rapid-api-header:host")},
+                {"X-RapidAPI-Key", ConfigurationUtil.GetConfigurationValue("Rapid_api_header_key") },
+                {"X-RapidAPI-Host", ConfigurationUtil.GetConfigurationValue("Rapid_api_header_host")},
             };
 
             NetworkService = new NetworkService(headers);
