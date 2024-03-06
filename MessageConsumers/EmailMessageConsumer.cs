@@ -21,13 +21,11 @@ namespace OrderUp_API.MessageConsumers {
 
             channel = connection.CreateModel();
 
-            //foreach (var queue in MessageQueueList.getQueue()) {
+            foreach (var queue in MessageQueueList.getQueue()) {
 
-            channel.QueueDeclare(queue: MessageQueueTopics.EMAIL);
-            channel.QueueDeclare(queue: MessageQueueTopics.FORGOT_PASSWORD);
-            channel.QueueDeclare(queue: MessageQueueTopics.PUSH_NOTIFICATION);
+                channel.QueueDeclare(queue: queue);
 
-            //}
+            }
 
         }
 

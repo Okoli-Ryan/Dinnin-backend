@@ -103,6 +103,14 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
 });
 
 
+//builder.Services.AddHttpsRedirection(options => {
+//    options.HttpsPort = 80;
+//});
+
+var port = Environment.GetEnvironmentVariable("PORT") ?? "80";
+builder.WebHost.UseUrls($"http://*:{port}");
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -121,9 +129,7 @@ app.UseCors(options => {
 });
 app.UseRouting();
 
-
-app.UseHttpsRedirection();
-
+//app.UseHttpsRedirection();
 //app.UseCookiePolicy();
 
 app.UseAuthentication();
