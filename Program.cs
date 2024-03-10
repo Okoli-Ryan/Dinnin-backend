@@ -107,7 +107,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
 //    options.HttpsPort = 80;
 //});
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "80";
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://*:{port}");
 
 

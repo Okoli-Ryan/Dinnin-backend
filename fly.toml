@@ -1,15 +1,15 @@
-# fly.toml app configuration file generated for orderup-api-holy-frog-2010-summer-bush-8024 on 2024-03-04T19:14:07+01:00
+# fly.toml app configuration file generated for orderup-api-holy-frog-2010-summer-bush-8024-blue-fog-5896 on 2024-03-06T12:36:47+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'orderup-api-holy-frog-2010-summer-bush-8024'
+app = 'orderup-api-holy-frog-2010-summer-bush-8024-blue-fog-5896'
 primary_region = 'ams'
 
 [build]
 
 [http_service]
-  internal_port = 80
+  internal_port = 8080
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true

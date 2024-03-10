@@ -1,22 +1,22 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# Adjust DOTNET_OS_VERSION as desired
+ARG DOTNET_OS_VERSION="-alpine"
+ARG DOTNET_SDK_VERSION=6.0
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_VERSION}${DOTNET_OS_VERSION} AS build
 WORKDIR /src
-COPY ["OrderUp_API.csproj", "."]
-RUN dotnet restore "./OrderUp_API.csproj"
-COPY . .
-WORKDIR "/src/."
-RUN dotnet build "OrderUp_API.csproj" -c Release -o /app/build
 
-FROM build AS publish
-RUN dotnet publish "OrderUp_API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+# copy everything
+COPY . ./
+# restore as distinct layers
+RUN dotnet restore
+# build and publish a release
+RUN dotnet publish -c Release -o /app
 
-FROM base AS final
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_SDK_VERSION}
+ENV ASPNETCORE_URLS http://+:8080
+ENV ASPNETCORE_ENVIRONMENT Production
+EXPOSE 8080
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "OrderUp_API.dll"]
+COPY --from=build /app .
+ENTRYPOINT [ "dotnet", "OrderUp_API.dll" ]
