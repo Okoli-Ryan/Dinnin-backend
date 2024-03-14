@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Profiles {
-    public class SidesProfile : Profile{
+    public class SidesProfile : Profile {
 
         public SidesProfile() {
 

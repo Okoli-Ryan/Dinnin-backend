@@ -1,7 +1,4 @@
-﻿using OrderUp_API.Classes;
-using OrderUp_API.DTOs;
-
-namespace OrderUp_API.Services {
+﻿namespace OrderUp_API.Services {
     public class VerificationCodeService {
 
         private readonly VerificationCodeRepository verificationCodeRepository;
@@ -126,7 +123,7 @@ namespace OrderUp_API.Services {
 
                 var VerifyUserResponse = await CustomerUserEntityService.VerifyUserEntity(VerificationModel.UserID, userRepository);
 
-                if(VerifyUserResponse is null) {
+                if (VerifyUserResponse is null) {
                     return InvalidToken;
                 }
 

@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.DTOs {
-    public class SideOrderItemDto : AbstractDto{
+    public class SideOrderItemDto : AbstractDto {
 
         public int quantity { get; set; }
 

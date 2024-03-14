@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using OrderUp_API.Classes.AnalyticsModels;
-
-namespace OrderUp_API.Controllers {
+﻿namespace OrderUp_API.Controllers {
     [Route("api/v1/[controller]")]
     [ServiceFilter(typeof(ModelValidationActionFilter))]
     [ApiController]

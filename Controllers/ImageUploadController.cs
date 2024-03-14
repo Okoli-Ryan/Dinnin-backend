@@ -12,7 +12,7 @@ namespace OrderUp_API.Controllers {
         public ImageUploadController(CloudinaryService imageUploadService) {
             this.imageUploadService = imageUploadService;
             ResponseHandler = new ControllerResponseHandler();
-            
+
         }
 
         [HttpPost]
@@ -22,7 +22,7 @@ namespace OrderUp_API.Controllers {
             var response = imageUploadService.Upload(fileBody.file, fileBody.folderName);
 
             return ResponseHandler.HandleResponse(response);
-        } 
-        
+        }
+
     }
 }

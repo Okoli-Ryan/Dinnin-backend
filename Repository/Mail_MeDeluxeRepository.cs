@@ -1,12 +1,11 @@
 ﻿using OrderUp_API.Classes.MailClasses;
-using OrderUp_API.Utils;
 
 namespace OrderUp_API.Repository {
     public class Mail_MeDeluxeRepository : RapidApiBase, IMailRepository {
 
         public Mail_MeDeluxeRepository() : base() {
 
-        } 
+        }
 
         public async Task<bool> SendMail(List<string> receipients, string subject, string body, string contentType, string sender) {
 

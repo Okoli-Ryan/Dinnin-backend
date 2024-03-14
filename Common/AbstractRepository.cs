@@ -3,7 +3,7 @@
 
         public readonly OrderUpDbContext context;
 
-        public AbstractRepository(OrderUpDbContext context) { 
+        public AbstractRepository(OrderUpDbContext context) {
             this.context = context;
         }
 
@@ -34,7 +34,7 @@
 
         public async Task<List<T>> Save(List<T> t) {
 
-            foreach(T _t in t) {
+            foreach (T _t in t) {
                 _t.CreatedAt = DateTime.Now;
                 _t.UpdatedAt = DateTime.Now;
                 _t.ActiveStatus = true;
@@ -55,7 +55,7 @@
 
 
 
-        public async Task<T> Update (T t) {
+        public async Task<T> Update(T t) {
 
             try {
 

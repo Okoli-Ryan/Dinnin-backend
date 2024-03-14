@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Net.Http.Headers;
 
 namespace OrderUp_API.Utils {
     public class NetworkService {
@@ -41,7 +40,7 @@ namespace OrderUp_API.Utils {
 
                 var responseBodyString = await response.Content.ReadAsStringAsync();
 
-                if (String.IsNullOrEmpty(responseBodyString)){
+                if (String.IsNullOrEmpty(responseBodyString)) {
                     return new DefaultSuccessResponse<ResponseBodyType>(default);
                 }
 

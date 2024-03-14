@@ -1,9 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
-namespace OrderUp_API.Models {
+﻿namespace OrderUp_API.Models {
     [Microsoft.EntityFrameworkCore.Index(nameof(Slug), IsUnique = true)]
-    public class Restaurant : AbstractEntity{
+    public class Restaurant : AbstractEntity {
 
         public Restaurant() {
             Admins = new HashSet<Admin>();

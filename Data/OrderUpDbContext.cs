@@ -1,12 +1,12 @@
 ﻿namespace OrderUp_API.Data {
     public class OrderUpDbContext : DbContext {
 
-        public OrderUpDbContext(DbContextOptions<OrderUpDbContext> options) : base(options) { 
-        
+        public OrderUpDbContext(DbContextOptions<OrderUpDbContext> options) : base(options) {
+
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { 
-        
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+
             optionsBuilder.UseSnakeCaseNamingConvention();
 
         }
@@ -41,5 +41,5 @@
 
 
     }
-    
+
 }

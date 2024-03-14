@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Models {
-    public class MenuItem : AbstractEntity{
+    public class MenuItem : AbstractEntity {
 
         [Required]
         [MaxLength(50)]
@@ -20,7 +20,7 @@
         public string? ImageUrl { get; set; }
 
         [ForeignKey("MenuCategory")]
-        public Guid MenuCategoryID { get; set; }  
+        public Guid MenuCategoryID { get; set; }
 
         //public virtual MenuCategory? MenuCategory { get; set; }
 

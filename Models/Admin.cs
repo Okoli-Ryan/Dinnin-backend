@@ -1,8 +1,6 @@
-﻿using OrderUp_API.Interfaces.IUser;
-
-namespace OrderUp_API.Models {
+﻿namespace OrderUp_API.Models {
     [Table(name: "Admin")]
-    public class Admin : IUserEntity{
+    public class Admin : IUserEntity {
 
         [Required]
         [MaxLength(16)]

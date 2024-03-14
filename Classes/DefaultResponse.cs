@@ -18,7 +18,7 @@
             ResponseMessage = ResponseMessages.FAILURE;
             ResponseData = default;
         }
-        
+
         public DefaultErrorResponse(T response) : base() {
             ResponseCode = ResponseCodes.FAILURE;
             ResponseMessage = ResponseMessages.FAILURE;
@@ -38,17 +38,17 @@
         }
     }
 
-    public class DefaultNotFoundResponse<T> : DefaultErrorResponse<T> { 
-        
+    public class DefaultNotFoundResponse<T> : DefaultErrorResponse<T> {
+
         public DefaultNotFoundResponse(string ErrorMessage = ResponseMessages.NOT_FOUND) : base() {
             ResponseCode = ResponseCodes.NOT_FOUND;
             ResponseMessage = ErrorMessage;
             ResponseData = default;
         }
     }
-    
-    public class DefaultFailureResponse<T> : DefaultErrorResponse<T> { 
-        
+
+    public class DefaultFailureResponse<T> : DefaultErrorResponse<T> {
+
         public DefaultFailureResponse(string ErrorMessage = ResponseMessages.FAILURE) : base() {
             ResponseCode = ResponseCodes.FAILURE;
             ResponseMessage = ErrorMessage;

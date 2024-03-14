@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [ServiceFilter(typeof(ModelValidationActionFilter))]
@@ -17,8 +19,8 @@
         }
 
         [HttpGet("test")]
-        public IActionResult Test()
-        {
+        [Authorize(Roles = RoleTypes.SuperAdmin)]
+        public IActionResult Test() {
             return Ok("This works");
         }
 
@@ -37,18 +39,30 @@
 
 
         [HttpPost()]
-        //[Authorize(Roles = RoleTypes.SuperAdmin)]
         public async Task<IActionResult> AddAdmin([FromBody] AdminDto adminDto) {
 
             var mappedAdmin = mapper.Map<Admin>(adminDto);
 
-            var addedAdmin = await adminService.RegisterAdmin(mappedAdmin);
+            var addedAdmin = await adminService.RegisterAdmin(mappedAdmin, false);
 
             if (!addedAdmin.ResponseCode.Equals(ResponseCodes.SUCCESS)) {
                 return BadRequest(addedAdmin);
             }
 
             return Ok(addedAdmin.ResponseData);
+        }
+
+
+        [HttpPost("add-staff")]
+        [Authorize(Roles = RoleTypes.SuperAdmin)]
+        public async Task<IActionResult> RegisterStaff([FromBody] AdminDto adminDto) {
+
+            var mappedAdmin = mapper.Map<Admin>(adminDto);
+
+            var addedAdmin = await adminService.RegisterAdmin(mappedAdmin, true);
+
+            return ResponseHandler.HandleResponse(addedAdmin);
+
         }
 
 
@@ -59,8 +73,8 @@
 
             return ResponseHandler.HandleResponse(response);
         }
-        
-        
+
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] string Email) {
 
@@ -102,8 +116,15 @@
         }
 
 
+        [HttpGet("/access-denied")]
+        public IActionResult AccessDenied() {
 
-
+            return ResponseHandler.HandleResponse(new DefaultErrorResponse<object>() {
+                ResponseCode = ResponseCodes.UNAUTHORIZED,
+                ResponseData = null,
+                ResponseMessage = ResponseMessages.UNAUTHORIZED
+            }); ;
+        }
 
     }
 }

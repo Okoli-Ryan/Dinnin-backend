@@ -8,7 +8,7 @@
         public const String INVALID_TOKEN = "Invalid Token";
         public const String INVALID_CREDENTIALS = "Invalid credentials. Try again";
         public const String USER_ALREADY_EXIST = "User already exist";
-       
+
 
     }
 }

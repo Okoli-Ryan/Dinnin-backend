@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Profiles {
-    public class OrderProfile : Profile{
+    public class OrderProfile : Profile {
 
         public OrderProfile() {
 

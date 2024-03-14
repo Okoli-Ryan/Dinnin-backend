@@ -1,72 +1,59 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using OrderUp_API.Constants;
-using OrderUp_API.Models;
 
-namespace OrderUp_API.Services
-{
-    public class AdminService
-    {
+namespace OrderUp_API.Services {
+    public class AdminService {
 
         private readonly AdminRepository adminRepository;
         private readonly IMapper mapper;
-        private readonly OrderUpDbContext context;
-        private readonly VerificationCodeService verificationCodeService;
         private readonly MessageProducerService messageProducerService;
         private readonly HttpContext httpContext;
 
-        public AdminService(AdminRepository adminRepository, IMapper mapper, OrderUpDbContext context, VerificationCodeService verificationCodeService, MessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor)
-        {
+        public AdminService(AdminRepository adminRepository, IMapper mapper, MessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor) {
             this.adminRepository = adminRepository;
             this.mapper = mapper;
-            this.context = context;
-            this.verificationCodeService = verificationCodeService;
             this.messageProducerService = messageProducerService;
-            this.httpContext = httpContextAccessor.HttpContext;
+            httpContext = httpContextAccessor.HttpContext;
         }
 
-        public async Task<DefaultResponse<AdminDto>> RegisterAdmin(Admin Admin)
-        {
+        public async Task<DefaultResponse<AdminDto>> RegisterAdmin(Admin Admin, bool isNewStaff) {
 
             var ExistingAdmin = await GetAdminByEmail(Admin.Email);
 
-            if (ExistingAdmin is not null) return new DefaultResponse<AdminDto>()
-            {
+            if (ExistingAdmin is not null) return new DefaultResponse<AdminDto>() {
                 ResponseCode = ResponseCodes.USER_ALREADY_EXIST,
                 ResponseMessage = ResponseMessages.USER_ALREADY_EXIST,
                 ResponseData = null
             };
 
+            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
-            Admin.Role = RoleTypes.SuperAdmin;
+
+            Admin.Role = isNewStaff ? RoleTypes.Admin : RoleTypes.SuperAdmin;
             Admin.IsEmailConfirmed = false;
-
-            using var transaction = context.Database.BeginTransaction();
+            Admin.RestaurantID = isNewStaff ? RestaurantID : null;
 
             var CreatedAccount = await Save(Admin);
 
+            if (CreatedAccount is null) return new DefaultErrorResponse<AdminDto>();
 
-            messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel
-            {
+
+            messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
                 ID = CreatedAccount.id,
                 Role = RoleTypes.Admin,
                 Email = CreatedAccount.emailAddress
             });
-
-            transaction.Commit();
 
             return new DefaultSuccessResponse<AdminDto>(CreatedAccount);
 
         }
 
 
-        public async Task<DefaultResponse<AdminDto>> LoginAsAdmin(LoginModel loginModel)
-        {
+        public async Task<DefaultResponse<AdminDto>> LoginAsAdmin(LoginModel loginModel) {
 
             var ExistingAdmin = await GetAdminByEmail(loginModel.Email);
 
-            var InvalidResponse = new DefaultErrorResponse<AdminDto>()
-            {
+            var InvalidResponse = new DefaultErrorResponse<AdminDto>() {
                 ResponseCode = ResponseCodes.INVALID_CREDENTIALS,
                 ResponseMessage = ResponseMessages.INVALID_CREDENTIALS
             };
@@ -74,31 +61,25 @@ namespace OrderUp_API.Services
 
             if (ExistingAdmin is null) return InvalidResponse;
 
-            
+
             var isPasswordCorrect = AuthenticationHelper.VerifyPassword(loginModel.Password, ExistingAdmin.Password);
 
             if (!isPasswordCorrect) return InvalidResponse;
 
-            if (!ExistingAdmin.IsEmailConfirmed)
-            {
+            if (!ExistingAdmin.IsEmailConfirmed) {
 
-                messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel
-                {
+                messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
                     ID = ExistingAdmin.ID,
                     Role = RoleTypes.Admin,
                     Email = ExistingAdmin.Email
                 });
 
-                return new DefaultErrorResponse<AdminDto>()
-                {
+                return new DefaultErrorResponse<AdminDto>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
                     ResponseMessage = "A verification code was sent to you",
                     ResponseData = null
                 };
             }
-
-
-
 
             var authClaims = new List<Claim>() {
                 new Claim(ClaimTypes.Role, ExistingAdmin.Role),
@@ -143,7 +124,7 @@ namespace OrderUp_API.Services
 
             var Admin = await GetByID(UserID);
 
-            if(Admin is null) {
+            if (Admin is null) {
 
                 return new DefaultNotFoundResponse<bool>();
             }
@@ -153,7 +134,7 @@ namespace OrderUp_API.Services
 
             var UpdatedAdmin = await Update(Admin);
 
-            if(UpdatedAdmin is null) return new DefaultFailureResponse<bool>();
+            if (UpdatedAdmin is null) return new DefaultFailureResponse<bool>();
 
             return new DefaultSuccessResponse<bool>(true);
 
@@ -168,14 +149,12 @@ namespace OrderUp_API.Services
 
         }
 
-        public async Task<Admin> GetAdminByEmail(string Email)
-        {
+        public async Task<Admin> GetAdminByEmail(string Email) {
 
             return await adminRepository.GetAdminByEmail(Email);
         }
 
-        public async Task<AdminDto> Save(Admin admin)
-        {
+        public async Task<AdminDto> Save(Admin admin) {
 
             admin.Password = AuthenticationHelper.HashPassword(admin.Password);
 
@@ -185,16 +164,14 @@ namespace OrderUp_API.Services
         }
 
 
-        public async Task<AdminDto> GetByID(Guid ID)
-        {
+        public async Task<AdminDto> GetByID(Guid ID) {
 
             var admin = await adminRepository.GetByID(ID);
 
             return mapper.Map<AdminDto>(admin);
         }
 
-        public async Task<DefaultResponse<AdminDto>> Update(AdminDto admin)
-        {
+        public async Task<DefaultResponse<AdminDto>> Update(AdminDto admin) {
 
             var mappedAdmin = mapper.Map<Admin>(admin);
 
@@ -207,33 +184,28 @@ namespace OrderUp_API.Services
             return new DefaultSuccessResponse<AdminDto>(mappedResponse);
         }
 
-        public async Task<bool> Delete(Guid ID)
-        {
+        public async Task<bool> Delete(Guid ID) {
 
             return await adminRepository.Delete(ID);
         }
 
-        public async Task<bool> Delete(List<Admin> admin)
-        {
+        public async Task<bool> Delete(List<Admin> admin) {
 
             return await adminRepository.Delete(admin);
         }
 
-        public AdminDto ParseAdminResponse(Admin admin)
-        {
+        public AdminDto ParseAdminResponse(Admin admin) {
 
             var response = mapper.Map<AdminDto>(admin);
             response.password = null;
             return response;
         }
 
-        public List<AdminDto> ParseAdminResponse(List<Admin> admins)
-        {
+        public List<AdminDto> ParseAdminResponse(List<Admin> admins) {
 
             var response = mapper.Map<List<AdminDto>>(admins);
 
-            foreach (var admin in response)
-            {
+            foreach (var admin in response) {
                 admin.password = null;
             }
             return response;

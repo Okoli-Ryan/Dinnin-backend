@@ -1,6 +1,4 @@
-﻿using OrderUp_API.Utils;
-
-namespace OrderUp_API.Controllers {
+﻿namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/table")]

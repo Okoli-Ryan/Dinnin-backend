@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Repository {
-    public class VerificationCodeRepository : AbstractRepository<VerificationCode>{
+    public class VerificationCodeRepository : AbstractRepository<VerificationCode> {
 
         public VerificationCodeRepository(OrderUpDbContext context) : base(context) { }
 
@@ -7,7 +7,7 @@
 
             var OldVerificationCode = await context.VerificationCode.FirstOrDefaultAsync(x => x.UserID.Equals(UserId));
 
-            if(OldVerificationCode is not null) {
+            if (OldVerificationCode is not null) {
                 OldVerificationCode.ActiveStatus = false;
 
                 context.SaveChanges();
@@ -37,6 +37,6 @@
             return VerificationModel;
         }
 
-        
+
     }
 }

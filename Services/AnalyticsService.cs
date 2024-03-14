@@ -1,6 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OrderUp_API.Classes.AnalyticsModels;
+﻿using OrderUp_API.Classes.AnalyticsModels;
 using System.Globalization;
 
 namespace OrderUp_API.Services {

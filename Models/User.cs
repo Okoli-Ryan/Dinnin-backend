@@ -1,8 +1,6 @@
-﻿using OrderUp_API.Interfaces.IUser;
-
-namespace OrderUp_API.Models {
+﻿namespace OrderUp_API.Models {
     [Microsoft.EntityFrameworkCore.Index(nameof(Email), IsUnique = true)]
-    public class User : IUserEntity{
+    public class User : IUserEntity {
 
         [Required]
         [MaxLength(50)]

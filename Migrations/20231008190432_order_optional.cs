@@ -2,14 +2,11 @@
 
 #nullable disable
 
-namespace OrderUpAPI.Migrations
-{
+namespace OrderUpAPI.Migrations {
     /// <inheritdoc />
-    public partial class orderoptional : Migration
-    {
+    public partial class orderoptional : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.AlterColumn<decimal>(
                 name: "order_amount",
                 table: "order",
@@ -20,8 +17,7 @@ namespace OrderUpAPI.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.AlterColumn<decimal>(
                 name: "order_amount",
                 table: "order",

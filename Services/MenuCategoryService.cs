@@ -47,7 +47,7 @@
 
             return new DefaultSuccessResponse<MenuCategoryDto>(mappedResponse);
         }
-        
+
         public async Task<DefaultResponse<List<MenuCategoryDto>>> Update(List<MenuCategory> menuCategories) {
 
             var updatedMenuCategories = await menuCategoryRepository.Update(menuCategories);
@@ -63,7 +63,7 @@
 
             var response = await menuCategoryRepository.Delete(ID);
 
-            if(!response) return new DefaultErrorResponse<bool>();
+            if (!response) return new DefaultErrorResponse<bool>();
 
             return new DefaultSuccessResponse<bool>(response);
         }
@@ -77,7 +77,7 @@
 
             var menuCategories = menuCategoryRepository.GetMenuCategoryByRestaurantID(RestaurantID);
 
-            if(menuCategories is null) {
+            if (menuCategories is null) {
                 return new DefaultErrorResponse<List<MenuCategoryDto>>();
             }
 

@@ -8,7 +8,7 @@
               .ForMember(dest => dest.ActiveStatus, opt => opt.MapFrom(src => src.activeStatus))
               .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.createdAt))
               .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.updatedAt));
-              
+
 
             CreateMap<SidesOrder, SidesOrderDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.ID))

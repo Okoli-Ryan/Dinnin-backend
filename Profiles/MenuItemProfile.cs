@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Profiles {
-    public class MenuItemProfile : Profile{
+    public class MenuItemProfile : Profile {
 
         public MenuItemProfile() {
 
@@ -14,7 +14,7 @@
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.description))
                 .ForMember(dest => dest.MenuCategoryID, opt => opt.MapFrom(src => src.menuCategoryId))
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.imageUrl));
-                //.ForMember(dest => dest.MenuCategory, opt => opt.MapFrom(src => src.menuCategory));
+            //.ForMember(dest => dest.MenuCategory, opt => opt.MapFrom(src => src.menuCategory));
 
             CreateMap<MenuItem, MenuItemDto>()
                 .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.ID))
@@ -27,7 +27,7 @@
                 .ForMember(dest => dest.restaurantId, opt => opt.MapFrom(src => src.RestaurantId))
                 .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.menuCategoryId, opt => opt.MapFrom(src => src.MenuCategoryID));
-                //.ForMember(dest => dest.menuCategory, opt => opt.MapFrom(src => src.MenuCategory));
+            //.ForMember(dest => dest.menuCategory, opt => opt.MapFrom(src => src.MenuCategory));
         }
     }
 }

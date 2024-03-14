@@ -16,7 +16,7 @@
         }
 
 
-        public async Task<T> GetUserEntityByID(Guid ID)  {
+        public async Task<T> GetUserEntityByID(Guid ID) {
             var User = await UserEntityRepository.GetUserEntityByID<T>(ID);
 
             return User;

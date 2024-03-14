@@ -2,14 +2,11 @@
 
 #nullable disable
 
-namespace OrderUpAPI.Migrations
-{
+namespace OrderUpAPI.Migrations {
     /// <inheritdoc />
-    public partial class ordertable : Migration
-    {
+    public partial class ordertable : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.CreateIndex(
                 name: "ix_order_table_id",
                 table: "order",
@@ -24,8 +21,7 @@ namespace OrderUpAPI.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "fk_order_tables_table_id",
                 table: "order");

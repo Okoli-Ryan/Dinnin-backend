@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using OrderUp_API.Interfaces;
 using OrderUp_API.MessageConsumers;
 using OrderUp_API.Middlewares;
-using OrderUp_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +34,10 @@ builder.Services.AddAuthentication(options => {
 
 })
 
-    .AddCookie();
+    .AddCookie(options => {
+        options.AccessDeniedPath = "/access-denied";
+        options.LoginPath = "/access-denied";
+    });
 
 builder.Services.AddSignalR();
 builder.Services.AddHttpContextAccessor();
@@ -89,6 +89,7 @@ builder.Services.AddScoped<PushNotificationService>();
 
 
 builder.Services.AddScoped<VerificationQueueHandler<EmailMQModel>>();
+builder.Services.AddScoped<ForgotPasswordQueueHandler<EmailMQModel>>();
 builder.Services.AddScoped<PushNotificationQueueHandler<PushNotificationBody>>();
 
 

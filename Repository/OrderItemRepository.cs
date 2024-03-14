@@ -1,7 +1,7 @@
 ﻿using OrderUp_API.Classes.AnalyticsModels;
 
 namespace OrderUp_API.Repository {
-    public class OrderItemRepository : AbstractRepository<OrderItem>{
+    public class OrderItemRepository : AbstractRepository<OrderItem> {
 
         public OrderItemRepository(OrderUpDbContext context) : base(context) { }
 

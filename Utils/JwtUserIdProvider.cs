@@ -8,7 +8,7 @@
 
             Claim RestaurantClaim = connection.User?.FindFirst(RestaurantIdentifier.RestaurantID_ClaimType);
 
-            if(RestaurantClaim is not null) {
+            if (RestaurantClaim is not null) {
 
                 connectionId = RestaurantIdentifier.ParseRestaurantName(RestaurantClaim.Value);
                 return connectionId;

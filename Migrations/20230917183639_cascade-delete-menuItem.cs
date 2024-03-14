@@ -1,16 +1,12 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace OrderUpAPI.Migrations
-{
+namespace OrderUpAPI.Migrations {
     /// <inheritdoc />
-    public partial class cascadedeletemenuItem : Migration
-    {
+    public partial class cascadedeletemenuItem : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "fk_menu_items_menu_category_menu_category_id",
                 table: "menu_items");
@@ -56,8 +52,7 @@ namespace OrderUpAPI.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "fk_menu_items_menu_category_menu_category_id",
                 table: "menu_items");

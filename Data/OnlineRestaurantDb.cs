@@ -28,7 +28,7 @@ namespace OrderUp_API.Data {
             int previousValue;
             OnlineRestaurants.TryGetValue(RestaurantID, out previousValue);
 
-            OnlineRestaurants.TryUpdate(RestaurantID, previousValue-1, previousValue);
+            OnlineRestaurants.TryUpdate(RestaurantID, previousValue - 1, previousValue);
         }
 
         public ConcurrentDictionary<string, int> GetOnlineRestaurants() {
@@ -38,7 +38,7 @@ namespace OrderUp_API.Data {
         public bool isOnline(string RestaurantID) {
 
             int NumberOfOnlineRestaurantAdmins = 0;
-            
+
             bool restautantIsOnline = OnlineRestaurants.TryGetValue(RestaurantID, out NumberOfOnlineRestaurantAdmins);
             return restautantIsOnline;
         }

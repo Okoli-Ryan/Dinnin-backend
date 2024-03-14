@@ -6,7 +6,7 @@
 
         readonly VerificationCodeService verificationService;
         readonly ControllerResponseHandler ResponseHandler;
-            
+
         public VerificationCodeController(VerificationCodeService verificationService) {
             this.verificationService = verificationService;
             ResponseHandler = new ControllerResponseHandler();

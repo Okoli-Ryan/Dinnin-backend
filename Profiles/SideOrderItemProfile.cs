@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Profiles {
-    public class SideOrderItemProfile : Profile{
+    public class SideOrderItemProfile : Profile {
 
         public SideOrderItemProfile() {
 
@@ -25,7 +25,7 @@
                 .ForMember(dest => dest.sideOrderId, opt => opt.MapFrom(src => src.SideOrderID))
                 .ForMember(dest => dest.sideItem, opt => opt.MapFrom(src => src.SideItem))
                 .ForMember(dest => dest.sidesOrder, opt => opt.MapFrom(src => src.SidesOrder));
-                
+
         }
     }
 }

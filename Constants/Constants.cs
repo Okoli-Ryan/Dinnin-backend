@@ -28,14 +28,14 @@
             return MESSAGE_QUEUE_LIST;
         }
     }
-    
+
     public interface AnalyticsConstants {
 
         public const string GROUP_BY_DATE = "date";
         public const string GROUP_BY_DAY = "day";
         public const string GROUP_BY_WEEK = "week";
         public const string GROUP_BY_MONTH = "month";
-        
+
     }
-        
+
 }

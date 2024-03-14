@@ -2,14 +2,11 @@
 
 #nullable disable
 
-namespace OrderUpAPI.Migrations
-{
+namespace OrderUpAPI.Migrations {
     /// <inheritdoc />
-    public partial class orderorderstatus : Migration
-    {
+    public partial class orderorderstatus : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.AddColumn<string>(
                 name: "order_status",
                 table: "order",
@@ -19,8 +16,7 @@ namespace OrderUpAPI.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropColumn(
                 name: "order_status",
                 table: "order");

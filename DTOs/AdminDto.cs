@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.DTOs {
-    public class AdminDto : IUserEntityDto{
+    public class AdminDto : IUserEntityDto {
 
         public string firstName { get; set; }
 

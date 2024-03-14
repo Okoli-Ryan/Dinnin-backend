@@ -1,5 +1,4 @@
 ﻿using OrderUp_API.MessageConsumers;
-using System.Net;
 
 namespace OrderUp_API.Services {
     public class OrderService {
@@ -103,7 +102,7 @@ namespace OrderUp_API.Services {
 
             var pusherResponse = await pusherService.TriggerMessage(MappedOrder, OrderModelConstants.NEW_ORDER_EVENT, RestaurantIdString);
 
-            messageProducerService.SendMessage(MessageQueueTopics.PUSH_NOTIFICATION, new PushNotificationBody () {
+            messageProducerService.SendMessage(MessageQueueTopics.PUSH_NOTIFICATION, new PushNotificationBody() {
 
                 RestaurantID = SavedOrder.RestaurantId,
                 Message = new PushNotificationMessage {

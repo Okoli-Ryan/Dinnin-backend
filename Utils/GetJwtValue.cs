@@ -40,8 +40,8 @@
             return claim.Value;
 
         }
-        
-        
+
+
         public static Guid? GetGuidFromCookie(HttpContext context, string key) {
 
             // Check if the token exists

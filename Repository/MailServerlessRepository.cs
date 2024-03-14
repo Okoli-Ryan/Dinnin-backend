@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using OrderUp_API.Classes.MailClasses;
-using OrderUp_API.Interfaces;
-using System.Net.Http.Headers;
+﻿using OrderUp_API.Classes.MailClasses;
 
 namespace OrderUp_API.Repository {
     public class MailServerlessRepository : RapidApiBase, IMailRepository {

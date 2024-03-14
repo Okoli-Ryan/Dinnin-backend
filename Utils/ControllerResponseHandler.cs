@@ -1,6 +1,4 @@
-﻿using Azure;
-
-namespace OrderUp_API.Utils {
+﻿namespace OrderUp_API.Utils {
     public class ControllerResponseHandler : ControllerBase {
 
         public IActionResult HandleResponse<T>(DefaultResponse<T> response) {

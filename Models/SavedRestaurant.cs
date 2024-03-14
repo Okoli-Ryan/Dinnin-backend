@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Models {
-    public class SavedRestaurant : AbstractEntity{
+    public class SavedRestaurant : AbstractEntity {
 
         [ForeignKey("Restaurant")]
         public Guid RestaurantID { get; set; }

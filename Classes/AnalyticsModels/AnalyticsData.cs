@@ -1,6 +1,5 @@
-﻿namespace OrderUp_API.Classes.AnalyticsModels
-{
-    public class AnalyticsData{
+﻿namespace OrderUp_API.Classes.AnalyticsModels {
+    public class AnalyticsData {
 
         public AnalyticsGrowth<int> CompletedOrders { get; set; }
 

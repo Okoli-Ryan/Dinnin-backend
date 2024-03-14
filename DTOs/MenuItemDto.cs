@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.DTOs {
-    public class MenuItemDto : AbstractDto{
+    public class MenuItemDto : AbstractDto {
 
         public string menuItemName { get; set; }
 

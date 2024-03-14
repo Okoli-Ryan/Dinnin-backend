@@ -1,6 +1,4 @@
-﻿using Mailjet.Client.Resources;
-using Newtonsoft.Json;
-using OrderUp_API.Interfaces;
+﻿using Newtonsoft.Json;
 
 namespace OrderUp_API.MessageConsumers {
     public class PushNotificationQueueHandler<T> : IQueueHandler where T : PushNotificationBody {

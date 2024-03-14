@@ -7,13 +7,11 @@ namespace OrderUp_API.Controllers {
     public class RestaurantController : ControllerBase {
 
         readonly RestaurantService restaurantService;
-        readonly IMapper mapper;
         readonly ControllerResponseHandler ResponseHandler;
 
-        public RestaurantController(RestaurantService restaurantService, IMapper mapper) {
+        public RestaurantController(RestaurantService restaurantService) {
 
             this.restaurantService = restaurantService;
-            this.mapper = mapper;
             ResponseHandler = new ControllerResponseHandler();
         }
 
@@ -27,7 +25,7 @@ namespace OrderUp_API.Controllers {
 
             return Ok(RestaurantResponse);
         }
-        
+
         [HttpGet("slug/{Slug}")]
         public async Task<IActionResult> DoesSlugExist(string Slug) {
 

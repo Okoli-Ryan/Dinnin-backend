@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Interfaces.IUser {
-    public class IUserEntity : AbstractEntity{
+    public class IUserEntity : AbstractEntity {
 
         [Required]
         [MaxLength(128)]

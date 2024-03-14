@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Models {
-    public class MenuCategory : AbstractEntity{
+    public class MenuCategory : AbstractEntity {
 
         [Required]
         [MaxLength(50)]

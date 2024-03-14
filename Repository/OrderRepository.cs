@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OrderUp_API.Classes.AnalyticsModels;
-using OrderUp_API.Models;
-using System.Data.Entity.Core.Objects;
+﻿using OrderUp_API.Classes.AnalyticsModels;
 
 namespace OrderUp_API.Repository {
     public class OrderRepository : AbstractRepository<Order> {
@@ -57,8 +54,8 @@ namespace OrderUp_API.Repository {
                                 .ToListAsync();
         }
 
-        
-        
+
+
         public async Task<List<ChartValue<decimal>>> GetOrderAmountAnalytics(Guid? RestaurantID, DateTime StartTime, DateTime EndTime) {
 
             return await context.Order

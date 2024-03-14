@@ -1,6 +1,4 @@
-﻿using OrderUp_API.Constants;
-
-namespace OrderUp_API.Services {
+﻿namespace OrderUp_API.Services {
     public class TableService {
 
         readonly IMapper mapper;
@@ -20,14 +18,14 @@ namespace OrderUp_API.Services {
             var mappedResponse = mapper.Map<TableDto>(TableData);
 
             return new DefaultSuccessResponse<TableDto>(mappedResponse);
-            
+
         }
 
         public async Task<DefaultResponse<TableDto>> GenerateTableCode(Guid ID) {
 
             var table = await tableRepository.GetByID(ID);
 
-            if (table is null) return new DefaultErrorResponse<TableDto>() { 
+            if (table is null) return new DefaultErrorResponse<TableDto>() {
                 ResponseCode = ResponseCodes.NOT_FOUND,
                 ResponseMessage = ResponseMessages.NOT_FOUND,
                 ResponseData = null

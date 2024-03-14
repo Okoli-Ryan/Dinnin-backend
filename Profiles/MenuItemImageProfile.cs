@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Profiles {
-    public class MenuItemImageProfile : Profile{
+    public class MenuItemImageProfile : Profile {
 
         public MenuItemImageProfile() {
 

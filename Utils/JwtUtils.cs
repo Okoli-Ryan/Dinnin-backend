@@ -2,7 +2,7 @@
     public class JwtUtils {
 
 
-        public JwtUtils() { 
+        public JwtUtils() {
         }
 
         public static JwtToken GenerateToken(List<Claim> authClaims) {
@@ -11,7 +11,7 @@
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-            foreach (var claim in authClaims) { 
+            foreach (var claim in authClaims) {
                 defaultClaims.Add(claim);
             }
 

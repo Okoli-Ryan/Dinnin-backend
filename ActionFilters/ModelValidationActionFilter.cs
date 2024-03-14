@@ -4,7 +4,7 @@ namespace OrderUp_API.ActionFilters {
     public class ModelValidationActionFilter : IActionFilter {
 
         public void OnActionExecuted(ActionExecutedContext context) {
-            
+
         }
 
         public void OnActionExecuting(ActionExecutingContext context) {

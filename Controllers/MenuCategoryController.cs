@@ -2,14 +2,14 @@
 
     [ApiController]
     [Route("api/v1/menu-category")]
-    public class MenuCategoryController: ControllerBase {
+    public class MenuCategoryController : ControllerBase {
 
         readonly MenuCategoryService menuCategoryService;
         readonly ControllerResponseHandler responseHandler;
         readonly IMapper mapper;
 
-        public MenuCategoryController(MenuCategoryService menuCategoryService, IMapper mapper) { 
-        
+        public MenuCategoryController(MenuCategoryService menuCategoryService, IMapper mapper) {
+
             this.menuCategoryService = menuCategoryService;
             this.mapper = mapper;
             responseHandler = new ControllerResponseHandler();

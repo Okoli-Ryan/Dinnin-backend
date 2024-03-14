@@ -23,7 +23,7 @@ namespace OrderUp_API.MessageConsumers {
 
             foreach (var queue in MessageQueueList.getQueue()) {
 
-                channel.QueueDeclare(queue: queue);
+                channel.QueueDeclare(queue: queue, exclusive: false);
 
             }
 

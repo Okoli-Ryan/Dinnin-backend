@@ -31,7 +31,7 @@
 
             var isPasswordCorrect = AuthenticationHelper.VerifyPassword(loginModel.Password, ExistingUser.Password);
 
-            if(!isPasswordCorrect) return InvalidResponse;
+            if (!isPasswordCorrect) return InvalidResponse;
 
             if (!ExistingUser.IsEmailConfirmed) return new DefaultErrorResponse<LoginResponse>() {
                 ResponseCode = ResponseCodes.UNAUTHORIZED,
@@ -76,7 +76,7 @@
 
             var IsEmailSent = await mailService.SendVerificationCode(user.Email, user.ID, SavedVerificationCode.Code);
 
-            if(!IsEmailSent) return new DefaultErrorResponse<UserDto>() {
+            if (!IsEmailSent) return new DefaultErrorResponse<UserDto>() {
                 ResponseCode = ResponseCodes.FAILURE,
                 ResponseData = null,
                 ResponseMessage = "Error sending Verification Email"
@@ -93,7 +93,7 @@
             user.Password = AuthenticationHelper.HashPassword(user.Password);
 
             var addedUser = await userRepository.Save(user);
-            
+
             return ParseUserResponse(addedUser);
         }
 
@@ -139,7 +139,7 @@
 
             var response = mapper.Map<List<UserDto>>(users);
 
-            foreach (var user in response) { 
+            foreach (var user in response) {
                 user.password = null;
             }
             return response;

@@ -1,6 +1,4 @@
-﻿using Newtonsoft;
-
-namespace OrderUp_API.Models {
+﻿namespace OrderUp_API.Models {
     public class OrderItem : AbstractEntity {
 
 

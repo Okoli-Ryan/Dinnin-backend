@@ -33,7 +33,7 @@ namespace OrderUp_API.Hubs {
 
             if (onlineRestaurantDb.isOnline(parsedRestaurantID))
 
-            await Clients.User(parsedRestaurantID).SendAsync("ping", $"User ${sender} at table ${tableNumber} needs your assistance");
+                await Clients.User(parsedRestaurantID).SendAsync("ping", $"User ${sender} at table ${tableNumber} needs your assistance");
         }
 
         public async Task AcknowledgePing(string receiver) {

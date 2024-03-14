@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Profiles {
-    public class SavedRestaurantProfile : Profile{
+    public class SavedRestaurantProfile : Profile {
 
         public SavedRestaurantProfile() {
 

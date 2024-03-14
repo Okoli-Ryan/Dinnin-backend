@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.Models {
-    public class VerificationCode : AbstractEntity{
+    public class VerificationCode : AbstractEntity {
 
         [MaxLength(100)]
         public string Code { get; set; }

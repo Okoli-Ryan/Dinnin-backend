@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.DTOs {
-    public class SavedRestaurantDto : AbstractDto{
+    public class SavedRestaurantDto : AbstractDto {
 
         public Guid restaurantId { get; set; }
 

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Pusher.PushNotifications;
-
-namespace OrderUp_API.Controllers {
+﻿namespace OrderUp_API.Controllers {
     [Route("api/v1/pusher")]
     [ApiController]
     public class PushNotificationController : ControllerBase {

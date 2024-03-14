@@ -2,7 +2,7 @@
     public class ChartValue<T> {
 
         public T Value { get; set; }
-        
+
         public string Date { get; set; }
 
     }

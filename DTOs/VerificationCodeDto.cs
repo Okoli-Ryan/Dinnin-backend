@@ -1,5 +1,5 @@
 ﻿namespace OrderUp_API.DTOs {
-    public class VerificationCodeDto : AbstractDto{
+    public class VerificationCodeDto : AbstractDto {
 
         public string code { get; set; }
 

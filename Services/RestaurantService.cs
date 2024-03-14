@@ -1,4 +1,5 @@
-﻿using OrderUp_API.Repository;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace OrderUp_API.Services {
     public class RestaurantService {
@@ -45,7 +46,7 @@ namespace OrderUp_API.Services {
 
             string AdminId = GetJwtValue.GetTokenFromCookie(httpContext, ClaimTypes.PrimarySid);
 
-            if (AdminId is null) return new DefaultErrorResponse<RestaurantDto>() { 
+            if (AdminId is null) return new DefaultErrorResponse<RestaurantDto>() {
                 ResponseCode = ResponseCodes.UNAUTHORIZED,
                 ResponseMessage = ResponseMessages.UNAUTHORIZED,
                 ResponseData = null
@@ -67,6 +68,18 @@ namespace OrderUp_API.Services {
 
 
             var response = mapper.Map<RestaurantDto>(addedRestaurant);
+
+            // Save restaurantID to cookie
+            var authClaims = new List<Claim>() {
+                new (RestaurantIdentifier.RestaurantID_ClaimType, addedRestaurant.ID.ToString())
+            };
+
+
+            var claimsIdentity = new ClaimsIdentity(authClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
             return new DefaultSuccessResponse<RestaurantDto>(response);
         }
