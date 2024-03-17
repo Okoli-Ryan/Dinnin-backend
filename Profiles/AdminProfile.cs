@@ -16,6 +16,8 @@
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.lastName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.emailAddress))
                 .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.password))
+                .ForMember(dest => dest.RecoveryEmail, opt => opt.MapFrom(src => src.recoveryEmail))
+                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.position))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.phoneNumber));
 
             CreateMap<Admin, AdminDto>()
@@ -31,6 +33,8 @@
                 .ForMember(dest => dest.lastName, opt => opt.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.password, opt => opt.MapFrom(src => src.Password))
                 .ForMember(dest => dest.emailAddress, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.recoveryEmail, opt => opt.MapFrom(src => src.RecoveryEmail))
+                .ForMember(dest => dest.position, opt => opt.MapFrom(src => src.Position))
                 .ForMember(dest => dest.phoneNumber, opt => opt.MapFrom(src => src.PhoneNumber));
         }
     }

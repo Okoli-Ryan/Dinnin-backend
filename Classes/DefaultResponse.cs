@@ -55,4 +55,13 @@
             ResponseData = default;
         }
     }
+
+    public class DefaultInvalidTokenResponse<T> : DefaultErrorResponse<T> {
+
+        public DefaultInvalidTokenResponse(string ErrorMessage = ResponseMessages.INVALID_TOKEN) : base() {
+            ResponseCode = ResponseCodes.INVALID_TOKEN;
+            ResponseMessage = ErrorMessage;
+            ResponseData = default;
+        }
+    }
 }

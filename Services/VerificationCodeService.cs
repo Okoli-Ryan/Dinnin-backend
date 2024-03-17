@@ -24,16 +24,11 @@
         /// </summary>
         public async Task<bool> SendCreateAccountVerificationCode(Guid UserID, string RoleType, string UserEmail) {
 
-            var verificationCode = new VerificationCode() {
-                UserID = UserID,
-                UserType = RoleType
-            };
-
             var createdVerificationCode = await CreateVerificationCode(UserID, RoleType);
 
             if (createdVerificationCode == null) return false;
 
-            return await mailService.SendVerificationCode(UserEmail, UserID, createdVerificationCode.Code);
+            return await mailService.SendVerificationCode(UserEmail, createdVerificationCode.Code);
         }
 
 
@@ -43,7 +38,17 @@
 
             if (createdVerificationCode == null) return false;
 
-            return await mailService.SendForgotPasswordEmail(UserEmail, UserID, createdVerificationCode.Code);
+            return await mailService.SendForgotPasswordEmail(UserEmail, createdVerificationCode.Code);
+        }
+        
+        
+        public async Task<bool> SendNewStaffVerificationEmail(Admin Admin, string RestaurantName) {
+
+            var createdVerificationCode = await CreateVerificationCode(Admin.ID, RoleTypes.Admin);
+
+            if (createdVerificationCode == null) return false;
+
+            return await mailService.SendNewStaffVerificationEmail(Admin, RestaurantName, createdVerificationCode.Code);
         }
 
 
@@ -55,7 +60,7 @@
             };
 
             verificationModel.ExpiryDate = DateTime.Now.AddHours(1);
-            verificationModel.Code = RandomStringGenerator.GenerateRandomString(10);
+            verificationModel.Code = RandomStringGenerator.GenerateRandomString(32);
 
             var PendingVerificationModel = await verificationCodeRepository.GetPendingVerificationCode(verificationModel.UserID);
 
@@ -72,9 +77,9 @@
 
         }
 
-        public async Task<VerificationCode> VerifyVerificationCode(Guid UserId, string Code) {
+        public async Task<VerificationCode> VerifyVerificationCode(string Code) {
 
-            var VerificationModel = await verificationCodeRepository.GetActiveVerificationCodeByCode(UserId, Code);
+            var VerificationModel = await verificationCodeRepository.GetActiveVerificationCodeByCode(Code);
 
             if (VerificationModel is not null && DateTime.Now < VerificationModel.ExpiryDate) {
 
@@ -88,9 +93,9 @@
 
         }
 
-        public async Task<DefaultResponse<IUserEntityDto>> VerifyUser(Guid UserId, string Code) {
+        public async Task<DefaultResponse<IUserEntityDto>> VerifyUser(string Code) {
 
-            var VerificationModel = await VerifyVerificationCode(UserId, Code);
+            var VerificationModel = await VerifyVerificationCode(Code);
 
             var InvalidToken = new DefaultErrorResponse<IUserEntityDto>() {
 

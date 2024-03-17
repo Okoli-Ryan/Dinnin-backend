@@ -74,7 +74,7 @@
 
             var SavedVerificationCode = await verificationCodeService.CreateVerificationCode(CreatedAccount.id, RoleTypes.Customer);
 
-            var IsEmailSent = await mailService.SendVerificationCode(user.Email, user.ID, SavedVerificationCode.Code);
+            var IsEmailSent = await mailService.SendVerificationCode(user.Email, SavedVerificationCode.Code);
 
             if (!IsEmailSent) return new DefaultErrorResponse<UserDto>() {
                 ResponseCode = ResponseCodes.FAILURE,

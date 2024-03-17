@@ -13,10 +13,10 @@
         }
 
 
-        [HttpGet("{UserID}/{Code}")]
-        public async Task<IActionResult> VerifyUser(Guid UserID, string Code) {
+        [HttpGet("{Code}")]
+        public async Task<IActionResult> VerifyUser(string Code) {
 
-            var VerifyUserResponse = await verificationService.VerifyUser(UserID, Code);
+            var VerifyUserResponse = await verificationService.VerifyUser(Code);
 
             return ResponseHandler.HandleResponse(VerifyUserResponse);
 

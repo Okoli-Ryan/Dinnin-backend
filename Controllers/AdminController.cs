@@ -25,7 +25,7 @@ namespace OrderUp_API.Controllers {
         }
 
 
-        [HttpGet("{ID}")]
+        [HttpGet("{ID:guid}")]
         public async Task<IActionResult> GetAdminByID(Guid ID) {
 
             var addedAdmin = await adminService.GetByID(ID);
@@ -43,7 +43,7 @@ namespace OrderUp_API.Controllers {
 
             var mappedAdmin = mapper.Map<Admin>(adminDto);
 
-            var addedAdmin = await adminService.RegisterAdmin(mappedAdmin, false);
+            var addedAdmin = await adminService.RegisterAdmin(mappedAdmin);
 
             if (!addedAdmin.ResponseCode.Equals(ResponseCodes.SUCCESS)) {
                 return BadRequest(addedAdmin);
@@ -57,9 +57,7 @@ namespace OrderUp_API.Controllers {
         [Authorize(Roles = RoleTypes.SuperAdmin)]
         public async Task<IActionResult> RegisterStaff([FromBody] AdminDto adminDto) {
 
-            var mappedAdmin = mapper.Map<Admin>(adminDto);
-
-            var addedAdmin = await adminService.RegisterAdmin(mappedAdmin, true);
+            var addedAdmin = await adminService.RegisterStaff(adminDto);
 
             return ResponseHandler.HandleResponse(addedAdmin);
 
@@ -84,10 +82,10 @@ namespace OrderUp_API.Controllers {
         }
 
 
-        [HttpPost("reset-password/{UserID}")]
-        public async Task<IActionResult> ResetPassword(Guid UserID, [FromBody] string NewPassword) {
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordPayload PasswordPayload) {
 
-            var response = await adminService.HandleResetPassword(UserID, NewPassword);
+            var response = await adminService.HandleResetPassword(PasswordPayload.Code, PasswordPayload.NewPassword);
 
             return ResponseHandler.HandleResponse(response);
         }
@@ -105,15 +103,15 @@ namespace OrderUp_API.Controllers {
 
 
 
-        [HttpDelete("{ID}")]
-        public async Task<IActionResult> DeleteAdmin(Guid ID) {
+        //[HttpDelete("{ID}")]
+        //public async Task<IActionResult> DeleteAdmin(Guid ID) {
 
-            var isDeletedAdmin = await adminService.Delete(ID);
+        //    var isDeletedAdmin = await adminService.Delete(ID);
 
-            if (!isDeletedAdmin) return Ok(new DefaultErrorResponse<bool>());
+        //    if (!isDeletedAdmin) return Ok(new DefaultErrorResponse<bool>());
 
-            return Ok(new DefaultSuccessResponse<bool>(isDeletedAdmin));
-        }
+        //    return Ok(new DefaultSuccessResponse<bool>(isDeletedAdmin));
+        //}
 
 
         [HttpGet("/access-denied")]
@@ -126,5 +124,12 @@ namespace OrderUp_API.Controllers {
             }); ;
         }
 
+    }
+
+    public class ResetPasswordPayload {
+
+        public string NewPassword { get; set; }
+
+        public string Code { get; set; }
     }
 }

@@ -2,7 +2,6 @@
     [Table(name: "Admin")]
     public class Admin : IUserEntity {
 
-        [Required]
         [MaxLength(16)]
         public string Role { get; set; }
 
@@ -22,6 +21,11 @@
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
+        [DataType(DataType.EmailAddress)]
+        [MaxLength(100)]
+        public string RecoveryEmail { get; set; }
 
+        [MaxLength(32)]
+        public string Position { get; set; }
     }
 }

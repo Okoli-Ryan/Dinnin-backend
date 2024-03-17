@@ -1,7 +1,7 @@
 ﻿namespace OrderUp_API.Constants {
     public interface TableModelConstants {
 
-        public const int TableCodeLength = 20;
+        public const int TableCodeLength = 32;
     }
 
     public interface OrderModelConstants {
@@ -16,12 +16,21 @@
 
     }
 
+    public interface MessageQueueTopics {
+
+        public const string EMAIL = "Email";
+        public const string FORGOT_PASSWORD = "Forgot Password";
+        public const string PUSH_NOTIFICATION = "Push Notification";
+        public const string STAFF_REGISTRATION = "Staff Registration";
+    }
+
     public static class MessageQueueList {
 
         public static List<string> MESSAGE_QUEUE_LIST = new() {
                MessageQueueTopics.EMAIL,
                MessageQueueTopics.FORGOT_PASSWORD,
-               MessageQueueTopics.PUSH_NOTIFICATION
+               MessageQueueTopics.PUSH_NOTIFICATION,
+               MessageQueueTopics.STAFF_REGISTRATION
         };
 
         public static List<string> getQueue() {

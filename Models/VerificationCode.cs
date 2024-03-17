@@ -1,4 +1,5 @@
 ﻿namespace OrderUp_API.Models {
+    [Microsoft.EntityFrameworkCore.Index(nameof(Code), IsUnique = true)]
     public class VerificationCode : AbstractEntity {
 
         [MaxLength(100)]

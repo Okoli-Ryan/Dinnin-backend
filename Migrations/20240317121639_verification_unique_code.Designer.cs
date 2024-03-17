@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderUp_API.Data;
 
@@ -10,9 +11,11 @@ using OrderUp_API.Data;
 namespace OrderUpAPI.Migrations
 {
     [DbContext(typeof(OrderUpDbContext))]
-    partial class OrderUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240317121639_verification_unique_code")]
+    partial class verificationuniquecode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,11 +71,11 @@ namespace OrderUpAPI.Migrations
                         .HasColumnName("phone_number");
 
                     b.Property<string>("Position")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)")
+                        .HasColumnType("longtext")
                         .HasColumnName("position");
 
                     b.Property<string>("RecoveryEmail")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("recovery_email");
@@ -82,6 +85,7 @@ namespace OrderUpAPI.Migrations
                         .HasColumnName("restaurant_id");
 
                     b.Property<string>("Role")
+                        .IsRequired()
                         .HasMaxLength(16)
                         .HasColumnType("varchar(16)")
                         .HasColumnName("role");

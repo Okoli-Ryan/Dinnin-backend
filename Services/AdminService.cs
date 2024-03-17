@@ -1,24 +1,30 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Text.RegularExpressions;
+using System.Web.Helpers;
 
 namespace OrderUp_API.Services {
     public class AdminService {
 
         private readonly AdminRepository adminRepository;
+        private readonly VerificationCodeService verificationCodeService;
         private readonly IMapper mapper;
         private readonly MessageProducerService messageProducerService;
         private readonly HttpContext httpContext;
+        private readonly RestaurantRepository restaurantRepository;
 
-        public AdminService(AdminRepository adminRepository, IMapper mapper, MessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor) {
+        public AdminService(AdminRepository adminRepository, VerificationCodeService verificationCodeService, RestaurantRepository restaurantRepository, IMapper mapper, MessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor) {
             this.adminRepository = adminRepository;
             this.mapper = mapper;
             this.messageProducerService = messageProducerService;
+            this.restaurantRepository = restaurantRepository;
+            this.verificationCodeService = verificationCodeService;
             httpContext = httpContextAccessor.HttpContext;
         }
 
-        public async Task<DefaultResponse<AdminDto>> RegisterAdmin(Admin Admin, bool isNewStaff) {
+        public async Task<DefaultResponse<AdminDto>> RegisterAdmin(Admin Admin) {
 
-            var ExistingAdmin = await GetAdminByEmail(Admin.Email);
+            var ExistingAdmin = await adminRepository.GetAdminByEmail(Admin.Email);
 
             if (ExistingAdmin is not null) return new DefaultResponse<AdminDto>() {
                 ResponseCode = ResponseCodes.USER_ALREADY_EXIST,
@@ -26,12 +32,10 @@ namespace OrderUp_API.Services {
                 ResponseData = null
             };
 
-            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
-
-
-            Admin.Role = isNewStaff ? RoleTypes.Admin : RoleTypes.SuperAdmin;
+            Admin.Role = RoleTypes.SuperAdmin;
             Admin.IsEmailConfirmed = false;
-            Admin.RestaurantID = isNewStaff ? RestaurantID : null;
+            Admin.RecoveryEmail = Admin.Email;
+            Admin.Position = "Owner";
 
             var CreatedAccount = await Save(Admin);
 
@@ -41,7 +45,7 @@ namespace OrderUp_API.Services {
             messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
                 ID = CreatedAccount.id,
                 Role = RoleTypes.Admin,
-                Email = CreatedAccount.emailAddress
+                Email = CreatedAccount.recoveryEmail
             });
 
             return new DefaultSuccessResponse<AdminDto>(CreatedAccount);
@@ -49,9 +53,45 @@ namespace OrderUp_API.Services {
         }
 
 
+        public async Task<DefaultResponse<bool>> RegisterStaff(AdminDto AdminDto) {
+
+            var Staff = mapper.Map<Admin>(AdminDto);
+
+            var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
+
+            var Restaurant = await restaurantRepository.GetByID(RestaurantID);
+
+            if(Restaurant is null) return new DefaultNotFoundResponse<bool>("Unable to find restaurant");
+
+            var staffEmail = ParseAdminName(Staff.FirstName, Staff.LastName) + $"@{Restaurant.Slug}.com";
+
+            var numberOfAdminsWithSameEmail = await adminRepository.GetAdminEmailCount(staffEmail);
+
+            if (numberOfAdminsWithSameEmail > 0) staffEmail = ParseAdminName(Staff.FirstName, Staff.LastName) + $"{numberOfAdminsWithSameEmail}@{Restaurant.Slug}.com";
+
+            Staff.RecoveryEmail = AdminDto.emailAddress;
+            Staff.Email = staffEmail;
+            Staff.RestaurantID = RestaurantID;
+            Staff.Role = RoleTypes.Admin;
+            Staff.IsEmailConfirmed = true;
+            Staff.Password = AuthenticationHelper.HashPassword(RandomStringGenerator.GenerateRandomString(10));
+
+            var SavedStaff = await adminRepository.Save(Staff);
+
+            if (SavedStaff is null) return new DefaultErrorResponse<bool>();
+
+            messageProducerService.SendMessage(MessageQueueTopics.STAFF_REGISTRATION, new StaffRegistrationModel {
+                Admin = Staff,
+                RestaurantName = Restaurant.Name,
+            });
+
+            return new DefaultSuccessResponse<bool>(true);
+        }
+
+
         public async Task<DefaultResponse<AdminDto>> LoginAsAdmin(LoginModel loginModel) {
 
-            var ExistingAdmin = await GetAdminByEmail(loginModel.Email);
+            var ExistingAdmin = await adminRepository.GetAdminByEmail(loginModel.Email);
 
             var InvalidResponse = new DefaultErrorResponse<AdminDto>() {
                 ResponseCode = ResponseCodes.INVALID_CREDENTIALS,
@@ -71,7 +111,7 @@ namespace OrderUp_API.Services {
                 messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
                     ID = ExistingAdmin.ID,
                     Role = RoleTypes.Admin,
-                    Email = ExistingAdmin.Email
+                    Email = ExistingAdmin.RecoveryEmail
                 });
 
                 return new DefaultErrorResponse<AdminDto>() {
@@ -119,20 +159,21 @@ namespace OrderUp_API.Services {
             return new DefaultSuccessResponse<bool>(true);
         }
 
+        //Add code to payload and verify
+        //Remove user id
+        public async Task<DefaultResponse<bool>> HandleResetPassword(string Code, string newPassword) {
 
-        public async Task<DefaultResponse<bool>> HandleResetPassword(Guid UserID, string newPassword) {
+            var VerificationCode = await verificationCodeService.VerifyVerificationCode(Code);
 
-            var Admin = await GetByID(UserID);
+            if (VerificationCode is null) return new DefaultInvalidTokenResponse<bool>("Verification code is invalid");
 
-            if (Admin is null) {
+            var Admin = await adminRepository.GetByID(VerificationCode.UserID);
 
-                return new DefaultNotFoundResponse<bool>();
-            }
+            if (Admin is null) return new DefaultNotFoundResponse<bool>("Unable to find user");
 
+            Admin.Password = AuthenticationHelper.HashPassword(newPassword);
 
-            Admin.password = AuthenticationHelper.HashPassword(newPassword);
-
-            var UpdatedAdmin = await Update(Admin);
+            var UpdatedAdmin = await adminRepository.Update(Admin);
 
             if (UpdatedAdmin is null) return new DefaultFailureResponse<bool>();
 
@@ -147,11 +188,6 @@ namespace OrderUp_API.Services {
 
             return recipients;
 
-        }
-
-        public async Task<Admin> GetAdminByEmail(string Email) {
-
-            return await adminRepository.GetAdminByEmail(Email);
         }
 
         public async Task<AdminDto> Save(Admin admin) {
@@ -184,16 +220,6 @@ namespace OrderUp_API.Services {
             return new DefaultSuccessResponse<AdminDto>(mappedResponse);
         }
 
-        public async Task<bool> Delete(Guid ID) {
-
-            return await adminRepository.Delete(ID);
-        }
-
-        public async Task<bool> Delete(List<Admin> admin) {
-
-            return await adminRepository.Delete(admin);
-        }
-
         public AdminDto ParseAdminResponse(Admin admin) {
 
             var response = mapper.Map<AdminDto>(admin);
@@ -210,5 +236,20 @@ namespace OrderUp_API.Services {
             }
             return response;
         }
+
+        public static string ParseAdminName(string firstName, string lastName) {
+            // Remove special characters and spaces using regular expressions
+            string strippedFirstName = Regex.Replace(firstName, @"[^\w\d]", "");
+            string strippedLastName = Regex.Replace(lastName, @"[^\w\d]", "");
+
+            // Concatenate the stripped names
+            string concatenatedNames = strippedFirstName + strippedLastName;
+
+            // Convert to lowercase
+            concatenatedNames = concatenatedNames.ToLower();
+
+            return concatenatedNames;
+        }
+
     }
 }

@@ -37,6 +37,11 @@
             return VerificationModel;
         }
 
+        public async Task<VerificationCode> GetActiveVerificationCodeByCode(string Code) {
 
+            var VerificationModel = await context.VerificationCode.Where(x => x.Code.Equals(Code) && x.ActiveStatus).FirstOrDefaultAsync();
+
+            return VerificationModel;
+        }
     }
 }

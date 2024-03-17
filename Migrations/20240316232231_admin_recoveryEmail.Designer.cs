@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderUp_API.Data;
 
@@ -10,9 +11,11 @@ using OrderUp_API.Data;
 namespace OrderUpAPI.Migrations
 {
     [DbContext(typeof(OrderUpDbContext))]
-    partial class OrderUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240316232231_admin_recoveryEmail")]
+    partial class adminrecoveryEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,12 +70,8 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("phone_number");
 
-                    b.Property<string>("Position")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)")
-                        .HasColumnName("position");
-
                     b.Property<string>("RecoveryEmail")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("recovery_email");
@@ -82,6 +81,7 @@ namespace OrderUpAPI.Migrations
                         .HasColumnName("restaurant_id");
 
                     b.Property<string>("Role")
+                        .IsRequired()
                         .HasMaxLength(16)
                         .HasColumnType("varchar(16)")
                         .HasColumnName("role");
@@ -569,8 +569,8 @@ namespace OrderUpAPI.Migrations
                         .HasColumnName("active_status");
 
                     b.Property<string>("Code")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
                         .HasColumnName("code");
 
                     b.Property<DateTime>("CreatedAt")
@@ -707,10 +707,6 @@ namespace OrderUpAPI.Migrations
 
                     b.HasKey("ID")
                         .HasName("pk_verification_code");
-
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasDatabaseName("ix_verification_code_code");
 
                     b.ToTable("verification_code", (string)null);
                 });

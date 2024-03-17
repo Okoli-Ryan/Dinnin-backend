@@ -74,7 +74,8 @@ namespace OrderUp_API.MessageConsumers {
             var queueHandlers = new Dictionary<string, IQueueHandler> {
                 { MessageQueueTopics.EMAIL, scope.ServiceProvider.GetRequiredService<VerificationQueueHandler<EmailMQModel>>() },
                 { MessageQueueTopics.PUSH_NOTIFICATION, scope.ServiceProvider.GetRequiredService<PushNotificationQueueHandler<PushNotificationBody>>() },
-                { MessageQueueTopics.FORGOT_PASSWORD, scope.ServiceProvider.GetRequiredService<ForgotPasswordQueueHandler<EmailMQModel>>() }
+                { MessageQueueTopics.FORGOT_PASSWORD, scope.ServiceProvider.GetRequiredService<ForgotPasswordQueueHandler<EmailMQModel>>() },
+                { MessageQueueTopics.STAFF_REGISTRATION, scope.ServiceProvider.GetRequiredService<NewStaffRegistrationQueueHandler<StaffRegistrationModel>>() }
             };
 
             return queueHandlers.GetValueOrDefault(queueName);

@@ -90,6 +90,7 @@ builder.Services.AddScoped<PushNotificationService>();
 
 builder.Services.AddScoped<VerificationQueueHandler<EmailMQModel>>();
 builder.Services.AddScoped<ForgotPasswordQueueHandler<EmailMQModel>>();
+builder.Services.AddScoped<NewStaffRegistrationQueueHandler<StaffRegistrationModel>>();
 builder.Services.AddScoped<PushNotificationQueueHandler<PushNotificationBody>>();
 
 
@@ -100,7 +101,7 @@ builder.Services.AddCors();
 builder.Services.AddScoped<ModelValidationActionFilter>();
 
 builder.Services.Configure<ApiBehaviorOptions>(options => {
-    options.SuppressModelStateInvalidFilter = true;
+    //options.SuppressModelStateInvalidFilter = true;
 });
 
 
