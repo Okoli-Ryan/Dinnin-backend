@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for orderup-api-holy-frog-2010-summer-bush-8024-blue-fog-5896 on 2024-03-06T12:36:47+01:00
+# fly.toml app configuration file generated for dinnin-api on 2024-03-19T10:25:13+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'orderup-api-holy-frog-2010-summer-bush-8024-blue-fog-5896'
-primary_region = 'ams'
+app = 'dinnin-api'
+primary_region = 'jnb'
 
 [build]
 
@@ -17,6 +17,4 @@ primary_region = 'ams'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+  size = 'shared-cpu-1x'

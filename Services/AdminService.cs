@@ -181,6 +181,24 @@ namespace OrderUp_API.Services {
 
         }
 
+        public async Task<DefaultResponse<PaginatedResponse<AdminDto>>> GetAdminList(int page, int pageSize, DateTime? minCreatedAt, DateTime? maxCreatedAt) {
+
+            var PaginatedAdminsResponse = await adminRepository.GetPaginatedList(page, pageSize, minCreatedAt, maxCreatedAt);
+
+            if (PaginatedAdminsResponse is null) return new DefaultFailureResponse<PaginatedResponse<AdminDto>>();
+
+            var mappedData = mapper.Map<List<AdminDto>>(PaginatedAdminsResponse.Data);
+
+            var response = new PaginatedResponse<AdminDto>() {
+                Data = mappedData,
+                Page = PaginatedAdminsResponse.Page,
+                Size = PaginatedAdminsResponse.Size,
+                Total = PaginatedAdminsResponse.Total
+            };
+
+            return new DefaultSuccessResponse<PaginatedResponse<AdminDto>>(response);
+        }
+
 
         public async Task<List<Admin>> GetAuthorizedPushNotificationRecipients(Guid RestaurantID) {
 

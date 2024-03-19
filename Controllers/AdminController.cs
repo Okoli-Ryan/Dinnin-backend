@@ -37,6 +37,15 @@ namespace OrderUp_API.Controllers {
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetListOfAdmins([FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? minCreatedAt, [FromQuery] DateTime? maxCreatedAt) {
+
+            var response = await adminService.GetAdminList(page, size, minCreatedAt, maxCreatedAt);
+
+            return ResponseHandler.HandleResponse(response);
+        }
+
+
 
         [HttpPost()]
         public async Task<IActionResult> AddAdmin([FromBody] AdminDto adminDto) {

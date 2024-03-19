@@ -163,6 +163,44 @@
 
 
 
+        public async Task<PaginatedResponse<T>> GetPaginatedList(int page = 1, int size = 10, DateTime? minCreatedAt = null, DateTime? maxCreatedAt = null) {
+
+            try {
+
+                var query = context.Set<T>().AsQueryable();
+
+                if (minCreatedAt.HasValue) {
+                    query = query.Where(x => x.CreatedAt >= minCreatedAt);
+                }
+
+                if (maxCreatedAt.HasValue) {
+                    query = query.Where(x => x.CreatedAt <= maxCreatedAt);
+                }
+
+                if (page == 0) page = 1;
+
+                var countTask = query.CountAsync();
+
+                var dataTask = query
+                                 .OrderByDescending(x => x.CreatedAt)
+                                 .Skip((page - 1) * size)
+                                 .Take(size)
+                                 .AsNoTracking()
+                                 .ToListAsync();
+
+                await Task.WhenAll(countTask, dataTask);
+
+                var total = await countTask;
+                var data = await dataTask;
+
+                return new PaginatedResponse<T> { Data = data, Page = page, Size = size, Total = total };
+            }
+
+            catch (Exception ex) {
+                Debug.WriteLine(ex.StackTrace);
+                return default;
+            }
+        }
 
     }
 }

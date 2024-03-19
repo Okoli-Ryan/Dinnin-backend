@@ -22,8 +22,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers(
     config => {
         config.Filters.Add(new AuthorizationActionFilter());
-    }
-    ).AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    })
+    .AddJsonOptions(x => {
+        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
+
 
 
 builder.Services.AddAuthentication(options => {
@@ -101,7 +105,7 @@ builder.Services.AddCors();
 builder.Services.AddScoped<ModelValidationActionFilter>();
 
 builder.Services.Configure<ApiBehaviorOptions>(options => {
-    //options.SuppressModelStateInvalidFilter = true;
+    options.SuppressModelStateInvalidFilter = true;
 });
 
 
@@ -109,8 +113,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
 //    options.HttpsPort = 80;
 //});
 
-//var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-//builder.WebHost.UseUrls($"http://*:{port}");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
 
 
 var app = builder.Build();

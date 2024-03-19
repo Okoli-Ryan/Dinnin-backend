@@ -31,7 +31,7 @@
                 .ForMember(dest => dest.restaurantId, opt => opt.MapFrom(src => src.RestaurantID))
                 .ForMember(dest => dest.firstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.lastName, opt => opt.MapFrom(src => src.LastName))
-                .ForMember(dest => dest.password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dest => dest.password, opt => opt.Ignore())
                 .ForMember(dest => dest.emailAddress, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.recoveryEmail, opt => opt.MapFrom(src => src.RecoveryEmail))
                 .ForMember(dest => dest.position, opt => opt.MapFrom(src => src.Position))
