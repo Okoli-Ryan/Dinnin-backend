@@ -109,6 +109,11 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
     options.SuppressModelStateInvalidFilter = true;
 });
 
+builder.Services.ConfigureApplicationCookie(options => {
+    options.Cookie.SameSite = SameSiteMode.None; // Set SameSite to None for the sign-in cookie
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
 builder.Services.Configure<CookiePolicyOptions>(options => {
     options.MinimumSameSitePolicy = SameSiteMode.None; // Set SameSite to None for all cookies
     options.HttpOnly = HttpOnlyPolicy.Always; // Ensure cookies are accessible only through HTTP requests
