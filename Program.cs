@@ -109,6 +109,11 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
     options.SuppressModelStateInvalidFilter = true;
 });
 
+builder.Services.ConfigureApplicationCookie(options => {
+    options.Cookie.SameSite = SameSiteMode.None; // Set SameSite to None for the sign-in cookie
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
 builder.Services.Configure<CookiePolicyOptions>(options => {
     options.MinimumSameSitePolicy = SameSiteMode.None; // Set SameSite to None for all cookies
     options.HttpOnly = HttpOnlyPolicy.Always; // Ensure cookies are accessible only through HTTP requests
@@ -139,7 +144,7 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseCors(options => {
     options
-       .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "https://localhost:5173", "https://localhost:5001", "https://localhost:7282")
+       .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "https://dinnin-dashboard.vercel.app/")
        .WithMethods("GET", "PATCH", "POST", "DELETE", "OPTIONS")
        .AllowAnyHeader()
        .AllowCredentials();
