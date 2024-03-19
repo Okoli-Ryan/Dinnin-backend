@@ -110,11 +110,14 @@ builder.Services.Configure<ApiBehaviorOptions>(options => {
 
 
 //builder.Services.AddHttpsRedirection(options => {
-//    options.HttpsPort = 80;
+//    options.HttpsPort = 7282;
 //});
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.UseUrls($"http://*:{port}");
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development") {
+
+    var port = Environment.GetEnvironmentVariable("PORT");
+    builder.WebHost.UseUrls($"http://*:{port}");
+}
 
 
 var app = builder.Build();
