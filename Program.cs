@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.CookiePolicy;
 using OrderUp_API.MessageConsumers;
 using OrderUp_API.Middlewares;
 
@@ -106,6 +107,12 @@ builder.Services.AddScoped<ModelValidationActionFilter>();
 
 builder.Services.Configure<ApiBehaviorOptions>(options => {
     options.SuppressModelStateInvalidFilter = true;
+});
+
+builder.Services.Configure<CookiePolicyOptions>(options => {
+    options.MinimumSameSitePolicy = SameSiteMode.None; // Set SameSite to None for all cookies
+    options.HttpOnly = HttpOnlyPolicy.Always; // Ensure cookies are accessible only through HTTP requests
+    options.Secure = CookieSecurePolicy.Always; // Require secure connections (HTTPS) for cookies
 });
 
 
