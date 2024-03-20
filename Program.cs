@@ -42,6 +42,9 @@ builder.Services.AddAuthentication(options => {
     .AddCookie(options => {
         options.AccessDeniedPath = "/access-denied";
         options.LoginPath = "/access-denied";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
 
 builder.Services.AddSignalR();
