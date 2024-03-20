@@ -42,6 +42,9 @@ builder.Services.AddAuthentication(options => {
     .AddCookie(options => {
         options.AccessDeniedPath = "/access-denied";
         options.LoginPath = "/access-denied";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
 
 builder.Services.AddSignalR();
@@ -144,7 +147,7 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseCors(options => {
     options
-       .WithOrigins("https://order-up-frontend.vercel.app", "https://dinnin-dashboard.vercel.app", "https://dinnin-dashboard.vercel.app/")
+       .WithOrigins("https://order-up-frontend.vercel.app", "https://order-up-frontend.vercel.app/", "https://dinnin-dashboard.vercel.app", "https://dinnin-dashboard.vercel.app/")
        .WithMethods("GET", "PATCH", "POST", "DELETE", "OPTIONS")
        .AllowAnyHeader()
        .AllowCredentials();
