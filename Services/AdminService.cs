@@ -181,11 +181,19 @@ namespace OrderUp_API.Services {
 
         }
 
-        public async Task<DefaultResponse<PaginatedResponse<AdminDto>>> GetAdminList(int page, int pageSize, DateTime? minCreatedAt, DateTime? maxCreatedAt) {
+        public async Task<DefaultResponse<PaginatedResponse<AdminDto>>> GetAdminList(string? name, string? email, string? phoneNumber, int page, int pageSize, DateTime? minCreatedAt, DateTime? maxCreatedAt) {
 
-            var PaginatedAdminsResponse = await adminRepository.GetPaginatedList(page, pageSize, minCreatedAt, maxCreatedAt);
+            var paginationRequest = new PaginationRequest(page, pageSize, minCreatedAt, maxCreatedAt);
 
-            if (PaginatedAdminsResponse is null) return new DefaultFailureResponse<PaginatedResponse<AdminDto>>();
+            var restaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
+
+            if(restaurantID == Guid.Empty) {
+                return new DefaultUnauthorizedResponse<PaginatedResponse<AdminDto>>();
+            }
+            
+            var PaginatedAdminsResponse = await adminRepository.GetAdminList(restaurantID, paginationRequest, name, email, phoneNumber);
+
+            if (PaginatedAdminsResponse is null) return new DefaultFailurePaginationResponse<AdminDto>();
 
             var mappedData = mapper.Map<List<AdminDto>>(PaginatedAdminsResponse.Data);
 

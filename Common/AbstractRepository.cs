@@ -161,30 +161,27 @@
 
 
 
-
-
-        public async Task<PaginatedResponse<T>> GetPaginatedList(int page = 1, int size = 10, DateTime? minCreatedAt = null, DateTime? maxCreatedAt = null) {
-
+        public async Task<PaginatedResponse<T>> GetPaginatedList(IQueryable<T> query, PaginationRequest paginationRequest) {
+            
             try {
 
-                var query = context.Set<T>().AsQueryable();
 
-                if (minCreatedAt.HasValue) {
-                    query = query.Where(x => x.CreatedAt >= minCreatedAt);
+                if (paginationRequest.MinCreatedAt.HasValue) {
+                    query = query.Where(x => x.CreatedAt >= paginationRequest.MinCreatedAt);
                 }
 
-                if (maxCreatedAt.HasValue) {
-                    query = query.Where(x => x.CreatedAt <= maxCreatedAt);
+                if (paginationRequest.MaxCreatedAt.HasValue) {
+                    query = query.Where(x => x.CreatedAt <= paginationRequest.MaxCreatedAt);
                 }
 
-                if (page == 0) page = 1;
+                if (paginationRequest.Page == 0) paginationRequest.Page = 1;
 
                 var countTask = query.CountAsync();
 
                 var dataTask = query
                                  .OrderByDescending(x => x.CreatedAt)
-                                 .Skip((page - 1) * size)
-                                 .Take(size)
+                                 .Skip((paginationRequest.Page - 1) * paginationRequest.Size)
+                                 .Take(paginationRequest.Size)
                                  .AsNoTracking()
                                  .ToListAsync();
 
@@ -193,13 +190,23 @@
                 var total = await countTask;
                 var data = await dataTask;
 
-                return new PaginatedResponse<T> { Data = data, Page = page, Size = size, Total = total };
+                return new PaginatedResponse<T> { Data = data, Page = paginationRequest.Page, Size = paginationRequest.Size, Total = total };
             }
 
             catch (Exception ex) {
                 Debug.WriteLine(ex.StackTrace);
                 return default;
             }
+        }
+
+
+
+
+        public async Task<PaginatedResponse<T>> GetPaginatedList(PaginationRequest paginationRequest) {
+
+            var query = context.Set<T>().AsQueryable();
+
+            return await GetPaginatedList(query, paginationRequest);
         }
 
     }

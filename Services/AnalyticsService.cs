@@ -27,7 +27,7 @@ namespace OrderUp_API.Services {
 
             var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
-            if (RestaurantID is null) {
+            if (RestaurantID == Guid.Empty) {
 
                 return new DefaultErrorResponse<Order_OrderItems>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
@@ -156,7 +156,7 @@ namespace OrderUp_API.Services {
 
             var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
-            if (RestaurantID is null) {
+            if (RestaurantID == Guid.Empty) {
 
                 return new DefaultErrorResponse<ChartResponse<decimal>>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
@@ -194,7 +194,7 @@ namespace OrderUp_API.Services {
 
             var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
-            if (RestaurantID is null) {
+            if (RestaurantID == Guid.Empty) {
 
                 return new DefaultErrorResponse<ChartResponse<int>>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
@@ -236,7 +236,7 @@ namespace OrderUp_API.Services {
 
             var RestaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
-            if (RestaurantID is null) {
+            if (RestaurantID == Guid.Empty) {
 
                 return new DefaultErrorResponse<List<OrderItemAnalyticsData>>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,

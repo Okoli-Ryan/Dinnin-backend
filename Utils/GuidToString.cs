@@ -8,12 +8,12 @@
             return null;
         }
 
-        public static Guid? StringToGuid(string input) {
+        public static Guid StringToGuid(string input) {
             if (Guid.TryParse(input, out Guid result)) {
                 return result;
             }
 
-            return null;
+            return Guid.Empty;
         }
 
     }

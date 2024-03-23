@@ -147,7 +147,7 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseCors(options => {
     options
-       .WithOrigins("https://order-up-frontend.vercel.app", "https://order-up-frontend.vercel.app/", "https://dinnin-dashboard.vercel.app", "https://dinnin-dashboard.vercel.app/")
+       .WithOrigins("https://order-up-frontend.vercel.app", "https://order-up-frontend.vercel.app/", "https://dinnin-dashboard.vercel.app", "https://dinnin-dashboard.vercel.app/", "https://localhost:5173")
        .WithMethods("GET", "PATCH", "POST", "DELETE", "OPTIONS")
        .AllowAnyHeader()
        .AllowCredentials();

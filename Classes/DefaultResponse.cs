@@ -46,6 +46,15 @@
             ResponseData = default;
         }
     }
+    
+    public class DefaultUnauthorizedResponse<T> : DefaultErrorResponse<T> {
+
+        public DefaultUnauthorizedResponse(string ErrorMessage = ResponseMessages.UNAUTHORIZED) : base() {
+            ResponseCode = ResponseCodes.UNAUTHORIZED;
+            ResponseMessage = ErrorMessage;
+            ResponseData = default;
+        }
+    }
 
     public class DefaultFailureResponse<T> : DefaultErrorResponse<T> {
 
@@ -54,6 +63,22 @@
             ResponseMessage = ErrorMessage;
             ResponseData = default;
         }
+
+    }
+
+    public class DefaultFailurePaginationResponse<T> : DefaultErrorResponse<PaginatedResponse<T>> {
+
+        public DefaultFailurePaginationResponse(string ErrorMessage = ResponseMessages.FAILURE) : base() {
+            ResponseCode = ResponseCodes.FAILURE;
+            ResponseMessage = ErrorMessage;
+            ResponseData = new PaginatedResponse<T>() {
+                Data = {},
+                Page = 1,
+                Size = 1,
+                Total = 1,
+            };
+        }
+
     }
 
     public class DefaultInvalidTokenResponse<T> : DefaultErrorResponse<T> {

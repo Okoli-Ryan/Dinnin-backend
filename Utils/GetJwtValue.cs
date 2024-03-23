@@ -42,7 +42,7 @@
         }
 
 
-        public static Guid? GetGuidFromCookie(HttpContext context, string key) {
+        public static Guid GetGuidFromCookie(HttpContext context, string key) {
 
             // Check if the token exists
 

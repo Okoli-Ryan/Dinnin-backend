@@ -38,9 +38,9 @@ namespace OrderUp_API.Controllers {
 
 
         [HttpGet]
-        public async Task<IActionResult> GetListOfAdmins([FromQuery] int page, [FromQuery] int size, [FromQuery] DateTime? minCreatedAt, [FromQuery] DateTime? maxCreatedAt) {
+        public async Task<IActionResult> GetListOfAdmins(string name, string email, string phonenumber, int page, int size, DateTime? minCreatedAt, DateTime? maxCreatedAt) {
 
-            var response = await adminService.GetAdminList(page, size, minCreatedAt, maxCreatedAt);
+            var response = await adminService.GetAdminList(name, email, phonenumber, page, size, minCreatedAt, maxCreatedAt);
 
             return ResponseHandler.HandleResponse(response);
         }
