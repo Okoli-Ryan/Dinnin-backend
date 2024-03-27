@@ -25,15 +25,15 @@ namespace OrderUp_API.Classes {
 
         public int Size { get; set; } = 10;
 
-        public DateTime? MinCreatedAt { get; set; }
+        public DateTime? StartDate { get; set; }
 
-        public DateTime? MaxCreatedAt { get; set; }
+        public DateTime? EndDate { get; set; }
 
-        public PaginationRequest(int page = 1, int size = 10, DateTime? minCreatedAt = null, DateTime? maxCreatedAt = null) {
+        public PaginationRequest(int page = 1, int size = 10, DateTime? startDate = null, DateTime? endDate = null) {
             Page = page <= 0 ? 1 : page;
             Size = size <= 0 ? 10 : size;
-            MinCreatedAt = minCreatedAt ?? DateTime.MinValue;
-            MaxCreatedAt = maxCreatedAt ?? DateTime.Now;
+            StartDate = startDate ?? DateTime.MinValue;
+            EndDate = endDate ?? DateTime.Now;
         }
 
     }

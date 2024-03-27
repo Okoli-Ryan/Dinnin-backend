@@ -88,11 +88,10 @@ builder.Services.AddScoped<IMailRepository, MailServerlessRepository>();
 builder.Services.AddScoped<MailService>();
 
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
-builder.Services.AddSingleton<OnlineRestaurantDb>();
 builder.Services.AddScoped<NetworkService>();
 builder.Services.AddScoped<CloudinaryService>();
-builder.Services.AddScoped<MessageProducerService, MessageProducerService>();
-builder.Services.AddScoped<PusherService>();
+builder.Services.AddSingleton<MessageProducerService>();
+builder.Services.AddSingleton<PusherService>();
 builder.Services.AddScoped<PushNotificationService>();
 
 
@@ -147,8 +146,8 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseCors(options => {
     options
-       .WithOrigins("https://order-up-frontend.vercel.app", "https://order-up-frontend.vercel.app/", "https://dinnin-dashboard.vercel.app", "https://dinnin-dashboard.vercel.app/", "https://localhost:5173")
-       .WithMethods("GET", "PATCH", "POST", "DELETE", "OPTIONS")
+       .WithOrigins("https://order-up-frontend.vercel.app", "https://localhost:7282", "https://dinnin-dashboard.vercel.app", "https://localhost:5173")
+       .AllowAnyMethod()
        .AllowAnyHeader()
        .AllowCredentials();
 });

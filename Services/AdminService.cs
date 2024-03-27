@@ -181,9 +181,9 @@ namespace OrderUp_API.Services {
 
         }
 
-        public async Task<DefaultResponse<PaginatedResponse<AdminDto>>> GetAdminList(string? name, string? email, string? phoneNumber, int page, int pageSize, DateTime? minCreatedAt, DateTime? maxCreatedAt) {
+        public async Task<DefaultResponse<PaginatedResponse<AdminDto>>> GetAdminList(string? name, string? email, string? phoneNumber, int page, int pageSize, DateTime? startDate, DateTime? EndDate) {
 
-            var paginationRequest = new PaginationRequest(page, pageSize, minCreatedAt, maxCreatedAt);
+            var paginationRequest = new PaginationRequest(page, pageSize, startDate, EndDate);
 
             var restaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 

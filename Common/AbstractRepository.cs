@@ -166,12 +166,12 @@
             try {
 
 
-                if (paginationRequest.MinCreatedAt.HasValue) {
-                    query = query.Where(x => x.CreatedAt >= paginationRequest.MinCreatedAt);
+                if (paginationRequest.StartDate.HasValue) {
+                    query = query.Where(x => x.CreatedAt >= paginationRequest.StartDate);
                 }
 
-                if (paginationRequest.MaxCreatedAt.HasValue) {
-                    query = query.Where(x => x.CreatedAt <= paginationRequest.MaxCreatedAt);
+                if (paginationRequest.EndDate.HasValue) {
+                    query = query.Where(x => x.CreatedAt <= paginationRequest.EndDate);
                 }
 
                 if (paginationRequest.Page == 0) paginationRequest.Page = 1;
