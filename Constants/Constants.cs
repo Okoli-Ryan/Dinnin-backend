@@ -4,6 +4,10 @@
         public const int TableCodeLength = 32;
     }
 
+    public interface ClaimType {
+        public const string PERMISSION_CLAIM_TYPE = "PERMISSION_CLAIM_TYPE";
+    }
+
     public interface OrderModelConstants {
 
         //Order Status 

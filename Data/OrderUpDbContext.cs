@@ -11,6 +11,13 @@
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+            
+
+            base.OnModelCreating(modelBuilder);
+        }
+
         public void SeedPermissions(IServiceProvider services) {
 
         }

@@ -2,44 +2,27 @@
 
 namespace OrderUp_API.Constants {
 
-    public class Permission {
-        private Guid PermissionID { get; set; }
-        private string PermissionName { get; set; }
-        private PermissionCategory PermissionCategory { get; set; }
+    public class Permissions {
+        private PermissionName PermissionName { get; set; }
+        private string PermissionCategory { get; set; }
 
-        public Permission(PermissionCategory permissionCategory, PermissionNameType permissionName) {
-            PermissionID = Guid.NewGuid();
-            PermissionName = $"{permissionCategory}.{permissionName}";
-            PermissionCategory = permissionCategory;
+        public Permissions(PermissionName permissionName) {
+            string[] permissionParts = permissionName.ToString().Split("__");
+            if (permissionParts.Length != 2) {
+                throw new ArgumentException("Invalid PermissionName format. Expected format: {category}__{name}");
+            }
+
+            PermissionCategory = permissionParts[0];
+            PermissionName = permissionName;
         }
 
-        public string GetPermissionName(PermissionCategory permissionCategory, PermissionNameType permissionName) {
-            return $"{permissionCategory}.{permissionName}";
-        }
 
-        public static List<Permission> GetPermissions() {
-            List<Permission> permissions = new() {
+        public static List<Permissions> GetPermissions() {
+            List<Permissions> permissions = new();
 
-                new Permission(PermissionCategory.Analytics, PermissionNameType.BREAKDOWN),
-                new Permission(PermissionCategory.Analytics, PermissionNameType.ORDER_AMOUNT),
-                new Permission(PermissionCategory.Analytics, PermissionNameType.ORDER_COUNT),
-                new Permission(PermissionCategory.Analytics, PermissionNameType.ORDER_ITEM_COUNT),
-                new Permission(PermissionCategory.Orders, PermissionNameType.VIEW_ORDERS),
-                new Permission(PermissionCategory.Orders, PermissionNameType.UPDATE_ORDERS),
-                new Permission(PermissionCategory.MenuCategory, PermissionNameType.UPDATE_MENU),
-                new Permission(PermissionCategory.MenuCategory, PermissionNameType.DELETE_MENU),
-                new Permission(PermissionCategory.MenuCategory, PermissionNameType.CREATE_MENU),
-                new Permission(PermissionCategory.MenuItem, PermissionNameType.CREATE_MENU_ITEM),
-                new Permission(PermissionCategory.MenuItem, PermissionNameType.UPDATE_MENU_ITEM),
-                new Permission(PermissionCategory.MenuItem, PermissionNameType.DELETE_MENU_ITEM),
-                new Permission(PermissionCategory.Table, PermissionNameType.CREATE_TABLE),
-                new Permission(PermissionCategory.Table, PermissionNameType.UPDATE_TABLE),
-                new Permission(PermissionCategory.Table, PermissionNameType.DELETE_TABLE),
-                new Permission(PermissionCategory.Staff, PermissionNameType.CREATE_STAFF),
-                new Permission(PermissionCategory.Staff, PermissionNameType.UPDATE_STAFF),
-                new Permission(PermissionCategory.Staff, PermissionNameType.DELETE_STAFF),
-                new Permission(PermissionCategory.Restaurant, PermissionNameType.UPDATE_RESTAURANT),
-            };
+            for (int i = 0; i < Enum.GetNames(typeof(PermissionName)).Length; i++) {
+                permissions.Add(new Permissions((PermissionName)i));
+            }
 
             return permissions;
         }
@@ -47,36 +30,39 @@ namespace OrderUp_API.Constants {
 
     }
 
-    public enum PermissionCategory {
-        Analytics,
-        Orders,
-        MenuCategory,
-        MenuItem,
-        Table,
-        Staff,
-        Restaurant
-    }
+    public enum PermissionName {
+        // Analytics Permissions
+        ANALYTICS__BREAKDOWN,
+        ANALYTICS__ORDER_AMOUNT,
+        ANALYTICS__ORDER_COUNT,
+        ANALYTICS__ORDER_ITEM_COUNT,
 
-    public enum PermissionNameType {
-        BREAKDOWN,
-        ORDER_AMOUNT,
-        ORDER_COUNT,
-        ORDER_ITEM_COUNT,
-        VIEW_ORDERS,
-        UPDATE_ORDERS,
-        UPDATE_MENU,
-        DELETE_MENU,
-        CREATE_MENU,
-        CREATE_MENU_ITEM,
-        UPDATE_MENU_ITEM,
-        DELETE_MENU_ITEM,
-        CREATE_TABLE,
-        UPDATE_TABLE,
-        DELETE_TABLE,
-        CREATE_STAFF,
-        UPDATE_STAFF,
-        DELETE_STAFF,
-        UPDATE_RESTAURANT
+        // Orders Permissions
+        ORDERS__VIEW_ORDERS,
+        ORDERS__UPDATE_ORDERS,
+
+        // Menu Permissions (replace "MenuCategory" with "Menu")
+        MENU__UPDATE_MENU,
+        MENU__DELETE_MENU,
+        MENU__CREATE_MENU,
+
+        // MenuItem Permissions
+        MENU_ITEM__CREATE_MENU_ITEM,
+        MENU_ITEM__UPDATE_MENU_ITEM,
+        MENU_ITEM__DELETE_MENU_ITEM,
+
+        // Table Permissions
+        TABLE__CREATE_TABLE,
+        TABLE__UPDATE_TABLE,
+        TABLE__DELETE_TABLE,
+
+        // Staff Permissions
+        STAFF__CREATE_STAFF,
+        STAFF__UPDATE_STAFF,
+        STAFF__DELETE_STAFF,
+
+        // Restaurant Permissions
+        RESTAURANT__UPDATE_RESTAURANT,
     }
 
 }

@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using OrderUp_API.Attributes;
+
+namespace OrderUp_API.Controllers {
     [Route("api/v1/[controller]")]
     [ServiceFilter(typeof(ModelValidationActionFilter))]
     [ApiController]
@@ -12,7 +14,6 @@
             this.analyticsService = analyticsService;
             responseHandler = new ControllerResponseHandler();
         }
-
 
 
 
