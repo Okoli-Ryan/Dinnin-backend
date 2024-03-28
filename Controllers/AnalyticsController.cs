@@ -17,7 +17,7 @@
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAnalyticsData([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
+        public async Task<IActionResult> GetAnalyticsBreakdown([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
 
             var response = await analyticsService.GetAnalyticsData(StartTime, EndTime);
 

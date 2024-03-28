@@ -11,6 +11,10 @@
 
         }
 
+        public void SeedPermissions(IServiceProvider services) {
+
+        }
+
         public OrderUpDbContext() { }
 
         public DbSet<MenuCategory> MenuCategory { get; set; }
