@@ -13,9 +13,13 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
-            
-
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Permission>()
+                        .HasMany(p => p.Admins)
+                        .WithMany(a => a.Permissions)
+                        .UsingEntity<AdminPermission>(
+                            l => l.HasOne<Admin>().WithMany(t => t.AdminPermissions),
+                            r => r.HasOne<Permission>().WithMany(t => t.AdminPermissions)
+                        );
         }
 
         public void SeedPermissions(IServiceProvider services) {
@@ -47,6 +51,10 @@
         public DbSet<User> Users { get; set; }
 
         public DbSet<Admin> Admins { get; set; }
+
+        public DbSet<Permission> Permissions { get; set; }
+
+        public DbSet<AdminPermission> AdminPermissions { get; set; }
 
         public DbSet<VerificationCode> VerificationCode { get; set; }
 

@@ -27,5 +27,9 @@
 
         [MaxLength(32)]
         public string Position { get; set; }
+
+        public List<AdminPermission> AdminPermissions { get; set; } = new();
+
+        public List<Permission> Permissions { get; set; } = new();
     }
 }
