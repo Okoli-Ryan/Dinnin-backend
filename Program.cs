@@ -23,6 +23,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers(
     config => {
         config.Filters.Add(new AuthorizationActionFilter());
+        config.Filters.Add(new PermissionActionFilter());
     })
     .AddJsonOptions(x => {
         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
