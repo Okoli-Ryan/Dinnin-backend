@@ -2,7 +2,9 @@
     public class AdminPermission : AbstractEntity {
 
         public Guid AdminID { get; set; }
-        public Guid PermissionID { get; set; }
+        public int PermissionID { get; set; }
+        public Permission Permission { get; set; }
+        public Admin Admin { get; set; }
 
     }
 }

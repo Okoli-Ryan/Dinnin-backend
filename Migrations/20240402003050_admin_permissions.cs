@@ -5,24 +5,22 @@
 namespace OrderUpAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class adminposition : Migration
+    public partial class adminpermissions : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "position",
-                table: "Admin",
-                type: "longtext",
-                nullable: true);
+            migrationBuilder.RenameTable(
+                name: "AdminPermission",
+                newName: "admin_permission");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "position",
-                table: "Admin");
+            migrationBuilder.RenameTable(
+                name: "admin_permission",
+                newName: "AdminPermission");
         }
     }
 }

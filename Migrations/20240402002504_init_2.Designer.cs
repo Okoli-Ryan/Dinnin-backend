@@ -11,8 +11,8 @@ using OrderUp_API.Data;
 namespace OrderUpAPI.Migrations
 {
     [DbContext(typeof(OrderUpDbContext))]
-    [Migration("20230918145113_menuCategory_order")]
-    partial class menuCategoryorder
+    [Migration("20240402002504_init_2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,25 @@ namespace OrderUpAPI.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("AdminPermission", b =>
+                {
+                    b.Property<Guid>("AdminsID")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("admins_id");
+
+                    b.Property<int>("PermissionsID")
+                        .HasColumnType("int")
+                        .HasColumnName("permissions_id");
+
+                    b.HasKey("AdminsID", "PermissionsID")
+                        .HasName("pk_admin_permission");
+
+                    b.HasIndex("PermissionsID")
+                        .HasDatabaseName("ix_admin_permission_permissions_id");
+
+                    b.ToTable("AdminPermission", (string)null);
+                });
 
             modelBuilder.Entity("OrderUp_API.Models.Admin", b =>
                 {
@@ -70,12 +89,21 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("phone_number");
 
+                    b.Property<string>("Position")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("position");
+
+                    b.Property<string>("RecoveryEmail")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("recovery_email");
+
                     b.Property<Guid?>("RestaurantID")
                         .HasColumnType("char(36)")
                         .HasColumnName("restaurant_id");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasMaxLength(16)
                         .HasColumnType("varchar(16)")
                         .HasColumnName("role");
@@ -91,6 +119,45 @@ namespace OrderUpAPI.Migrations
                         .HasDatabaseName("ix_admin_restaurant_id");
 
                     b.ToTable("Admin");
+                });
+
+            modelBuilder.Entity("OrderUp_API.Models.AdminPermission", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
+
+                    b.Property<bool>("ActiveStatus")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("active_status");
+
+                    b.Property<Guid>("AdminID")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("admin_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("PermissionID")
+                        .HasColumnType("int")
+                        .HasColumnName("permission_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("ID")
+                        .HasName("pk_admin_permissions");
+
+                    b.HasIndex("AdminID")
+                        .HasDatabaseName("ix_admin_permissions_admin_id");
+
+                    b.HasIndex("PermissionID")
+                        .HasDatabaseName("ix_admin_permissions_permission_id");
+
+                    b.ToTable("admin_permissions", (string)null);
                 });
 
             modelBuilder.Entity("OrderUp_API.Models.MenuCategory", b =>
@@ -245,7 +312,7 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
 
-                    b.Property<decimal>("OrderAmount")
+                    b.Property<decimal?>("OrderAmount")
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("order_amount");
 
@@ -253,6 +320,11 @@ namespace OrderUpAPI.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("order_note");
+
+                    b.Property<string>("OrderStatus")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("order_status");
 
                     b.Property<string>("PaymentOption")
                         .HasMaxLength(20)
@@ -278,6 +350,9 @@ namespace OrderUpAPI.Migrations
                     b.HasKey("ID")
                         .HasName("pk_order");
 
+                    b.HasIndex("TableID")
+                        .HasDatabaseName("ix_order_table_id");
+
                     b.ToTable("order", (string)null);
                 });
 
@@ -300,9 +375,17 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("menu_item_id");
 
+                    b.Property<string>("MenuItemName")
+                        .HasColumnType("longtext")
+                        .HasColumnName("menu_item_name");
+
                     b.Property<Guid>("OrderID")
                         .HasColumnType("char(36)")
                         .HasColumnName("order_id");
+
+                    b.Property<decimal>("OrderItemPrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("order_item_price");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
@@ -322,6 +405,175 @@ namespace OrderUpAPI.Migrations
                         .HasDatabaseName("ix_order_item_order_id");
 
                     b.ToTable("order_item", (string)null);
+                });
+
+            modelBuilder.Entity("OrderUp_API.Models.Permission", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Alias")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("alias");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("category");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("name");
+
+                    b.HasKey("ID")
+                        .HasName("pk_permissions");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_permissions_name");
+
+                    b.ToTable("permissions", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Alias = "Can View Analytics Breakdown",
+                            Category = "ANALYTICS",
+                            Name = "ANALYTICS__BREAKDOWN"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Alias = "Can View Analytics Order Amount",
+                            Category = "ANALYTICS",
+                            Name = "ANALYTICS__ORDER_AMOUNT"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Alias = "Can View Analytics Order Count",
+                            Category = "ANALYTICS",
+                            Name = "ANALYTICS__ORDER_COUNT"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Alias = "Can View Analytics Order Item Count",
+                            Category = "ANALYTICS",
+                            Name = "ANALYTICS__ORDER_ITEM_COUNT"
+                        },
+                        new
+                        {
+                            ID = 5,
+                            Alias = "Can View Orders",
+                            Category = "ORDERS",
+                            Name = "ORDERS__VIEW_ORDERS"
+                        },
+                        new
+                        {
+                            ID = 6,
+                            Alias = "Can Update Orders",
+                            Category = "ORDERS",
+                            Name = "ORDERS__UPDATE_ORDERS"
+                        },
+                        new
+                        {
+                            ID = 7,
+                            Alias = "Can Update Menu",
+                            Category = "MENU",
+                            Name = "MENU__UPDATE_MENU"
+                        },
+                        new
+                        {
+                            ID = 8,
+                            Alias = "Can Delete Menu",
+                            Category = "MENU",
+                            Name = "MENU__DELETE_MENU"
+                        },
+                        new
+                        {
+                            ID = 9,
+                            Alias = "Can Create Menu",
+                            Category = "MENU",
+                            Name = "MENU__CREATE_MENU"
+                        },
+                        new
+                        {
+                            ID = 10,
+                            Alias = "Can Create Menu Item",
+                            Category = "MENU_ITEM",
+                            Name = "MENU_ITEM__CREATE_MENU_ITEM"
+                        },
+                        new
+                        {
+                            ID = 11,
+                            Alias = "Can Update Menu Item",
+                            Category = "MENU_ITEM",
+                            Name = "MENU_ITEM__UPDATE_MENU_ITEM"
+                        },
+                        new
+                        {
+                            ID = 12,
+                            Alias = "Can Delete Menu Item",
+                            Category = "MENU_ITEM",
+                            Name = "MENU_ITEM__DELETE_MENU_ITEM"
+                        },
+                        new
+                        {
+                            ID = 13,
+                            Alias = "Can Create Table",
+                            Category = "TABLE",
+                            Name = "TABLE__CREATE_TABLE"
+                        },
+                        new
+                        {
+                            ID = 14,
+                            Alias = "Can Update Table",
+                            Category = "TABLE",
+                            Name = "TABLE__UPDATE_TABLE"
+                        },
+                        new
+                        {
+                            ID = 15,
+                            Alias = "Can Delete Table",
+                            Category = "TABLE",
+                            Name = "TABLE__DELETE_TABLE"
+                        },
+                        new
+                        {
+                            ID = 16,
+                            Alias = "Can Create Staff",
+                            Category = "STAFF",
+                            Name = "STAFF__CREATE_STAFF"
+                        },
+                        new
+                        {
+                            ID = 17,
+                            Alias = "Can Update Staff",
+                            Category = "STAFF",
+                            Name = "STAFF__UPDATE_STAFF"
+                        },
+                        new
+                        {
+                            ID = 18,
+                            Alias = "Can Delete Staff",
+                            Category = "STAFF",
+                            Name = "STAFF__DELETE_STAFF"
+                        },
+                        new
+                        {
+                            ID = 19,
+                            Alias = "Can Update Restaurant",
+                            Category = "RESTAURANT",
+                            Name = "RESTAURANT__UPDATE_RESTAURANT"
+                        });
                 });
 
             modelBuilder.Entity("OrderUp_API.Models.Restaurant", b =>
@@ -546,6 +798,11 @@ namespace OrderUpAPI.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("active_status");
 
+                    b.Property<string>("Code")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("code");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("created_at");
@@ -681,7 +938,28 @@ namespace OrderUpAPI.Migrations
                     b.HasKey("ID")
                         .HasName("pk_verification_code");
 
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_verification_code_code");
+
                     b.ToTable("verification_code", (string)null);
+                });
+
+            modelBuilder.Entity("AdminPermission", b =>
+                {
+                    b.HasOne("OrderUp_API.Models.Admin", null)
+                        .WithMany()
+                        .HasForeignKey("AdminsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_admin_permission_admin_admins_id");
+
+                    b.HasOne("OrderUp_API.Models.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_admin_permission_permissions_permissions_id");
                 });
 
             modelBuilder.Entity("OrderUp_API.Models.Admin", b =>
@@ -692,6 +970,27 @@ namespace OrderUpAPI.Migrations
                         .HasConstraintName("fk_admin_restaurants_restaurant_id");
 
                     b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("OrderUp_API.Models.AdminPermission", b =>
+                {
+                    b.HasOne("OrderUp_API.Models.Admin", "Admin")
+                        .WithMany("AdminPermissions")
+                        .HasForeignKey("AdminID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_admin_permissions_admin_admin_id");
+
+                    b.HasOne("OrderUp_API.Models.Permission", "Permission")
+                        .WithMany("AdminPermissions")
+                        .HasForeignKey("PermissionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_admin_permissions_permissions_permission_id");
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("Permission");
                 });
 
             modelBuilder.Entity("OrderUp_API.Models.MenuCategory", b =>
@@ -726,6 +1025,16 @@ namespace OrderUpAPI.Migrations
                     b.Navigation("MenuItem");
                 });
 
+            modelBuilder.Entity("OrderUp_API.Models.Order", b =>
+                {
+                    b.HasOne("OrderUp_API.Models.Table", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableID")
+                        .HasConstraintName("fk_order_tables_table_id");
+
+                    b.Navigation("Table");
+                });
+
             modelBuilder.Entity("OrderUp_API.Models.OrderItem", b =>
                 {
                     b.HasOne("OrderUp_API.Models.MenuItem", "MenuItem")
@@ -735,7 +1044,7 @@ namespace OrderUpAPI.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_order_item_menu_items_menu_item_id");
 
-                    b.HasOne("OrderUp_API.Models.Order", "Order")
+                    b.HasOne("OrderUp_API.Models.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -743,8 +1052,6 @@ namespace OrderUpAPI.Migrations
                         .HasConstraintName("fk_order_item_order_order_id");
 
                     b.Navigation("MenuItem");
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("OrderUp_API.Models.SavedRestaurant", b =>
@@ -804,6 +1111,11 @@ namespace OrderUpAPI.Migrations
                     b.Navigation("Restaurant");
                 });
 
+            modelBuilder.Entity("OrderUp_API.Models.Admin", b =>
+                {
+                    b.Navigation("AdminPermissions");
+                });
+
             modelBuilder.Entity("OrderUp_API.Models.MenuCategory", b =>
                 {
                     b.Navigation("MenuItems");
@@ -812,6 +1124,11 @@ namespace OrderUpAPI.Migrations
             modelBuilder.Entity("OrderUp_API.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("OrderUp_API.Models.Permission", b =>
+                {
+                    b.Navigation("AdminPermissions");
                 });
 
             modelBuilder.Entity("OrderUp_API.Models.Restaurant", b =>

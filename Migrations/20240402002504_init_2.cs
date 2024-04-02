@@ -1,30 +1,20 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace OrderUpAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class adminpermissions : Migration
+    public partial class init2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "permissions",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "char(36)", nullable: false),
-                    name = table.Column<string>(type: "longtext", nullable: true),
-                    activestatus = table.Column<bool>(name: "active_status", type: "tinyint(1)", nullable: false),
-                    createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
-                    updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_permissions", x => x.id);
-                })
+            migrationBuilder.AlterDatabase()
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -33,7 +23,7 @@ namespace OrderUpAPI.Migrations
                 {
                     id = table.Column<Guid>(type: "char(36)", nullable: false),
                     adminid = table.Column<Guid>(name: "admin_id", type: "char(36)", nullable: false),
-                    permissionid = table.Column<Guid>(name: "permission_id", type: "char(36)", nullable: false),
+                    permissionid = table.Column<int>(name: "permission_id", type: "int", nullable: false),
                     activestatus = table.Column<bool>(name: "active_status", type: "tinyint(1)", nullable: false),
                     createdat = table.Column<DateTime>(name: "created_at", type: "datetime(6)", nullable: false),
                     updatedat = table.Column<DateTime>(name: "updated_at", type: "datetime(6)", nullable: false)
@@ -65,6 +55,7 @@ namespace OrderUpAPI.Migrations
                 name: "ix_admin_permissions_permission_id",
                 table: "admin_permissions",
                 column: "permission_id");
+
         }
 
         /// <inheritdoc />
@@ -73,8 +64,6 @@ namespace OrderUpAPI.Migrations
             migrationBuilder.DropTable(
                 name: "admin_permissions");
 
-            migrationBuilder.DropTable(
-                name: "permissions");
         }
     }
 }

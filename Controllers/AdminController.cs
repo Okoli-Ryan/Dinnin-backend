@@ -110,6 +110,13 @@ namespace OrderUp_API.Controllers {
 
         }
 
+        [HttpPost("permissions/{ID}")]
+        public async Task<IActionResult> UpdateAdminPermissions(Guid ID, [FromBody] List<int> PermissionIds) { 
+            var response = await adminService.UpdateAdminPermissions(ID, PermissionIds);
+        
+            return ResponseHandler.HandleResponse(response);
+        }
+
 
 
         //[HttpDelete("{ID}")]

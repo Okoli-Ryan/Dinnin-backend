@@ -23,7 +23,7 @@ namespace OrderUp_API.ActionFilters {
 
                     var isUserAuthorized = context.HttpContext
                                                  .User
-                                                 .HasClaim(claim => claim.Type == ClaimType.PERMISSION_CLAIM_TYPE && claim.Value.Contains((Char)requiredPermission));
+                                                 .HasClaim(ClaimType.PERMISSION_CLAIM_TYPE, requiredPermission.ToString());
 
                     if (!isUserAuthorized) {
                         context.Result = new UnauthorizedResult();

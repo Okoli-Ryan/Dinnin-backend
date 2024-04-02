@@ -12,13 +12,15 @@ namespace OrderUp_API.Services {
         private readonly MessageProducerService messageProducerService;
         private readonly HttpContext httpContext;
         private readonly RestaurantRepository restaurantRepository;
+        private readonly AdminPermissionRepository adminPermissionRepository;
 
-        public AdminService(AdminRepository adminRepository, VerificationCodeService verificationCodeService, RestaurantRepository restaurantRepository, IMapper mapper, MessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor) {
+        public AdminService(AdminRepository adminRepository, VerificationCodeService verificationCodeService, RestaurantRepository restaurantRepository, IMapper mapper, MessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor, AdminPermissionRepository adminPermissionRepository) {
             this.adminRepository = adminRepository;
             this.mapper = mapper;
             this.messageProducerService = messageProducerService;
             this.restaurantRepository = restaurantRepository;
             this.verificationCodeService = verificationCodeService;
+            this.adminPermissionRepository = adminPermissionRepository;
             httpContext = httpContextAccessor.HttpContext;
         }
 
@@ -121,12 +123,18 @@ namespace OrderUp_API.Services {
                 };
             }
 
+            var adminPermissions = await adminPermissionRepository.GetPermissionNamesByAdminID(ExistingAdmin.ID);
+
             var authClaims = new List<Claim>() {
                 new Claim(ClaimTypes.Role, ExistingAdmin.Role),
                 new Claim(ClaimTypes.Email, ExistingAdmin.Email),
                 new Claim(ClaimTypes.PrimarySid, ExistingAdmin.ID.ToString()),
-                new Claim(RestaurantIdentifier.RestaurantID_ClaimType, ExistingAdmin.RestaurantID.ToString())
+                new Claim(RestaurantIdentifier.RestaurantID_ClaimType, ExistingAdmin.RestaurantID.ToString()),
             };
+
+            foreach (var permission in adminPermissions) {
+                authClaims.Add(new Claim(ClaimType.PERMISSION_CLAIM_TYPE, permission));
+            }
 
 
             var claimsIdentity = new ClaimsIdentity(authClaims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -205,6 +213,15 @@ namespace OrderUp_API.Services {
             };
 
             return new DefaultSuccessResponse<PaginatedResponse<AdminDto>>(response);
+        }
+
+        public async Task<DefaultResponse<bool>> UpdateAdminPermissions(Guid adminId, List<int> permissionIds) {
+            
+            var response = await adminPermissionRepository.UpdateAdminPermissions(adminId, permissionIds);
+
+            if (!response) return new DefaultErrorResponse<bool>();
+
+            return new DefaultSuccessResponse<bool>(response);
         }
 
 

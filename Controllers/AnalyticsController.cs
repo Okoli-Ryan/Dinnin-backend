@@ -16,7 +16,7 @@ namespace OrderUp_API.Controllers {
         }
 
 
-
+        [PermissionRequired(PermissionName.ANALYTICS__BREAKDOWN)]
         [HttpGet]
         public async Task<IActionResult> GetAnalyticsBreakdown([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
 
@@ -27,6 +27,7 @@ namespace OrderUp_API.Controllers {
 
 
 
+        [PermissionRequired(PermissionName.ANALYTICS__ORDER_AMOUNT)]
         [HttpGet("order-amount")]
         public async Task<IActionResult> GetOrderAmountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime, [FromQuery] string GroupBy) {
 

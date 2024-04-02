@@ -13,13 +13,14 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
-            modelBuilder.Entity<Permission>()
-                        .HasMany(p => p.Admins)
-                        .WithMany(a => a.Permissions)
-                        .UsingEntity<AdminPermission>(
-                            l => l.HasOne<Admin>().WithMany(t => t.AdminPermissions),
-                            r => r.HasOne<Permission>().WithMany(t => t.AdminPermissions)
-                        );
+            modelBuilder.Entity<Admin>()
+                        .HasMany(admin => admin.Permissions)
+                        .WithMany(permission => permission.Admins)
+                        .UsingEntity<AdminPermission>();
+
+
+            modelBuilder.Entity<Permission>().HasData(PermissionModel.GetSeedData());
+
         }
 
         public void SeedPermissions(IServiceProvider services) {

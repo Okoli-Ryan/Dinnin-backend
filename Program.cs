@@ -64,6 +64,8 @@ builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<OrderItemRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<AdminRepository>();
+builder.Services.AddScoped<AdminPermissionRepository>();
+builder.Services.AddScoped<PermissionRepository>();
 builder.Services.AddScoped<VerificationCodeRepository>();
 builder.Services.AddScoped<IUserEntityRepository<User>>();
 builder.Services.AddScoped<IUserEntityRepository<Admin>>();
@@ -81,6 +83,7 @@ builder.Services.AddScoped<OrderItemService>();
 builder.Services.AddScoped<TableService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AdminService>();
+builder.Services.AddScoped<PermissionService>();
 builder.Services.AddScoped<IUserEntityService<User>>();
 builder.Services.AddScoped<IUserEntityService<Admin>>();
 builder.Services.AddScoped<VerificationCodeService>();
@@ -176,7 +179,6 @@ using (var scope = app.Services.CreateScope()) {
     if (context.Database.GetPendingMigrations().Any()) {
         context.Database.Migrate();
     }
-    context.Database.EnsureCreated();
 }
 
 
