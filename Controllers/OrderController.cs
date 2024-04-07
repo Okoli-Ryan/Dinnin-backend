@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using OrderUp_API.Attributes;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/order")]
@@ -15,7 +17,7 @@
             responseHandler = new ControllerResponseHandler();
         }
 
-
+        [PermissionRequired(PermissionName.ORDERS__VIEW_ORDERS)]
         [HttpGet("{ID}")]
         public async Task<IActionResult> GetOrderByID(Guid ID) {
 
@@ -27,7 +29,7 @@
             return Ok(order);
         }
 
-
+        [PermissionRequired(PermissionName.ORDERS__VIEW_ORDERS)]
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveOrders([FromQuery] DateTime LastTime) {
 
@@ -36,7 +38,7 @@
             return responseHandler.HandleResponse(ordersResponse);
         }
 
-
+        [PermissionRequired(PermissionName.ORDERS__VIEW_ORDERS)]
         [HttpGet("restaurant/{page}")]
         public async Task<IActionResult> GetOrdersByRestaurantID(int Page) {
 
@@ -63,6 +65,7 @@
 
 
         [HttpPut()]
+        [PermissionRequired(PermissionName.ORDERS__UPDATE_ORDERS)]
         public async Task<IActionResult> UpdateOrder([FromBody] OrderDto orderDto) {
 
 

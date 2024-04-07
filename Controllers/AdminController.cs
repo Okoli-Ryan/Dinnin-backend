@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using OrderUp_API.Attributes;
 
 namespace OrderUp_API.Controllers {
 
@@ -35,7 +36,7 @@ namespace OrderUp_API.Controllers {
             //return ResponseHandler.HandleResponse<AdminDto(addedAdmin);
         }
 
-
+        [PermissionRequired(PermissionName.STAFF__VIEW_STAFF)]
         [HttpGet]
         public async Task<IActionResult> GetListOfAdmins(string name, string email, string phonenumber, int page, int size, DateTime? startDate, DateTime? endDate) {
 
@@ -62,7 +63,7 @@ namespace OrderUp_API.Controllers {
 
 
         [HttpPost("add-staff")]
-        [Authorize(Roles = RoleTypes.SuperAdmin)]
+        [PermissionRequired(PermissionName.STAFF__CREATE_STAFF)]
         public async Task<IActionResult> RegisterStaff([FromBody] AdminDto adminDto) {
 
             var addedAdmin = await adminService.RegisterStaff(adminDto);
@@ -109,6 +110,7 @@ namespace OrderUp_API.Controllers {
 
         }
 
+        [PermissionRequired(PermissionName.PERMISSIONS__VIEW_PERMISSIONS)]
         [HttpGet("permissions/{ID}")]
         public async Task<IActionResult> GetAdminPermissions(Guid ID) { 
         
@@ -119,7 +121,7 @@ namespace OrderUp_API.Controllers {
 
 
 
-
+        [PermissionRequired(PermissionName.PERMISSIONS__UPDATE_PERMISSIONS)]
         [HttpPost("permissions/{ID}")]
         public async Task<IActionResult> UpdateAdminPermissions(Guid ID, [FromBody] List<int> PermissionIds) { 
             var response = await adminService.UpdateAdminPermissions(ID, PermissionIds);

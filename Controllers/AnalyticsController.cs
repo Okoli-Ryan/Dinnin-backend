@@ -39,7 +39,7 @@ namespace OrderUp_API.Controllers {
 
 
 
-
+        [PermissionRequired(PermissionName.ANALYTICS__ORDER_COUNT)]
         [HttpGet("order-count")]
         public async Task<IActionResult> GetOrderCountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime, [FromQuery] string GroupBy) {
 
@@ -50,7 +50,7 @@ namespace OrderUp_API.Controllers {
         }
 
 
-
+        [PermissionRequired(PermissionName.ANALYTICS__ORDER_ITEM_COUNT)]
         [HttpGet("order-item-count")]
         public async Task<IActionResult> GetOrderItemCountAnalytics([FromQuery] DateTime? StartTime, [FromQuery] DateTime? EndTime) {
 

@@ -9,18 +9,16 @@ namespace OrderUp_API.Constants {
         public static List<Permission> GetSeedData() {
 
             List<Permission> permissions = new();
-            var count = 1;
 
             foreach (var permission in PermissionDictionary) {
 
                 permissions.Add(new Permission() {
-                    ID = count,
+                    ID = StringHash.GenerateStringHashID(permission.Key.ToString()),
                     Name = permission.Key.ToString(),
                     Alias = permission.Value.Alias,
                     Category = permission.Key.ToString().Split("__")[0]
                 });
 
-                count++;
             }
 
             return permissions;
@@ -50,8 +48,13 @@ namespace OrderUp_API.Constants {
             [PermissionName.STAFF__CREATE_STAFF] = new Permission(PermissionName.STAFF__CREATE_STAFF, "Can Create Staff"),
             [PermissionName.STAFF__UPDATE_STAFF] = new Permission(PermissionName.STAFF__UPDATE_STAFF, "Can Update Staff"),
             [PermissionName.STAFF__DELETE_STAFF] = new Permission(PermissionName.STAFF__DELETE_STAFF, "Can Delete Staff"),
+            [PermissionName.STAFF__VIEW_STAFF] = new Permission(PermissionName.STAFF__VIEW_STAFF, "Can View Staff"),
 
             [PermissionName.RESTAURANT__UPDATE_RESTAURANT] = new Permission(PermissionName.RESTAURANT__UPDATE_RESTAURANT, "Can Update Restaurant"),
+
+            [PermissionName.PERMISSIONS__UPDATE_PERMISSIONS] = new Permission(PermissionName.PERMISSIONS__UPDATE_PERMISSIONS, "Can Update user permissions"),
+            [PermissionName.PERMISSIONS__VIEW_PERMISSIONS] = new Permission(PermissionName.PERMISSIONS__VIEW_PERMISSIONS, "Can View user permissions"),
+
         };
     };
 
@@ -85,9 +88,15 @@ namespace OrderUp_API.Constants {
         STAFF__CREATE_STAFF,
         STAFF__UPDATE_STAFF,
         STAFF__DELETE_STAFF,
+        STAFF__VIEW_STAFF,
 
         // Restaurant Permissions
         RESTAURANT__UPDATE_RESTAURANT,
+
+        // Permissions 
+        PERMISSIONS__UPDATE_PERMISSIONS,
+        PERMISSIONS__VIEW_PERMISSIONS,
+
     }
 
 }

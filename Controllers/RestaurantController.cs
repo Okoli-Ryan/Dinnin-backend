@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using OrderUp_API.Attributes;
 
 namespace OrderUp_API.Controllers {
 
@@ -59,7 +60,7 @@ namespace OrderUp_API.Controllers {
         }
 
 
-
+        [PermissionRequired(PermissionName.RESTAURANT__UPDATE_RESTAURANT)]
         [HttpPut()]
         public async Task<IActionResult> UpdateRestaurant([FromBody] RestaurantDto restaurantDto) {
 

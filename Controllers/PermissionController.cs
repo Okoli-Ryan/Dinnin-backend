@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using OrderUp_API.Attributes;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/permission")]
@@ -13,6 +15,7 @@
             _responseHandler = new ControllerResponseHandler();
         }
 
+        [PermissionRequired(PermissionName.PERMISSIONS__VIEW_PERMISSIONS)]
         [HttpGet]
         public async Task<IActionResult> GetPermissions() { 
         

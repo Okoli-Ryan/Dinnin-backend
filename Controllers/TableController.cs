@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using OrderUp_API.Attributes;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/table")]
@@ -23,6 +25,7 @@
             return responseHandler.HandleResponse(TablesResponse);
         }
 
+        [PermissionRequired(PermissionName.TABLE__UPDATE_TABLE)]
         [HttpPut("generate-code/{ID}")]
         public async Task<IActionResult> GenerateTableCode(Guid ID) {
 
@@ -52,7 +55,7 @@
 
 
 
-
+        [PermissionRequired(PermissionName.TABLE__CREATE_TABLE)]
         [HttpPost()]
         public async Task<IActionResult> AddTable([FromBody] TableDto tableDto) {
 
@@ -64,7 +67,7 @@
         }
 
 
-
+        [PermissionRequired(PermissionName.TABLE__UPDATE_TABLE)]
         [HttpPut()]
         public async Task<IActionResult> UpdateTable([FromBody] TableDto tableDto) {
 
@@ -77,7 +80,7 @@
         }
 
 
-
+        [PermissionRequired(PermissionName.TABLE__DELETE_TABLE)]
         [HttpDelete("{ID}")]
         public async Task<IActionResult> DeleteTable(Guid ID) {
 

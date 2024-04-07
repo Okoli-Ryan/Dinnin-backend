@@ -1,4 +1,6 @@
-﻿namespace OrderUp_API.Controllers {
+﻿using OrderUp_API.Attributes;
+
+namespace OrderUp_API.Controllers {
 
     [ApiController]
     [Route("api/v1/menu-item")]
@@ -30,7 +32,7 @@
 
 
 
-
+        [PermissionRequired(PermissionName.MENU_ITEM__CREATE_MENU_ITEM)]
         [HttpPost()]
         public async Task<IActionResult> AddMenuItem([FromBody] MenuItemDto menuItemDto) {
 
@@ -42,7 +44,7 @@
         }
 
 
-
+        [PermissionRequired(PermissionName.MENU_ITEM__UPDATE_MENU_ITEM)]
         [HttpPut()]
         public async Task<IActionResult> UpdateMenuItem(MenuItemDto menuItemDto) {
 
@@ -53,7 +55,7 @@
         }
 
 
-
+        [PermissionRequired(PermissionName.MENU_ITEM__DELETE_MENU_ITEM)]
         [HttpDelete("{ID}")]
         public async Task<IActionResult> DeleteMenuItem(Guid ID) {
 

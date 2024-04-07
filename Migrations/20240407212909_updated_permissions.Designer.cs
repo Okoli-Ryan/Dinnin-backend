@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderUp_API.Data;
 
@@ -10,9 +11,11 @@ using OrderUp_API.Data;
 namespace OrderUpAPI.Migrations
 {
     [DbContext(typeof(OrderUpDbContext))]
-    partial class OrderUpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240407212909_updated_permissions")]
+    partial class updatedpermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -421,14 +424,14 @@ namespace OrderUpAPI.Migrations
                     b.HasData(
                         new
                         {
-                            ID = 505040706,
+                            ID = -505040706,
                             Alias = "Can View Analytics Breakdown",
                             Category = "ANALYTICS",
                             Name = "ANALYTICS__BREAKDOWN"
                         },
                         new
                         {
-                            ID = 506956829,
+                            ID = -506956829,
                             Alias = "Can View Analytics Order Amount",
                             Category = "ANALYTICS",
                             Name = "ANALYTICS__ORDER_AMOUNT"
@@ -463,28 +466,28 @@ namespace OrderUpAPI.Migrations
                         },
                         new
                         {
-                            ID = 300151959,
+                            ID = -300151959,
                             Alias = "Can Update Menu",
                             Category = "MENU",
                             Name = "MENU__UPDATE_MENU"
                         },
                         new
                         {
-                            ID = 395124802,
+                            ID = -395124802,
                             Alias = "Can Delete Menu",
                             Category = "MENU",
                             Name = "MENU__DELETE_MENU"
                         },
                         new
                         {
-                            ID = 20903238,
+                            ID = -20903238,
                             Alias = "Can Create Menu",
                             Category = "MENU",
                             Name = "MENU__CREATE_MENU"
                         },
                         new
                         {
-                            ID = 2133081567,
+                            ID = -2133081567,
                             Alias = "Can Create Menu Item",
                             Category = "MENU_ITEM",
                             Name = "MENU_ITEM__CREATE_MENU_ITEM"
@@ -526,14 +529,14 @@ namespace OrderUpAPI.Migrations
                         },
                         new
                         {
-                            ID = 88353422,
+                            ID = -88353422,
                             Alias = "Can Create Staff",
                             Category = "STAFF",
                             Name = "STAFF__CREATE_STAFF"
                         },
                         new
                         {
-                            ID = 1414419149,
+                            ID = -1414419149,
                             Alias = "Can Update Staff",
                             Category = "STAFF",
                             Name = "STAFF__UPDATE_STAFF"
@@ -547,7 +550,7 @@ namespace OrderUpAPI.Migrations
                         },
                         new
                         {
-                            ID = 891860850,
+                            ID = -891860850,
                             Alias = "Can View Staff",
                             Category = "STAFF",
                             Name = "STAFF__VIEW_STAFF"
