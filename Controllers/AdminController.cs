@@ -3,7 +3,6 @@
 namespace OrderUp_API.Controllers {
 
     [ApiController]
-    [ServiceFilter(typeof(ModelValidationActionFilter))]
     [Route("api/v1/admin")]
     public class AdminController : ControllerBase {
 
@@ -109,6 +108,17 @@ namespace OrderUp_API.Controllers {
             return ResponseHandler.HandleResponse(response);
 
         }
+
+        [HttpGet("permissions/{ID}")]
+        public async Task<IActionResult> GetAdminPermissions(Guid ID) { 
+        
+            var response = await adminService.GetAdminPermissions(ID);
+
+            return ResponseHandler.HandleResponse(response);
+        }
+
+
+
 
         [HttpPost("permissions/{ID}")]
         public async Task<IActionResult> UpdateAdminPermissions(Guid ID, [FromBody] List<int> PermissionIds) { 

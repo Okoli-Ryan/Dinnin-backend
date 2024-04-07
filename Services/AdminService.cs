@@ -215,6 +215,22 @@ namespace OrderUp_API.Services {
             return new DefaultSuccessResponse<PaginatedResponse<AdminDto>>(response);
         }
 
+
+
+        public async Task<DefaultResponse<Dictionary<string, List<PermissionDto>>>> GetAdminPermissions(Guid adminId) { 
+        
+            var adminPermissions = await adminPermissionRepository.GetPermissionsByAdminID(adminId);
+
+            if(adminPermissions is null) return new DefaultErrorResponse<Dictionary<string, List<PermissionDto>>>();
+
+            var mappedResponse = mapper.Map<Dictionary<string, List<PermissionDto>>>(adminPermissions);
+
+            return new DefaultSuccessResponse<Dictionary<string, List<PermissionDto>>>(mappedResponse);
+        }
+
+
+
+
         public async Task<DefaultResponse<bool>> UpdateAdminPermissions(Guid adminId, List<int> permissionIds) {
             
             var response = await adminPermissionRepository.UpdateAdminPermissions(adminId, permissionIds);

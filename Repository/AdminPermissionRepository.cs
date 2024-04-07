@@ -13,6 +13,16 @@
                 .Select(x => x.Permission.Name)
                 .ToListAsync();
         }
+        
+        
+        public async Task<Dictionary<string, List<Permission>>> GetPermissionsByAdminID(Guid adminId) {
+            return await context.AdminPermissions
+                .Where(x => x.AdminID.Equals(adminId))
+                .Include(x => x.Permission)
+                .GroupBy(x => x.Permission.Category)
+                .ToDictionaryAsync(group => group.Key, group => group.Select(x => x.Permission)
+                .ToList());
+        }
 
         public async Task<bool> UpdateAdminPermissions(Guid adminId, List<int> permissionIds) {
 
@@ -21,11 +31,12 @@
             }
 
             try {
-                // 1. Remove existing AdminPermissions for the given adminId
-                await context.AdminPermissions.Where(ap => ap.AdminID == adminId).ExecuteDeleteAsync();
 
-                // 2. Add the new mappings efficiently
-                await context.AdminPermissions.AddRangeAsync(
+                var previousPermissions = context.AdminPermissions.Where(ap => ap.AdminID == adminId);
+
+                context.RemoveRange(previousPermissions);
+
+                context.AdminPermissions.AddRange(
                     permissionIds.Select(permissionId => new AdminPermission { AdminID = adminId, PermissionID = permissionId })
                 );
 

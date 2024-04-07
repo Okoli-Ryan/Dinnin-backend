@@ -12,5 +12,6 @@
                                 .GroupBy(x => x.Category)
                                 .ToDictionaryAsync(group => group.Key, group => group.ToList());
         }
+
     }
 }
