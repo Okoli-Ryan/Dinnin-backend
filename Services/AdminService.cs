@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using OrderUp_API.Classes.ResponseDtos;
+using OrderUp_API.Classes.ResponseModels;
 using System.Text.RegularExpressions;
 using System.Web.Helpers;
 
@@ -63,7 +65,7 @@ namespace OrderUp_API.Services {
 
             var Restaurant = await restaurantRepository.GetByID(RestaurantID);
 
-            if(Restaurant is null) return new DefaultNotFoundResponse<bool>("Unable to find restaurant");
+            if (Restaurant is null) return new DefaultNotFoundResponse<bool>("Unable to find restaurant");
 
             var staffEmail = ParseAdminName(Staff.FirstName, Staff.LastName) + $"@{Restaurant.Slug}.com";
 
@@ -195,10 +197,10 @@ namespace OrderUp_API.Services {
 
             var restaurantID = GetJwtValue.GetGuidFromCookie(httpContext, RestaurantIdentifier.RestaurantID_ClaimType);
 
-            if(restaurantID == Guid.Empty) {
+            if (restaurantID == Guid.Empty) {
                 return new DefaultUnauthorizedResponse<PaginatedResponse<AdminDto>>();
             }
-            
+
             var PaginatedAdminsResponse = await adminRepository.GetAdminList(restaurantID, paginationRequest, name, email, phoneNumber);
 
             if (PaginatedAdminsResponse is null) return new DefaultFailurePaginationResponse<AdminDto>();
@@ -217,22 +219,35 @@ namespace OrderUp_API.Services {
 
 
 
-        public async Task<DefaultResponse<Dictionary<string, List<PermissionDto>>>> GetAdminPermissions(Guid adminId) { 
-        
-            var adminPermissions = await adminPermissionRepository.GetPermissionsByAdminID(adminId);
+        public async Task<DefaultResponse<GetPermissionsByAdminDto>> GetAdminPermissions(Guid adminId) {
 
-            if(adminPermissions is null) return new DefaultErrorResponse<Dictionary<string, List<PermissionDto>>>();
 
-            var mappedResponse = mapper.Map<Dictionary<string, List<PermissionDto>>>(adminPermissions);
+            var adminPermissionsTask = adminPermissionRepository.GetPermissionsByAdminID(adminId);
 
-            return new DefaultSuccessResponse<Dictionary<string, List<PermissionDto>>>(mappedResponse);
+            var adminNameTask = adminPermissionRepository.GetAdminNameByID(adminId);
+
+            await Task.WhenAll(adminPermissionsTask, adminNameTask);
+
+            var adminName = await adminNameTask;
+            var adminPermissions = await adminPermissionsTask;
+
+            var response = new GetPermissionsByAdminResponse {
+                AdminName = $"{adminName.FirstName} {adminName.LastName}",
+                PermissionGroups = adminPermissions
+            };
+
+
+            var mappedResponse = mapper.Map<GetPermissionsByAdminDto>(response);
+
+            return new DefaultSuccessResponse<GetPermissionsByAdminDto>(mappedResponse);
+
         }
 
 
 
 
         public async Task<DefaultResponse<bool>> UpdateAdminPermissions(Guid adminId, List<int> permissionIds) {
-            
+
             var response = await adminPermissionRepository.UpdateAdminPermissions(adminId, permissionIds);
 
             if (!response) return new DefaultErrorResponse<bool>();

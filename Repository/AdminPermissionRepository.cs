@@ -7,6 +7,16 @@
             this.context = context;
         }
 
+        public async Task<AdminNameResponse> GetAdminNameByID(Guid id) {
+            return await context.Admins
+                                .Where(x => x.ID.Equals(id))
+                                .Select(x => new AdminNameResponse () {
+                                    FirstName = x.FirstName,
+                                    LastName = x.LastName,
+                                })
+                                .SingleOrDefaultAsync();
+        }
+
         public async Task<List<string>> GetPermissionNamesByAdminID(Guid adminId) {
             return await context.AdminPermissions
                 .Where(x => x.AdminID.Equals(adminId))
