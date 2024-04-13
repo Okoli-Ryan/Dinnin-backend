@@ -17,6 +17,8 @@ namespace OrderUp_API.ActionFilters {
                 var actionMethod = controller.ControllerContext.ActionDescriptor.MethodInfo;
                 var permissionAttribute = actionMethod.GetCustomAttributes<PermissionRequiredAttribute>().FirstOrDefault();
 
+                if (context.HttpContext.User.HasClaim(ClaimTypes.Role, RoleTypes.SuperAdmin)) return;
+
                 if (permissionAttribute != null) {
 
                     PermissionName requiredPermission = permissionAttribute.PermissionName;

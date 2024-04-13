@@ -141,6 +141,12 @@ namespace OrderUp_API.Controllers {
         //    return Ok(new DefaultSuccessResponse<bool>(isDeletedAdmin));
         //}
 
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout() {
+            await adminService.Logout();
+            return Ok();
+        }
+
 
         [HttpGet("/access-denied")]
         public IActionResult AccessDenied() {

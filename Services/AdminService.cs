@@ -26,6 +26,11 @@ namespace OrderUp_API.Services {
             httpContext = httpContextAccessor.HttpContext;
         }
 
+        public async Task<object> Logout() {
+            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return null;
+        }
+
         public async Task<DefaultResponse<AdminDto>> RegisterAdmin(Admin Admin) {
 
             var ExistingAdmin = await adminRepository.GetAdminByEmail(Admin.Email);
