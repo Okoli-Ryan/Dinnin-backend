@@ -22,9 +22,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers(
     config => {
-        config.Filters.Add(new AuthorizationActionFilter());
-        config.Filters.Add(new PermissionActionFilter());
-        config.Filters.Add(new ModelValidationActionFilter());
+        config.Filters.Add<AuthorizationActionFilter>();
+        config.Filters.Add<PermissionActionFilter>();
+        config.Filters.Add<ModelValidationActionFilter>();
     })
     .AddJsonOptions(x => {
         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
