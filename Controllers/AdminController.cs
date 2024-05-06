@@ -144,7 +144,7 @@ namespace OrderUp_API.Controllers {
         [HttpGet("logout")]
         public async Task<IActionResult> Logout() {
             await adminService.Logout();
-            return Redirect("/access-denied");
+            return Ok("/access-denied");
         }
 
 
