@@ -108,7 +108,15 @@ builder.Services.AddScoped<PushNotificationQueueHandler<PushNotificationBody>>()
 
 builder.Services.AddHostedService<EmailMessageConsumer>();
 
-builder.Services.AddCors();
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowOrigin",
+        builder => {
+            builder.WithOrigins("https://order-up-frontend.vercel.app", "https://localhost:7282", "https://dinnin-dashboard.vercel.app", "https://localhost:5173")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
+});
 
 builder.Services.AddScoped<ModelValidationActionFilter>();
 
@@ -149,15 +157,10 @@ if (app.Environment.IsDevelopment()) {
     app.UseHttpsRedirection();
 }
 
-app.UseCors(options => {
-    options
-       .WithOrigins("https://order-up-frontend.vercel.app", "https://localhost:7282", "https://dinnin-dashboard.vercel.app", "https://localhost:5173")
-       .AllowAnyMethod()
-       .AllowAnyHeader()
-       .AllowCredentials();
-});
+
 app.UseRouting();
 
+app.UseCors("AllowOrigin");
 
 //app.UseCookiePolicy();
 
