@@ -296,7 +296,7 @@ namespace OrderUp_API.Services {
                 _ => results
                             .GroupBy(r => Convert.ToDateTime(r.Date).Date)  // Default: Grouping by Date without considering the time
                             .Select(g => new ChartValue<T> {
-                                Date = g.Key.ToString(),
+                                Date = g.Key.ToString("dd/MM/yy", CultureInfo.InvariantCulture),
                                 Value = (T)Convert.ChangeType(g.Sum(x => Convert.ToDecimal(x.Value)), typeof(T))  // Summing the values in Data for each grouped day
                             })
                             .ToList()

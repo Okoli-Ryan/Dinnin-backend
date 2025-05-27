@@ -95,7 +95,7 @@ builder.Services.AddScoped<MailService>();
 builder.Services.AddSingleton<IUserIdProvider, JwtUserIdProvider>();
 builder.Services.AddScoped<NetworkService>();
 builder.Services.AddScoped<CloudinaryService>();
-builder.Services.AddSingleton<MessageProducerService>();
+// builder.Services.AddSingleton<MessageProducerService>();
 builder.Services.AddSingleton<PusherService>();
 builder.Services.AddScoped<PushNotificationService>();
 
@@ -186,18 +186,18 @@ using (var scope = app.Services.CreateScope()) {
 }
 
 
-using (var scope = app.Services.CreateScope()) {
-    var services = scope.ServiceProvider;
-
-    var lifeTime = services.GetRequiredService<IHostApplicationLifetime>();
-
-    var rabbitMQProducer = services.GetRequiredService<MessageProducerService>();
-
-    lifeTime.ApplicationStopping.Register(() => {
-
-        rabbitMQProducer.Dispose();
-    });
-}
+// using (var scope = app.Services.CreateScope()) {
+//     var services = scope.ServiceProvider;
+//
+//     var lifeTime = services.GetRequiredService<IHostApplicationLifetime>();
+//
+//     var rabbitMQProducer = services.GetRequiredService<MessageProducerService>();
+//
+//     lifeTime.ApplicationStopping.Register(() => {
+//
+//         rabbitMQProducer.Dispose();
+//     });
+// }
 
 
 app.Run();

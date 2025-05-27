@@ -11,16 +11,18 @@ namespace OrderUp_API.Services {
         private readonly HttpContext httpContext;
         private readonly OrderUpDbContext _dbContext;
         private readonly PusherService pusherService;
-        private readonly MessageProducerService messageProducerService;
+        private readonly AdminService adminService;
+        private readonly PushNotificationService pushNotificationService;
 
-        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor, OrderUpDbContext dbContext, PusherService pusherService, TableRepository tableRepository, MessageProducerService messageProducerService) {
+        public OrderService(OrderRepository orderRepository, IMapper mapper, MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository, IHttpContextAccessor httpContextAccessor, OrderUpDbContext dbContext, PusherService pusherService, TableRepository tableRepository, AdminService adminService, PushNotificationService pushNotificationService) {
             this.orderRepository = orderRepository;
             this.mapper = mapper;
             this.menuItemRepository = menuItemRepository;
             this.orderItemRepository = orderItemRepository;
             this.pusherService = pusherService;
             this.tableRepository = tableRepository;
-            this.messageProducerService = messageProducerService;
+            this.adminService = adminService;
+            this.pushNotificationService = pushNotificationService;
             httpContext = httpContextAccessor.HttpContext;
             _dbContext = dbContext;
         }
@@ -102,13 +104,20 @@ namespace OrderUp_API.Services {
 
             var pusherResponse = await pusherService.TriggerMessage(MappedOrder, OrderModelConstants.NEW_ORDER_EVENT, RestaurantIdString);
 
-            messageProducerService.SendMessage(MessageQueueTopics.PUSH_NOTIFICATION, new PushNotificationBody() {
+            // messageProducerService.SendMessage(MessageQueueTopics.PUSH_NOTIFICATION, new PushNotificationBody() {
+            //
+            //     RestaurantID = SavedOrder.RestaurantId,
+            //     Message = new PushNotificationMessage {
+            //         Body = "A New Order has arrived",
+            //         Title = "New Order"
+            //     }
+            // });
+            
+            var Recipients = await adminService.GetAuthorizedPushNotificationRecipients(SavedOrder.RestaurantId);
 
-                RestaurantID = SavedOrder.RestaurantId,
-                Message = new PushNotificationMessage {
-                    Body = "A New Order has arrived",
-                    Title = "New Order"
-                }
+            await pushNotificationService.PublishToUsers(Recipients, new PushNotificationMessage {
+                Body = "A New Order has arrived",
+                Title = "New Order"
             });
 
 

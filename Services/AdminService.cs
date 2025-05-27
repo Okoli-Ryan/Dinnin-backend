@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using OrderUp_API.Classes.ResponseDtos;
 using OrderUp_API.Classes.ResponseModels;
 using System.Text.RegularExpressions;
-using System.Web.Helpers;
 
 namespace OrderUp_API.Services {
     public class AdminService {
@@ -11,15 +10,13 @@ namespace OrderUp_API.Services {
         private readonly AdminRepository adminRepository;
         private readonly VerificationCodeService verificationCodeService;
         private readonly IMapper mapper;
-        private readonly MessageProducerService messageProducerService;
         private readonly HttpContext httpContext;
         private readonly RestaurantRepository restaurantRepository;
         private readonly AdminPermissionRepository adminPermissionRepository;
 
-        public AdminService(AdminRepository adminRepository, VerificationCodeService verificationCodeService, RestaurantRepository restaurantRepository, IMapper mapper, MessageProducerService messageProducerService, IHttpContextAccessor httpContextAccessor, AdminPermissionRepository adminPermissionRepository) {
+        public AdminService(AdminRepository adminRepository, VerificationCodeService verificationCodeService, RestaurantRepository restaurantRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, AdminPermissionRepository adminPermissionRepository) {
             this.adminRepository = adminRepository;
             this.mapper = mapper;
-            this.messageProducerService = messageProducerService;
             this.restaurantRepository = restaurantRepository;
             this.verificationCodeService = verificationCodeService;
             this.adminPermissionRepository = adminPermissionRepository;
@@ -51,11 +48,16 @@ namespace OrderUp_API.Services {
             if (CreatedAccount is null) return new DefaultErrorResponse<AdminDto>();
 
 
-            messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
-                ID = CreatedAccount.id,
-                Role = RoleTypes.Admin,
-                Email = CreatedAccount.recoveryEmail
-            });
+            // messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
+            //     ID = CreatedAccount.id,
+            //     Role = RoleTypes.Admin,
+            //     Email = CreatedAccount.recoveryEmail
+            // });
+            
+            await verificationCodeService.SendCreateAccountVerificationCode(
+                CreatedAccount.id,
+                RoleTypes.Admin,
+                CreatedAccount.recoveryEmail);
 
             return new DefaultSuccessResponse<AdminDto>(CreatedAccount);
 
@@ -89,10 +91,12 @@ namespace OrderUp_API.Services {
 
             if (SavedStaff is null) return new DefaultErrorResponse<bool>();
 
-            messageProducerService.SendMessage(MessageQueueTopics.STAFF_REGISTRATION, new StaffRegistrationModel {
-                Admin = Staff,
-                RestaurantName = Restaurant.Name,
-            });
+            // messageProducerService.SendMessage(MessageQueueTopics.STAFF_REGISTRATION, new StaffRegistrationModel {
+            //     Admin = Staff,
+            //     RestaurantName = Restaurant.Name,
+            // });
+            
+            await verificationCodeService.SendNewStaffVerificationEmail(Staff, Restaurant.Name);
 
             return new DefaultSuccessResponse<bool>(true);
         }
@@ -117,11 +121,16 @@ namespace OrderUp_API.Services {
 
             if (!ExistingAdmin.IsEmailConfirmed) {
 
-                messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
-                    ID = ExistingAdmin.ID,
-                    Role = RoleTypes.Admin,
-                    Email = ExistingAdmin.RecoveryEmail
-                });
+                // messageProducerService.SendMessage(MessageQueueTopics.EMAIL, new EmailMQModel {
+                //     ID = ExistingAdmin.ID,
+                //     Role = RoleTypes.Admin,
+                //     Email = ExistingAdmin.RecoveryEmail
+                // });
+                
+                await verificationCodeService.SendCreateAccountVerificationCode(
+                    ExistingAdmin.ID,
+                    RoleTypes.Admin,
+                    ExistingAdmin.RecoveryEmail);
 
                 return new DefaultErrorResponse<AdminDto>() {
                     ResponseCode = ResponseCodes.UNAUTHORIZED,
@@ -165,11 +174,16 @@ namespace OrderUp_API.Services {
             };
 
 
-            messageProducerService.SendMessage(MessageQueueTopics.FORGOT_PASSWORD, new EmailMQModel {
-                ID = existingAdmin.ID,
-                Role = RoleTypes.Admin,
-                Email = existingAdmin.Email
-            });
+            // messageProducerService.SendMessage(MessageQueueTopics.FORGOT_PASSWORD, new EmailMQModel {
+            //     ID = existingAdmin.ID,
+            //     Role = RoleTypes.Admin,
+            //     Email = existingAdmin.Email
+            // });
+            
+            await verificationCodeService.SendForgotPasswordVerificationCode(
+                existingAdmin.ID,
+                RoleTypes.Admin,
+                existingAdmin.Email);
 
             return new DefaultSuccessResponse<bool>(true);
         }
