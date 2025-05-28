@@ -10,5 +10,10 @@
         public async Task<bool> DoesSlugExist(string Slug) {
             return await context.Restaurants.AnyAsync(x => x.Slug.Equals(Slug));
         }
+
+        public Task<Restaurant> GetOneRestaurant()
+        {
+            return context.Restaurants.Take(1).FirstOrDefaultAsync();
+        }
     }
 }

@@ -18,6 +18,11 @@ namespace OrderUp_API.Services {
             this.adminRepository = adminRepository;
         }
 
+        public Task<Restaurant> GetOneRestaurant()
+        {
+            return restaurantRepository.GetOneRestaurant();
+        }
+
         public async Task<RestaurantDto> GetRestaurantBySlug(string Slug) {
             var RestaurantData = await restaurantRepository.GetRestuarantDetailsBySlug(Slug);
 

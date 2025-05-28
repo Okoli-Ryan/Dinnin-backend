@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.CookiePolicy;
+using OrderUp_API.CronJobs;
 using OrderUp_API.MessageConsumers;
 using OrderUp_API.Middlewares;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,8 +107,27 @@ builder.Services.AddScoped<ForgotPasswordQueueHandler<EmailMQModel>>();
 builder.Services.AddScoped<NewStaffRegistrationQueueHandler<StaffRegistrationModel>>();
 builder.Services.AddScoped<PushNotificationQueueHandler<PushNotificationBody>>();
 
+const string keepAliveJobKey = nameof(KeepAliveJob);
 
-builder.Services.AddHostedService<EmailMessageConsumer>();
+builder.Services.AddQuartz(options =>
+{
+    options.AddJob<KeepAliveJob>(JobKey.Create(keepAliveJobKey));
+    options.AddTrigger(trigger =>
+        trigger
+            .ForJob(keepAliveJobKey)
+            .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(12).RepeatForever())
+    );
+});
+
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+    options.AwaitApplicationStarted = true;
+    options.WaitForJobsToComplete = true;
+});
+
+
+// builder.Services.AddHostedService<EmailMessageConsumer>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowOrigin",
