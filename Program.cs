@@ -119,12 +119,12 @@ builder.Services.AddQuartz(options =>
     );
 });
 
-builder.Services.AddQuartzHostedService(options =>
-{
-    options.WaitForJobsToComplete = true;
-    options.AwaitApplicationStarted = true;
-    options.WaitForJobsToComplete = true;
-});
+// builder.Services.AddQuartzHostedService(options =>
+// {
+//     options.WaitForJobsToComplete = true;
+//     options.AwaitApplicationStarted = true;
+//     options.WaitForJobsToComplete = true;
+// });
 
 
 // builder.Services.AddHostedService<EmailMessageConsumer>();
