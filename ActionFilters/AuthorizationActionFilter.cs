@@ -12,6 +12,8 @@ namespace OrderUp_API.ActionFilters {
 
             if (environment.Equals("Development")) return;
 
+            if (context.HttpContext.Request.Method.Equals("HEAD")) return;
+
             if (context.HttpContext.Request.Headers.ContainsKey("x_api_key")) {
 
                 string apiKey = context.HttpContext.Request.Headers["x_api_key"];
